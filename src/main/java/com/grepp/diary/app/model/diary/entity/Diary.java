@@ -36,12 +36,10 @@ public class Diary extends BaseEntity {
     private String content;
     private Boolean isUse = true;
 
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id")
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<DiaryImg> images = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id")
+    @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)
     private List<DiaryKeyword> keywords;
 
     @OneToOne(fetch = FetchType.LAZY)

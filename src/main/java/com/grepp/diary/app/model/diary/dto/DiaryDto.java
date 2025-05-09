@@ -21,7 +21,7 @@ public class DiaryDto {
         DiaryDto dto = new DiaryDto();
         dto.setDiaryId(diary.getDiaryId());
         dto.setUserId(diary.getMember().getUserId());
-        dto.setReplyId(diary.getReply().getReplyId());
+        dto.setReplyId(diary.getReply() != null ? diary.getReply().getReplyId() : null);
         dto.setContent(diary.getContent());
         dto.setEmotion(diary.getEmotion());
         return dto;

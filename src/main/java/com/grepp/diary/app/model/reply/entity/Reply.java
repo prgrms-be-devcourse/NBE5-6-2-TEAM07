@@ -11,18 +11,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Reply extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer replyId;
-    @Column(length = 1024, nullable = false)
-    private String content = "ai가 답변을 작성중이에요.";
+    @Column(length = 1024)
+    private String content;
     private Boolean isUse = true;
 
     @ManyToOne
@@ -32,5 +36,4 @@ public class Reply extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "diary_id")
     private Diary diary;
-
 }

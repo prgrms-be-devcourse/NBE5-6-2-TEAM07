@@ -13,6 +13,6 @@ public interface ReplyAiService {
     @SystemMessage("너는 다정하고 친절한 상담사야.")
     String chat(String message);
 
-    @SystemMessage("너는 일기를 읽고 그 사람의 하루에 대한 답장을 작성하는 다정한 친구야.")
+    @SystemMessage("당신은 일기를 읽고 그 사람의 하루에 대한 답장을 작성하는 상담사입니다.")
     String reply(String content);
 }

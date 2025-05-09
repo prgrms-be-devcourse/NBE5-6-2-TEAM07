@@ -21,8 +21,8 @@ public class DiaryKeyword {
     private Integer diaryKeywordId;
     @ManyToOne
     @JoinColumn(name = "diary_id")
-    private Diary diaryId;
+    private Diary diary;
     @ManyToOne
     @JoinColumn(name = "keyword_id")
-    private Keyword keywordId;
+    private Keyword keyword;
 }
