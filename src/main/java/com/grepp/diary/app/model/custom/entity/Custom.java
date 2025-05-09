@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 public class Custom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="custom_id")
@@ -16,7 +17,7 @@ public class Custom {
 
     @OneToOne
     @JoinColumn(name="user_id", nullable = false)
-    private Member user;
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "ai_id", nullable = false)
@@ -27,5 +28,5 @@ public class Custom {
 
     @Column(name = "is_long")
     private boolean isLong;
-
 }
+
