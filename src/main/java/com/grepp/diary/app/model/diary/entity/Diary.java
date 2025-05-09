@@ -49,5 +49,5 @@ public class Diary extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Member user;
+    private Member member;
 }
