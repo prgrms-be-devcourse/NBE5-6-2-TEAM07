@@ -31,7 +31,11 @@ public class ReplyApiController {
     @GetMapping("reply")
     public String singleReply(@RequestParam int diaryId){
         DiaryDto dto = diaryService.getDiaryDto(diaryId);
-
-        return null;
+        String content = dto.getContent();
+        String reply = replyAiService.reply(content);
+        System.out.println(reply);
+        return reply;
     }
+
+
 }

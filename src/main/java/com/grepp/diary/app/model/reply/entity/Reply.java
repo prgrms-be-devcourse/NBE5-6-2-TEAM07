@@ -21,8 +21,8 @@ public class Reply extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer replyId;
-    @Column(length = 1024)
-    private String content;
+    @Column(length = 1024, nullable = false)
+    private String content = "ai가 답변을 작성중이에요.";
     private Boolean isUse = true;
 
     @ManyToOne
