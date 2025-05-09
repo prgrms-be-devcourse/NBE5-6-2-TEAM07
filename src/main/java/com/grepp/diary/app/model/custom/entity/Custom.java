@@ -16,7 +16,7 @@ public class Custom {
 
     @OneToOne
     @JoinColumn(name="user_id", nullable = false)
-    private Member member;
+    private Member user;
 
     @ManyToOne
     @JoinColumn(name = "ai_id", nullable = false)

@@ -3,6 +3,7 @@ package com.grepp.diary.app.model.diary.entity;
 import com.grepp.diary.app.model.common.entity.BaseEntity;
 import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
+import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.reply.entity.Reply;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ public class Diary extends BaseEntity {
     @Id
     @GeneratedValue
     private Integer diaryId;
-    private String userId;
     @Enumerated(EnumType.STRING)
     private Emotion emotion;
     @Column(length = 1024)
@@ -45,4 +46,8 @@ public class Diary extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "reply_id")
     private Reply reply;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Member user;
 }
