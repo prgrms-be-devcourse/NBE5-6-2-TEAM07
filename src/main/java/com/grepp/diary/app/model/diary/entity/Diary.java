@@ -1,0 +1,48 @@
+package com.grepp.diary.app.model.diary.entity;
+
+import com.grepp.diary.app.model.common.entity.BaseEntity;
+import com.grepp.diary.app.model.diary.code.Emotion;
+import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
+import com.grepp.diary.app.model.reply.entity.Reply;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter @Setter @ToString
+public class Diary extends BaseEntity {
+
+    @Id
+    @GeneratedValue
+    private Integer diaryId;
+    private String userId;
+    @Enumerated(EnumType.STRING)
+    private Emotion emotion;
+    @Column(length = 1024)
+    private String content;
+    private Boolean isUse = true;
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "diary_id")
+    private List<DiaryImg> images = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "diary_id")
+    private List<DiaryKeyword> keywords;
+
+    @OneToOne
+    @JoinColumn(name = "reply_id")
+    private Reply reply;
+}
