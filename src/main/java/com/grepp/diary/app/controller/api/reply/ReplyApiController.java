@@ -36,12 +36,12 @@ public class ReplyApiController {
 
     @GetMapping("reply")
     public String singleReply(@RequestParam int diaryId){
-        DiaryDto dto = diaryService.getDto(diaryId);
-        String content = dto.getContent();
-        String userId = dto.getUserId();
-
-        String finalPrompt = createFinalPrompt(userId, content);
+        String finalPrompt = createFinalPrompt(diaryId);
         String replyContent = replyAiService.reply(finalPrompt);
+
+        diaryService.registReply(diaryId, replyContent);
+        replyService.regist(diaryId, replyContent);
+
         System.out.println(replyContent);
         return replyContent;
     }
@@ -62,7 +62,11 @@ public class ReplyApiController {
         return "ok";
     }
 
-    private String createFinalPrompt(String userId, String content) {
+    private String createFinalPrompt(int diaryId) {
+        DiaryDto dto = diaryService.getDto(diaryId);
+        String content = dto.getContent();
+        String userId = dto.getUserId();
+
         Member member = memberService.getMemberByUserId(userId);
         Custom custom = member.getCustom();
         Ai ai = custom.getAi();

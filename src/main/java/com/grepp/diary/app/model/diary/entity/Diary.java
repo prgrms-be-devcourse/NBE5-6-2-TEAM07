@@ -42,8 +42,7 @@ public class Diary extends BaseEntity {
     @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)
     private List<DiaryKeyword> keywords;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reply_id")
+    @OneToOne(mappedBy = "diary")
     private Reply reply;
 
     @ManyToOne(fetch = FetchType.LAZY)
