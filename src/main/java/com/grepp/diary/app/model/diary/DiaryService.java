@@ -32,6 +32,14 @@ public class DiaryService {
         return NoReplyDiaries.stream().map(DiaryDto::fromEntity).toList();
     }
 
+    public Diary getDiaryById(int diaryId) {
+        Optional<Diary> result = diaryRepository.findById(diaryId);
+        if (result.isEmpty()) {
+            throw new RuntimeException("일기가 존재하지 않습니다.");
+        }
+        return result.get();
+    }
+
     @Transactional
     public void registReply(int diaryId, String replyContent) {
         Optional<Diary> result = diaryRepository.findById(diaryId);
@@ -57,4 +65,6 @@ public class DiaryService {
         }
         diaryRepository.save(diary);
     }
+
+
 }
