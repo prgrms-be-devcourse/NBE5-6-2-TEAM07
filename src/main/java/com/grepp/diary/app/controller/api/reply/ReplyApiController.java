@@ -7,7 +7,6 @@ import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.reply.ReplyAiService;
-import com.grepp.diary.app.model.reply.ReplyService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReplyApiController {
 
     private final ReplyAiService replyAiService;
-    private final ReplyService replyService;
     private final DiaryService diaryService;
     private final MemberService memberService;
 
     @GetMapping("test")
     public String chat(@RequestParam(required = false) String message){
-        String chat = replyAiService.chat(message);
-        System.out.println(chat);
-        return chat;
+        return replyAiService.chat(message);
     }
 
     @GetMapping("reply")
@@ -40,26 +36,26 @@ public class ReplyApiController {
         String replyContent = replyAiService.reply(finalPrompt);
 
         diaryService.registReply(diaryId, replyContent);
-        replyService.regist(diaryId, replyContent);
-
-        System.out.println(replyContent);
         return replyContent;
     }
 
     @GetMapping("replies")
     public String batchReply() {
-        List<DiaryDto> dtos = diaryService.getNotRepliedDtos();
+        List<DiaryDto> dtos = diaryService.getNoReplyDtos();
         for (DiaryDto dto : dtos) {
             try {
-                String content = dto.getContent();
-                String replyContent = replyAiService.reply(content);
-                diaryService.saveReply(dto.getDiaryId(), replyContent);
+                Integer diaryId = dto.getDiaryId();
+                String finalPrompt = createFinalPrompt(diaryId);
+                String replyContent = replyAiService.reply(finalPrompt);
+                log.info("diary id: {}", diaryId);
+                log.info("reply content: {}", replyContent);
+
+                diaryService.registReply(diaryId, replyContent);
             } catch (Exception e) {
                 log.error("Reply failed for diary id {}: {}", dto.getDiaryId(), e.getMessage());
             }
-
         }
-        return "ok";
+        return "batch complete";
     }
 
     private String createFinalPrompt(int diaryId) {
@@ -73,13 +69,13 @@ public class ReplyApiController {
 
         StringBuilder builder = new StringBuilder(ai.getPrompt());
         if (custom.isFormal()) {
-            builder.append(" 정중한 경어체로 작성해주세요.");
+            builder.append(" 정중한 경어체로");
         } else {
-            builder.append(" 친구처럼 편한 말투로 작성해주세요.");
+            builder.append(" 친구처럼 편한 말투로");
         }
 
         if (custom.isLong()) {
-            builder.append(" 문장을 충분히 길게 작성해주세요.");
+            builder.append(" 300자 정도로 작성해주세요.");
         } else {
             builder.append(" 간결하게 핵심만 넣어서 작성해주세요.");
         }

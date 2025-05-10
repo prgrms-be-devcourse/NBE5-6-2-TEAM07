@@ -42,7 +42,7 @@ public class Diary extends BaseEntity {
     @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)
     private List<DiaryKeyword> keywords;
 
-    @OneToOne(mappedBy = "diary")
+    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Reply reply;
 
     @ManyToOne(fetch = FetchType.LAZY)
