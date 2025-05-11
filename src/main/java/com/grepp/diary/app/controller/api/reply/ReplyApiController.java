@@ -16,6 +16,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/ai")
@@ -37,20 +37,24 @@ public class ReplyApiController {
     private final MemberService memberService;
 
     @GetMapping("test")
+    @ResponseBody
     public String test(@RequestParam(required = false) String message){
         return replyAiService.test(message);
     }
 
     @GetMapping("reply")
+    @ResponseBody
     public String singleReply(@RequestParam int diaryId){
-        String finalPrompt = buildReplyPrompt(diaryId);
-        String replyContent = replyAiService.reply(finalPrompt);
+        String prompt = buildReplyPrompt(diaryId);
+        String replyContent = replyAiService.reply(prompt);
 
+        log.info("prompt : {}", prompt);
         diaryService.registReply(diaryId, replyContent);
         return replyContent;
     }
 
     @GetMapping("replies")
+    @ResponseBody
     public String batchReply() {
         List<DiaryDto> dtos = diaryService.getNoReplyDtos();
         List<Integer> failedIds = new ArrayList<>();
@@ -81,11 +85,13 @@ public class ReplyApiController {
     @GetMapping("chat")
     public String chatView(@RequestParam int diaryId, Model model) {
         Diary diary = diaryService.getDiaryById(diaryId);
+        String aiName = diary.getMember().getCustom().getAi().getName();
+        Integer aiId = diary.getMember().getCustom().getAi().getAiId();
         model.addAttribute("diaryId", diaryId);
-        model.addAttribute("diary", diary);
-        model.addAttribute("reply", diary.getReply().getContent());
-        model.addAttribute("initialPrompt", "어떤 얘기를 하고 싶으신가요?");
-        return "chat"; // chat.html
+        model.addAttribute("aiName", aiName);
+        model.addAttribute("aiId", aiId);
+        model.addAttribute("initialPrompt", "어떤 얘기를 나누고 싶으신가요?");
+        return "api/ai/chat"; // chat.html
     }
 
     @PostMapping("chat")
@@ -93,15 +99,17 @@ public class ReplyApiController {
     public String chatWithAi(@RequestBody ChatRequest chatRequest) {
         Diary diary = diaryService.getDiaryById(chatRequest.getDiaryId());
         String prompt = buildChatPrompt(diary, chatRequest.getChatHistory(), chatRequest.getUserMessage());
-
+        log.info("prompt : {}", prompt);
         return replyAiService.chat(prompt);
     }
 
     @PostMapping("chat/memo")
+    @ResponseBody
     public String chatMemo(@RequestBody ChatRequest chatRequest) {
         int diaryId = chatRequest.getDiaryId();
         Diary diary = diaryService.getDiaryById(diaryId);
         String prompt = buildMemoPrompt(diary, chatRequest.getChatHistory());
+        log.info("prompt : {}", prompt);
         String memo = replyAiService.memo(prompt);
 
         log.info("diary id: {}", diaryId);
@@ -109,19 +117,20 @@ public class ReplyApiController {
 
         // diary, reply 저장
         diaryService.registReply(diaryId, memo);
-        return "redirect:/diary/" + diaryId; // diary.html
+        return memo;
     }
 
     private String buildMemoPrompt(Diary diary, List<Message> chatHistory) {
 
         StringBuilder prompt = new StringBuilder();
-        prompt.append("\n일기 내용: ").append(diary.getContent());
-        prompt.append("\n당신이 작성한 일기 답변: ").append(diary.getReply().getContent());
+        prompt.append("\n사용자가 작성했던 일기 내용: ").append(diary.getContent());
+        prompt.append("\n당신이 작성했던 일기 답변: ").append(diary.getReply().getContent());
 
         // 이전 대화 내역
+        prompt.append("\n--대화 내용--");
         for (Message msg : chatHistory) {
-            prompt.append("\n 사용자: ").append(msg.getUser());
-            prompt.append("\n 당신: ").append(msg.getAi());
+            prompt.append("\n사용자: ").append(msg.getUser());
+            prompt.append("\n당신: ").append(msg.getAi());
         }
 
         return prompt.toString();
@@ -146,10 +155,11 @@ public class ReplyApiController {
             prompt.append(" 간결하게 핵심만 작성하되 150자 이내로 작성해주세요.");
         }
 
-        prompt.append("\n일기 내용: ").append(diary.getContent());
-        prompt.append("\n당신이 작성한 일기 답변: ").append(diary.getReply().getContent());
+        prompt.append("\n사용자가 작성했던 일기 내용: ").append(diary.getContent());
+        prompt.append("\n당신이 작성했던 일기 답변: ").append(diary.getReply().getContent());
 
         // 이전 대화 내역
+        prompt.append("\n--대화 내용--");
         if (chatHistory != null && !chatHistory.isEmpty()) {
             for (Message msg : chatHistory) {
                 prompt.append("\n사용자: ").append(msg.getUser());
@@ -185,6 +195,6 @@ public class ReplyApiController {
             builder.append(" 간결하게 핵심만 넣어서 작성해주세요.");
         }
 
-        return builder.append("일기 내용: ").append(content).toString();
+        return builder.append("\n일기 내용: ").append(content).toString();
     }
 }

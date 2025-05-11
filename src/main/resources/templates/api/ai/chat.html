@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Diary</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <style>
+    body{
+      background-color: #f9fbe7;
+    }
+    .chat-container{
+      max-width: 800px;
+      margin: 2rem auto;
+    }
+    #chat-window{
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+    }
+    .message-container{
+      width: 100%;
+      clear: both;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .message-container.user{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .message-container.ai{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .chat-bubble.user{
+      background-color: #a5d6a7;
+      color: black;
+      border-radius: 16px;
+      padding: 10px 14px;
+      max-width: 70%;
+      text-align: left;
+    }
+    .chat-bubble.ai{
+      background-color: #e8f5e9;
+      border-radius: 16px;
+      padding: 10px 14px;
+      max-width: 70%;
+      text-align: left;
+    }
+    .img-bubble{
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .ai-avatar{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .timestamp{
+      font-size: 0.8rem;
+      color: #757575;
+      margin-top: 3px;
+      padding: 0 5px;
+    }
+    #chat-count-display{
+      font-size: 0.9rem;
+      color: #388e3c;
+      margin-top: 0.5rem;
+    }
+    textarea{
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+
+<main>
+
+  <div class="chat-container">
+    <div class="card" style="border-radius: 20px">
+      <div class="card-content">
+        <div class="card-title-box" style="display: flex; justify-content: space-between">
+          <span class="card-title green-text text-darken-2" style="font-weight: bold" th:text="|${aiName}와 대화|">대화 제목</span>
+          <button class="btn grey lighten-1" type="button" name="close" onclick="closeChat()">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+
+        <div id="chat-window" class="chat-window">
+          <!-- 초기 메시지 -->
+          <div class="message-container ai">
+            <div class="img-bubble">
+              <img th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}" alt="AI" class="ai-avatar">
+              <div class="chat-bubble ai" th:text="${initialPrompt}">초기 질문</div>
+            </div>
+              <span class="timestamp"></span>
+          </div>
+        </div>
+
+        <form id="chat-form" th:object="${chatCount}">
+          <div class="input-field">
+            <textarea id="user-input" class="materialize-textarea" placeholder="메시지를 입력하세요."></textarea>
+          </div>
+          <div id="chat-count-display" style="font-size: medium; font-weight: bold">남은 메시지: 5</div>
+
+          <div class="right-align">
+            <button class="btn grey lighten-1" type="button" id="memo-button" onclick="memo()">메모
+              <i class="material-icons left">create</i>
+            </button>
+            <button class="btn green" type="submit" id="send-button">전송
+              <i class="material-icons left">send</i>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+
+<script>
+  const chatHistory = [];
+  const diaryId = [[${diaryId}]];
+  const aiId = [[${aiId}]]
+  let chatCount = 0;
+  const MAX_CHAT_COUNT = 2;
+
+  function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  // 남은 메시지 수 업데이트 함수
+  function updateChatCountDisplay() {
+    const remaining = MAX_CHAT_COUNT - chatCount;
+    $('#chat-count-display').text(`남은 메시지: ${remaining}`)
+  }
+
+  // 전송 버튼 상태 업데이트 함수
+  function updateSendButtonState() {
+    if (chatCount >= MAX_CHAT_COUNT) {
+      $('#send-button').prop('disabled', true).addClass('disabled');
+      $('#memo-button').removeClass('grey').addClass('green');
+      $('#user-input').prop('disabled', true);
+      $('#chat-count-display').css('color', 'red').text('메시지 전송 한도에 도달했습니다.');
+    }
+  }
+
+  $('#user-input').on('keydown', function (e) {
+    if (e.keyCode === 13) {
+      if (!e.shiftKey) { // 단순히 enter 키만 눌렀을 때
+        e.preventDefault(); // 줄바꿈 방지
+        $('#chat-form').submit(); // 폼 제출
+      }
+    }
+  })
+
+  $('#chat-form').on('submit', function (e){
+    e.preventDefault();
+
+    if (chatCount >= MAX_CHAT_COUNT) {
+      alert('메시지 전송 한도에 도달했습니다.');
+      return;
+    }
+
+    const userMessage = $('#user-input').val().trim();
+    if (!userMessage) return;
+
+    const currentTime = getCurrentTime();
+
+    // 채팅창에 사용자 메시지 추가
+    $('#chat-window').append(`
+        <div class="message-container user">
+          <div class="chat-bubble user">${userMessage}</div>
+          <span class="timestamp">${currentTime}</span>
+        </div>
+    `);
+
+    // 서버에 요청
+    $.ajax({
+      type: 'POST',
+      url: '/api/ai/chat',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        diaryId: diaryId,
+        chatHistory: chatHistory,
+        userMessage: userMessage
+      }),
+      success: function (response){
+        const responseTime = getCurrentTime();
+        $('#chat-window').append(`
+          <div class="message-container ai">
+             <div class="img-bubble">
+                <img src="/images/ai/${aiId}.png" alt="AI" class="ai-avatar">
+                <div class="chat-bubble ai">${response}</div>
+             </div>
+             <span class="timestamp">${responseTime}</span>
+          </div>
+        `);
+        chatHistory.push({user: userMessage, ai: response});
+        $('#user-input').val('');
+
+        chatCount++;
+        updateChatCountDisplay();
+        updateSendButtonState();
+
+        $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+      },
+      error: function (){
+        alert("현재 대화가 어렵습니다.");
+      }
+    });
+  });
+
+  function closeChat() {
+    alert('대화를 종료합니다.');
+    window.location.href = `/record/${diaryId}`;
+  }
+
+  function memo() {
+    fetch('/api/ai/chat/memo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        diaryId: diaryId,
+        chatHistory: chatHistory,
+        userMessage: ''
+      })
+    })
+    .then(response => {
+      if (response.ok){
+        alert('대화 내용을 답징과 함께 저장합니다.');
+        window.location.href = `/record/${diaryId}`;
+      } else {
+        alert('저장에 실패했습니다.');
+      }
+    })
+  }
+
+  // 페이지 로드 시 초기 상태 설정
+  $(document).ready(function () {
+    updateChatCountDisplay();
+    M.textareaAutoResize($('#user-input'));
+    $('.timestamp').first().text(getCurrentTime());
+  })
+</script>
+</html>
