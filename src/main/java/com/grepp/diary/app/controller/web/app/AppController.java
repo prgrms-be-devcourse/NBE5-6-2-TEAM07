@@ -14,6 +14,6 @@ public class AppController {
 
     @GetMapping
     public String showHome() {
-        return "app/index";
+        return "app/test";
     }
 }

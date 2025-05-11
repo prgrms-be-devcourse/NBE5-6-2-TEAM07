@@ -1,99 +1,27 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+>
 <head>
   <meta charset="UTF-8">
-  <title>My Diary</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <style>
-    body{
-      background-color: #f9fbe7;
-    }
-    .chat-container{
-      max-width: 800px;
-      margin: 2rem auto;
-    }
-    #chat-window{
-      height: 400px;
-      overflow-y: auto;
-      padding: 10px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-    }
-    .message-container{
-      width: 100%;
-      clear: both;
-      margin-bottom: 1rem;
-      overflow: hidden;
-    }
-    .message-container.user{
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-    .message-container.ai{
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .chat-bubble.user{
-      background-color: #a5d6a7;
-      color: black;
-      border-radius: 16px;
-      padding: 10px 14px;
-      max-width: 70%;
-      text-align: left;
-    }
-    .chat-bubble.ai{
-      background-color: #e8f5e9;
-      border-radius: 16px;
-      padding: 10px 14px;
-      max-width: 70%;
-      text-align: left;
-    }
-    .img-bubble{
-      display: flex;
-      align-items: flex-start;
-      width: 100%;
-    }
-    .ai-avatar{
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .timestamp{
-      font-size: 0.8rem;
-      color: #757575;
-      margin-top: 3px;
-      padding: 0 5px;
-    }
-    #chat-count-display{
-      font-size: 0.9rem;
-      color: #388e3c;
-      margin-top: 0.5rem;
-    }
-    textarea{
-      resize: none;
-    }
-  </style>
+  <title>My Day</title>
+  <th:block th:replace="~{fragments_test :: frg_static}"/>
+  <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
+<th:block th:replace="~{fragments_test :: frg_header}"/>
 
 <main>
-
   <div class="chat-container">
     <div class="card" style="border-radius: 20px">
       <div class="card-content">
         <div class="card-title-box" style="display: flex; justify-content: space-between">
-          <span class="card-title green-text text-darken-2" style="font-weight: bold" th:text="|${aiName}와 대화|">대화 제목</span>
-          <button class="btn grey lighten-1" type="button" name="close" onclick="closeChat()">
-            <i class="material-icons">close</i>
+          <div class="card-title green-text text-darken-1" style="font-weight: bold; text-align: center"
+                th:text="|${aiName}와 대화|">대화 제목</div>
+          <button class="btn-flat btn-large transparent" type="button" name="clear" onclick="closeChat()">
+            <i class="material-icons black-text ">close</i>
           </button>
         </div>
+
 
         <div id="chat-window" class="chat-window">
           <!-- 초기 메시지 -->
@@ -101,34 +29,45 @@
             <div class="img-bubble">
               <img th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}" alt="AI" class="ai-avatar">
               <div class="chat-bubble ai" th:text="${initialPrompt}">초기 질문</div>
-            </div>
               <span class="timestamp"></span>
+            </div>
           </div>
         </div>
 
-        <form id="chat-form" th:object="${chatCount}">
-          <div class="input-field">
-            <textarea id="user-input" class="materialize-textarea" placeholder="메시지를 입력하세요."></textarea>
-          </div>
-          <div id="chat-count-display" style="font-size: medium; font-weight: bold">남은 메시지: 5</div>
 
-          <div class="right-align">
-            <button class="btn grey lighten-1" type="button" id="memo-button" onclick="memo()">메모
-              <i class="material-icons left">create</i>
-            </button>
-            <button class="btn green" type="submit" id="send-button">전송
-              <i class="material-icons left">send</i>
-            </button>
+        <div class="card" style="border-radius: 20px">
+          <div class="card-content">
+            <form id="chat-form" th:object="${chatCount}">
+              <div class="input-field">
+            <textarea id="user-input" class="materialize-textarea"
+                      placeholder="메시지를 입력하세요."></textarea>
+              </div>
+
+              <div class="action-row" style="display: flex; align-items: center; justify-content: space-between">
+                <div id="chat-count-display" style="font-size: medium; font-weight: bold">남은 메시지: 5
+                </div>
+
+                <div class="chat-buttons" style="display: flex; gap: 10px">
+                  <button class="btn-floating grey darken-2" type="button" id="memo-button"
+                          onclick="memo()">
+                    <i class="material-icons left">save</i>
+                  </button>
+                  <button class="btn-floating green darken-3" type="submit" id="send-button">
+                    <i class="material-icons left">send</i>
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
 
       </div>
     </div>
   </div>
-
 </main>
 
-</body>
+
+<th:block th:replace="~{fragments_test :: frg_script}"/>
 
 <script>
   const chatHistory = [];
@@ -169,7 +108,7 @@
     }
   })
 
-  $('#chat-form').on('submit', function (e){
+  $('#chat-form').on('submit', function (e) {
     e.preventDefault();
 
     if (chatCount >= MAX_CHAT_COUNT) {
@@ -178,15 +117,20 @@
     }
 
     const userMessage = $('#user-input').val().trim();
-    if (!userMessage) return;
+    if (!userMessage) {
+      return;
+    }
 
+    $('#user-input').val('');
     const currentTime = getCurrentTime();
 
     // 채팅창에 사용자 메시지 추가
     $('#chat-window').append(`
         <div class="message-container user">
-          <div class="chat-bubble user">${userMessage}</div>
-          <span class="timestamp">${currentTime}</span>
+          <div class="time-bubble">
+            <span class="timestamp">${currentTime}</span>
+            <div class="chat-bubble user">${userMessage}</div>
+          </div>
         </div>
     `);
 
@@ -200,19 +144,20 @@
         chatHistory: chatHistory,
         userMessage: userMessage
       }),
-      success: function (response){
+      success: function (response) {
         const responseTime = getCurrentTime();
         $('#chat-window').append(`
           <div class="message-container ai">
              <div class="img-bubble">
                 <img src="/images/ai/${aiId}.png" alt="AI" class="ai-avatar">
                 <div class="chat-bubble ai">${response}</div>
+                <span class="timestamp">${responseTime}</span>
              </div>
-             <span class="timestamp">${responseTime}</span>
+<!--             <span class="timestamp">${responseTime}</span>-->
           </div>
         `);
         chatHistory.push({user: userMessage, ai: response});
-        $('#user-input').val('');
+        // $('#user-input').val('');
 
         chatCount++;
         updateChatCountDisplay();
@@ -220,7 +165,7 @@
 
         $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
       },
-      error: function (){
+      error: function () {
         alert("현재 대화가 어렵습니다.");
       }
     });
@@ -244,7 +189,7 @@
       })
     })
     .then(response => {
-      if (response.ok){
+      if (response.ok) {
         alert('대화 내용을 답징과 함께 저장합니다.');
         window.location.href = `/record/${diaryId}`;
       } else {
@@ -256,8 +201,10 @@
   // 페이지 로드 시 초기 상태 설정
   $(document).ready(function () {
     updateChatCountDisplay();
-    M.textareaAutoResize($('#user-input'));
+    // M.textareaAutoResize($('#user-input'));
+    $('#user-input').trigger('autoresize');
     $('.timestamp').first().text(getCurrentTime());
   })
 </script>
+</body>
 </html>

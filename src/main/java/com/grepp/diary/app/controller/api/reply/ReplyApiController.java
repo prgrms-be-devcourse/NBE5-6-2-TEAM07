@@ -91,7 +91,7 @@ public class ReplyApiController {
         model.addAttribute("aiName", aiName);
         model.addAttribute("aiId", aiId);
         model.addAttribute("initialPrompt", "어떤 얘기를 나누고 싶으신가요?");
-        return "api/ai/chat"; // chat.html
+        return "api/ai/chat";
     }
 
     @PostMapping("chat")
