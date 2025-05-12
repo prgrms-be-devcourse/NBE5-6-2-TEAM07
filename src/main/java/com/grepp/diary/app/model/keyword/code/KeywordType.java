@@ -1,5 +1,5 @@
 package com.grepp.diary.app.model.keyword.code;
 
 public enum KeywordType {
-    EMOTION, PERSON, SITUATION
+    EMOTION_GOOD, EMOTION_BAD, PERSON, SITUATION
 }
