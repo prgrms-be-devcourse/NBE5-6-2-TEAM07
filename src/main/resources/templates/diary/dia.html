@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>일기작성</title>
+  <style>
+    .icon-group {
+      display: flex;
+      gap: 20px;
+      margin: 10px 0;
+    }
+    .icon-label {
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: border 0.2s;
+      font-size: 2rem;
+    }
+    input[type="radio"]:checked + .icon-label {
+      border: 2px solid #007BFF;
+      background-color: #e6f0ff;
+    }
+  </style>
+</head>
+<body>
+  <main layout:fragment="content">
+
+  </main>
+
+  <h1>일기 작성</h1>
+  <form th:action="@{/diary/save}" method="post" enctype="multipart/form-data">
+    <!-- 일기 내용 입력 -->
+    <div>
+      <label for="content">오늘의 일기</label><br>
+      <textarea id="content" name="content" rows="8" cols="50" required></textarea>
+    </div>
+
+    <!-- 아이콘 선택 (5개 중 하나만) -->
+    <div>
+      <label>오늘의 기분</label>
+      <div class="icon-group">
+        <input type="radio" id="icon1" name="mood" value="happy" required hidden>
+        <label for="icon1" class="icon-label" title="행복">&#128522;</label> <!-- 😊 -->
+
+        <input type="radio" id="icon2" name="mood" value="sad" hidden>
+        <label for="icon2" class="icon-label" title="슬픔">&#128577;</label> <!-- 🙁 -->
+
+        <input type="radio" id="icon3" name="mood" value="angry" hidden>
+        <label for="icon3" class="icon-label" title="화남">&#128545;</label> <!-- 😡 -->
+
+        <input type="radio" id="icon4" name="mood" value="surprised" hidden>
+        <label for="icon4" class="icon-label" title="놀람">&#128558;</label> <!-- 😮 -->
+
+        <input type="radio" id="icon5" name="mood" value="love" hidden>
+        <label for="icon5" class="icon-label" title="사랑">&#128525;</label> <!-- 😍 -->
+      </div>
+    </div>
+
+    <!-- 사진 업로드 -->
+    <div>
+      <label for="photo">사진 업로드</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+
+    <!-- 저장 버튼 -->
+    <div style="margin-top: 20px;">
+      <button type="submit">저장</button>
+    </div>
+  </form>
+
+</body>
+</html>
