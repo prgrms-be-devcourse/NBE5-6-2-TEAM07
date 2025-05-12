@@ -4,25 +4,40 @@
   <meta charset="UTF-8">
   <title>홈 화면</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" href="/css/calendar.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<div class="sidebar">
-  <div class="profile">
-    <img src="/images/userImg.png" alt="프로필" style="border-radius: 50%;">
-  </div>
-  <div class="menu">
-    <a href="#">홈</a>
-    <a href="#">일기쓰기</a>
-    <a href="#">통계</a>
-    <a href="#">설정</a>
+<div th:replace="fragments/member-sidebar :: memberSidebar"></div>
+
+<div class="main">
+  <div class="calendar-container">
+    <div class="calendar-inner">
+      <div class="calendar-header">
+        <div class="calendar-title" id="calendar-title"></div>
+        <div class="calendar-buttons">
+          <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+          <button id="go-today">오늘</button>
+          <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="calendar-grid">
+        <div class="day-label">일</div>
+        <div class="day-label">월</div>
+        <div class="day-label">화</div>
+        <div class="day-label">수</div>
+        <div class="day-label">목</div>
+        <div class="day-label">금</div>
+        <div class="day-label">토</div>
+        <!-- 날짜 셀은 JS로 렌더링 -->
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="main">
-  <h2>여기가 메인 화면입니다</h2>
-  <!-- 캘린더 및 카드 영역 등 추가 가능 -->
-</div>
+<script src="/js/calendar.js"></script>
 
 </body>
 </html>
