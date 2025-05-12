@@ -88,6 +88,7 @@ public class ReplyApiController {
         String aiName = diary.getMember().getCustom().getAi().getName();
         Integer aiId = diary.getMember().getCustom().getAi().getAiId();
         model.addAttribute("diaryId", diaryId);
+        model.addAttribute("diaryReply", diary.getReply().getContent().replace("\n","<br/>"));
         model.addAttribute("aiName", aiName);
         model.addAttribute("aiId", aiId);
         model.addAttribute("initialPrompt", "어떤 얘기를 나누고 싶으신가요?");

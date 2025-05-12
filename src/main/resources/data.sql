@@ -6,10 +6,10 @@ INSERT INTO MEMBER (USER_ID, EMAIL, NAME, PASSWORD, ROLE, ENABLED) VALUES
 ('admin', 'admin@test.com', '관리자', 'admin', 'ROLE_ADMIN', 1);
 
 INSERT INTO AI (name, prompt, is_use) VALUES
-('다정한 오소리', '', 1),
-('친절한 두루미', '', 1),
-('용감한 사자', '', 1),
-('용맹한 거북이', '', 1);
+('다정한 오소리', '사용자의 감정을 이해하고 공감하는 방식으로 답변해주세요.', 1),
+('친절한 두루미', '사용자가 자신의 감정을 더 깊이 탐색할 수 있도록 질문을 던져주세요.', 1),
+('용감한 사자', '항상 긍정적인 관점에서 사용자를 격려해주세요.', 1),
+('용맹한 거북이', '사용자의 문제에 대한 실질적인 조언을 제공해주세요.', 1);
 
 INSERT INTO CUSTOM (user_id, ai_id, is_formal, is_long) VALUES
 ('user01', 1, 0, 0),
