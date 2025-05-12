@@ -39,12 +39,10 @@ public class Diary extends BaseEntity {
     @JoinColumn(name = "diary_id")
     private List<DiaryImg> images = new ArrayList<>();
 
-    @OneToMany
-    @JoinColumn(name = "diary_id")
+    @OneToMany(mappedBy = "diaryId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryKeyword> keywords;
 
-    @OneToOne
-    @JoinColumn(name = "reply_id")
+    @OneToOne(mappedBy = "diary")
     private Reply reply;
 
     @ManyToOne
