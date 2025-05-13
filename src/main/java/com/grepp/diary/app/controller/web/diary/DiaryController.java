@@ -38,7 +38,7 @@ public class DiaryController {
     public String submitDiary(@ModelAttribute("diaryRequest") DiaryRequest form
         //@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        String userId = "user777";
+        String userId = "user01";
 //        diaryService.saveDiary(form, userDetails.getMember());
 
         diaryService.saveDiary(form, userId);
