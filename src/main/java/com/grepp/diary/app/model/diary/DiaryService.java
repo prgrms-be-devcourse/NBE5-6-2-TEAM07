@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DiaryService {
@@ -33,5 +34,14 @@ public class DiaryService {
         LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
         return diaryRepository.findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(userId, startDateTime, endDateTime);
     }
+
+    public Integer getMonthDiariesCount() {
+        LocalDateTime startDateTime = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDateTime = startDateTime.plusMonths(1);
+
+        return diaryRepository.countByCreatedAtBetweenAndIsUseTrue(startDateTime, endDateTime);
+    }
+
+
 
 }
