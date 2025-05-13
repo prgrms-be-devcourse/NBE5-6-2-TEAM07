@@ -1,9 +1,22 @@
 package com.grepp.diary.app.controller.web.auth;
 
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
+import com.grepp.diary.app.controller.web.auth.form.SignupForm;
+import com.grepp.diary.app.model.auth.AuthService;
+import com.grepp.diary.app.model.auth.code.Role;
+import com.grepp.diary.app.model.auth.domain.Principal;
+import com.grepp.diary.app.model.member.MemberService;
+import com.grepp.diary.app.model.member.entity.Member;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,35 +33,72 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
 
-    @GetMapping("/login")
-    public String showLoginForm(Model model) {
-        if (!model.containsAttribute("signinForm")) {
-            model.addAttribute("signinForm", new SigninForm());
-        }
-        return "index";
-    }
-
+    private final PasswordEncoder passwordEncoder;
+    private final MemberService memberService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute("signinForm") SigninForm signinForm,
-        BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        BindingResult bindingResult,
+        HttpSession session,
+        RedirectAttributes redirectAttributes,
+        HttpServletRequest request) {
+
         if (bindingResult.hasErrors()) {
-            // 👉 BindingResult와 SigninForm을 flash로 전달 (함께 전달해야 오류메시지 1회성으로(=새로고침시엔삭제) 남음)
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.signinForm", bindingResult);
             redirectAttributes.addFlashAttribute("signinForm", signinForm);
-            return "redirect:/member/login";
+            return "redirect:/";
         }
 
-        // 로그인 성공
-        // 로그인 기능 미구현xxxxxxxxxx
-        if ("admin".equals(signinForm.getUserId()) && "1234".equals(signinForm.getPassword())) {
+        try {
+            UserDetails userDetails = authService.loadUserByUsername(signinForm.getUserId());
+
+            if (!passwordEncoder.matches(signinForm.getPassword(), userDetails.getPassword())) {
+                throw new IllegalArgumentException("아이디나 비밀번호가 틀렸습니다.");
+            }
+
+            UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+
             return "redirect:/app";
-        } else {
-            // 실패 시에도 form 다시 넘기기
-            redirectAttributes.addFlashAttribute("error", "아이디나 비밀번호가 틀렸습니다.");
+
+        } catch (UsernameNotFoundException | IllegalArgumentException e) {
+            // 로그인 실패 시
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             redirectAttributes.addFlashAttribute("signinForm", signinForm);
-            return "redirect:/member/login";
+            return "redirect:/";
         }
     }
 
+    @GetMapping("/regist")
+    public String regist(Model model) {
+        if(!model.containsAttribute("signupForm")) {
+            model.addAttribute("signupForm", new SignupForm());
+        }
+        return "/member/regist";
+    }
+
+    @PostMapping("/regist")
+    public String regist(@Valid @ModelAttribute("signupForm") SignupForm signupForm,
+        BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        if (!signupForm.getPassword().equals(signupForm.getRepassword())) {
+            bindingResult.rejectValue("repassword", "password.mismatch", "비밀번호가 일치하지 않습니다.");
+        }
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.signupForm", bindingResult);
+            redirectAttributes.addFlashAttribute("signupForm", signupForm);
+            return "redirect:/member/regist";
+        }
+
+        memberService.signup(signupForm.toDto(), Role.ROLE_USER);
+
+        return "redirect:/";
+    }
 }
