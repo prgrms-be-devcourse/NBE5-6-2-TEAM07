@@ -5,6 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DiaryRepository extends JpaRepository<Diary, Integer> {
+public interface DiaryRepository extends JpaRepository<Diary, Integer>, DiaryRepositoryCustom {
     List<Diary> findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(String userId, LocalDateTime start, LocalDateTime end);
 }
