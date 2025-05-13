@@ -68,7 +68,7 @@
 .date-circle {
   width: 36px;
   height: 36px;
-  background-color: #e0e0e0;
+  background-color: #D9D8D5;
   border-radius: 50%;
 }
 
@@ -84,7 +84,7 @@
   margin-top: 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #000;
+  color: #282420;
 }
 
 /* 오늘 강조 스타일 */
