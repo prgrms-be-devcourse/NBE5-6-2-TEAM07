@@ -12,6 +12,7 @@ public record DiaryCardResponse (
         Integer diaryId,
         LocalDate createdAt,
         Emotion emotion,
+        String content,
         String imagePath
     ){
         public static DiaryCard fromEntity(Diary diary){
@@ -25,6 +26,7 @@ public record DiaryCardResponse (
                 diary.getDiaryId(),
                 diary.getCreatedAt().toLocalDate(),
                 diary.getEmotion(),
+                diary.getContent(),
                 imagePath
             );
         }
