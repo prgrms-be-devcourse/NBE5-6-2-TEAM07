@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-color: #FEFBF6;
+  background-color: #E0E8E2;
   font-family: 'Arial', sans-serif;
 }
 
@@ -55,7 +55,7 @@ form {
 .input-group {
   display: flex;
   align-items: center;
-  background-color: #E0E8E2;
+  background-color: #FEFBF6;
   padding: 10px 15px;
   border-radius: 8px;
 }
@@ -75,7 +75,7 @@ form {
 
 .login-btn {
   background-color: #467750;
-  color: white;
+  color: #FEFBF6;
   border: none;
   border-radius: 8px;
   height: 45px;
@@ -99,6 +99,6 @@ form {
 }
 
 .links a {
-  color: #D9D8D5;
+  color: #467750;
   text-decoration: underline;
 }
