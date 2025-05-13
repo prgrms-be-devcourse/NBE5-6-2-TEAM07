@@ -10,8 +10,8 @@ import com.grepp.diary.app.model.diary.repository.DiaryRepository;
 import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.app.model.keyword.repository.KeywordRepository;
-import com.grepp.diary.app.model.member.MemberRepository;
 import com.grepp.diary.app.model.member.entity.Member;
+import com.grepp.diary.app.model.member.repository.MemberRepository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -127,9 +127,9 @@ public class DiaryService {
 
     private DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
         //String uploadDir = "src/main/resources/photo";
-        String userId = diary.getMember().getUserId();
+        String diaryId = String.valueOf(diary.getDiaryId());
         String projectRoot = System.getProperty("user.dir");  //프로젝트 폴터 경로
-        String uploadDir = projectRoot + File.separator + "photo" + File.separator + userId;
+        String uploadDir = projectRoot + File.separator + "photo" + File.separator + diaryId;
 
         String originalFilename = file.getOriginalFilename();
         String uuid = UUID.randomUUID().toString();
@@ -144,7 +144,7 @@ public class DiaryService {
             throw new RuntimeException("파일 저장 실패: " + originalFilename, e);
         }
 
-        String webPath = "/photo/" + userId + "/" + renamedName; //프론트에서 접근 가능하도록 DB에 저장할 웹 경로 생성
+        String webPath = "/photo/" + diaryId + "/" + renamedName; //프론트에서 접근 가능하도록 DB에 저장할 웹 경로 생성
 
         DiaryImg img = new DiaryImg();
         img.setDiary(diary);

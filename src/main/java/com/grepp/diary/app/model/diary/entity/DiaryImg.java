@@ -19,7 +19,6 @@ import lombok.ToString;
 @Getter @Setter @ToString
 @NoArgsConstructor
 @Table(name="IMAGE")
-
 public class DiaryImg {
 
     @Id
