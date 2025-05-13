@@ -3,6 +3,8 @@ package com.grepp.diary.app.model.keyword;
 import com.grepp.diary.app.model.keyword.dto.KeywordDto;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.app.model.keyword.repository.KeywordRepository;
+import com.querydsl.core.Tuple;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,22 @@ public class KeywordService {
     private final KeywordRepository keywordRepository;
     private final ModelMapper mapper;
 
-    public List<KeywordDto> findMostPopular() {
-        List<Keyword> popularKeywords = keywordRepository.findMostPopularKeywords();
-        return popularKeywords.stream().map(k -> mapper.map(k, KeywordDto.class)).collect(Collectors.toList());
+    public List<List<Object>> getMostPopular() {
+        List<Tuple> result = keywordRepository.getMostPopularKeywords();
+
+        return result.stream()
+            .map(tuple -> {
+                Keyword keyword = tuple.get(0, Keyword.class);
+                Long count = tuple.get(1, Long.class);
+                KeywordDto keywordDto = mapper.map(keyword, KeywordDto.class);
+
+                List<Object> list = new ArrayList<>();
+                list.add(keywordDto);
+                list.add(count.intValue());
+
+                return list;
+            })
+            .collect(Collectors.toList());
     }
 
     public List<String> findAllKeywords() {

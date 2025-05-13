@@ -1,5 +1,6 @@
 package com.grepp.diary.app.controller.web.admin;
 
+import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.member.MemberService;
@@ -17,17 +18,19 @@ public class AdminController {
 
     private final KeywordService keywordService;
     private final MemberService memberService;
+    private final CustomService customService;
     private final DiaryService diaryService;
 
     @GetMapping
     public String index() {
-        keywordService.findMostPopular();
-        log.info("popular : {}", keywordService.findMostPopular());
+        keywordService.getMostPopular();
+        log.info("popular : {}", keywordService.getMostPopular());
         memberService.getAllMemberCount();
         log.info("memberCount : {}", memberService.getAllMemberCount());
         diaryService.getMonthDiariesCount();
         log.info("month diaries : {}", diaryService.getMonthDiariesCount());
-
+        customService.getMostPopular();
+        log.info("most popular : {}", customService.getMostPopular());
         return "admin/admin-index";
     }
 
