@@ -1,12 +1,16 @@
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   width: 60px;
   background-color: #282420;
-  height: 100vh;
   transition: width 0.3s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  z-index: 1000;
 }
 
 .sidebar .menu a.active,
