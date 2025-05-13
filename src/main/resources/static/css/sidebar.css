@@ -9,6 +9,12 @@
   justify-content: space-between;
 }
 
+.sidebar .menu a.active,
+.sidebar .menu a.active i,
+.sidebar .menu a.active span {
+  color: #467750;
+}
+
 .sidebar:hover {
   width: 200px;
 }
