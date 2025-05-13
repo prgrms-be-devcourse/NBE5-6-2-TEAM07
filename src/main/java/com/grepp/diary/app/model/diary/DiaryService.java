@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DiaryService {
@@ -37,6 +38,15 @@ public class DiaryService {
         LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
         return diaryRepository.findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(userId, startDateTime, endDateTime);
     }
+
+    public Integer getMonthDiariesCount() {
+        LocalDateTime startDateTime = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDateTime = startDateTime.plusMonths(1);
+
+        return diaryRepository.countByCreatedAtBetweenAndIsUseTrue(startDateTime, endDateTime);
+    }
+
+
 
     /** 최근 14개의 작성된 일기를 가져옵니다 */
     public List<Diary> getRecentDiariesWithImages(String userId) {
