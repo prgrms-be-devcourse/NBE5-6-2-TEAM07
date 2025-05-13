@@ -42,19 +42,19 @@
       <label>오늘의 기분</label>
       <div class="icon-group">
         <input type="radio" th:field="*{emotion}" value="VERY_GOOD" id="icon1" required hidden>
-        <label for="icon1"><img th:src="@{/images/emotion/weather/Very_Good_Sun.png}" width="24" height="24"/></label>
+        <label for="icon1" class="icon-label"><img th:src="@{/images/emotion/weather/Very_Good_Sun.png}" width="60" height="60"/></label>
 
         <input type="radio" th:field="*{emotion}" value="GOOD" id="icon2" hidden>
-        <label for="icon2">&#128577;</label>
+        <label for="icon2" class="icon-label"><img th:src="@{/images/emotion/weather/Good_Cloud_Sun.png}" width="60" height="60"/></label>
 
         <input type="radio" th:field="*{emotion}" value="COMMON" id="icon3" hidden>
-        <label for="icon3">&#128545;</label>
+        <label for="icon3" class="icon-label"><img th:src="@{/images/emotion/weather/Normal_Cloud.png}" width="60" height="60"/></label>
 
         <input type="radio" th:field="*{emotion}" value="BAD" id="icon4" hidden>
-        <label for="icon4">&#128558;</label>
+        <label for="icon4" class="icon-label"><img th:src="@{/images/emotion/weather/Bad_Cloud_Rain.png}" width="60" height="60"/></label>
 
         <input type="radio" th:field="*{emotion}" value="VERY_BAD" id="icon5" hidden>
-        <label for="icon5">&#128525;</label>
+        <label for="icon5" class="icon-label"><img th:src="@{/images/emotion/weather/Very_Bad_Cloud_Lightning.png}" width="60" height="60"/></label>
       </div>
     </div>
 
