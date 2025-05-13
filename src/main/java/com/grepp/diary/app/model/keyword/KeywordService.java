@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.keyword;
 
 import com.grepp.diary.app.model.keyword.entity.Keyword;
+import com.grepp.diary.app.model.keyword.repository.KeywordRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

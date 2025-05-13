@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>일기작성</title>
@@ -25,7 +24,7 @@
   </style>
 </head>
 <body>
-  <main layout:fragment="content">
+  <main>
 
   </main>
 
@@ -37,36 +36,13 @@
       <textarea id="content" th:field="*{content}" rows="8" cols="50" required></textarea>
     </div>
 
-<!--    &lt;!&ndash; 아이콘 선택 (5개 중 하나만) &ndash;&gt;-->
-<!--    <div>-->
-<!--      <label>오늘의 기분</label>-->
-<!--      <div class="icon-group">-->
-<!--        <input type="radio" id="icon1" th:field="*{emotion}" value="VERY_GOOD" required hidden>-->
-<!--        <label for="icon1" class="icon-label" title="매우 좋음">-->
-<!--          <img th:src="@{/images/emotion/Sun.png}" alt="매우 좋음" width="24" height="24"/>-->
-<!--        </label> &lt;!&ndash; ☀️ &#128522; &ndash;&gt;-->
-
-<!--        <input type="radio" id="icon2" th:field="*{emotion}" value="GOOD" hidden>-->
-<!--        <label for="icon2" class="icon-label" title="좋음">&#128577;</label> &lt;!&ndash; ⛅️ &ndash;&gt;-->
-
-<!--        <input type="radio" id="icon3" th:field="*{emotion}" value="COMMON" hidden>-->
-<!--        <label for="icon3" class="icon-label" title="그저그럼">&#128545;</label> &lt;!&ndash; ☁️ &ndash;&gt;-->
-
-<!--        <input type="radio" id="icon4" th:field="*{emotion}" value="BAD" hidden>-->
-<!--        <label for="icon4" class="icon-label" title="나쁨">&#128558;</label> &lt;!&ndash; 🌧️ &ndash;&gt;-->
-
-<!--        <input type="radio" id="icon5" th:field="*{emotion}" value="VERY_BAD" hidden>-->
-<!--        <label for="icon5" class="icon-label" title="매우 나쁨">&#128525;</label> &lt;!&ndash; ⛈️ &ndash;&gt;-->
-<!--      </div>-->
-<!--    </div>-->
-
 
     <!-- 감정 선택 (단일 선택) -->
     <div>
       <label>오늘의 기분</label>
       <div class="icon-group">
         <input type="radio" th:field="*{emotion}" value="VERY_GOOD" id="icon1" required hidden>
-        <label for="icon1"><img th:src="@{/images/emotion/Sun.png}" width="24" height="24"/></label>
+        <label for="icon1"><img th:src="@{/images/emotion/weather/Very_Good_Sun.png}" width="24" height="24"/></label>
 
         <input type="radio" th:field="*{emotion}" value="GOOD" id="icon2" hidden>
         <label for="icon2">&#128577;</label>
@@ -82,16 +58,13 @@
       </div>
     </div>
 
+<!--    Very_Good_Sun.png-->
+<!--    Good_Cloud_Sun.png-->
+<!--    Normal_Cloud.png-->
+<!--    Bad_Cloud_Rain.png-->
+<!--    Very_Bad_Cloud_Lightning.png-->
 
 
-<!--    &lt;!&ndash; 키워드 체크박스 &ndash;&gt;-->
-<!--    <div>-->
-<!--      <label>오늘의 키워드</label><br>-->
-<!--      <div th:each="keyword : ${allKeywords}">-->
-<!--        <input type="checkbox" th:field="*{keywords}" th:value="${keyword}" th:id="${keyword}">-->
-<!--        <label th:for="${keyword}" th:text="${keyword}"></label><br>-->
-<!--      </div>-->
-<!--    </div>-->
 
     <!-- 키워드 선택 (다중 선택 + 스크롤 가능) -->
     <div>
@@ -105,11 +78,6 @@
     </div>
 
 
-<!--    &lt;!&ndash; 사진 업로드 &ndash;&gt;-->
-<!--    <div>-->
-<!--      <label for="photo">사진 업로드</label>-->
-<!--      <input type="file" id="photo" th:field="*{images}" accept="image/*">-->
-<!--    </div>-->
 
     <!-- 사진 업로드 (여러 장 가능) -->
     <div>
