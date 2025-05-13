@@ -24,4 +24,10 @@ public class KeywordService {
         List<Keyword> popularKeywords = keywordRepository.findMostPopularKeywords();
         return popularKeywords.stream().map(k -> mapper.map(k, KeywordDto.class)).collect(Collectors.toList());
     }
+    public List<String> findAllKeywords() {
+        return keywordRepository.findAll().stream()
+                                     .map(Keyword::getName)
+                                     .distinct()
+                                     .collect(Collectors.toList());
+    }
 }
