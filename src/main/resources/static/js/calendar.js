@@ -2,15 +2,6 @@ const grid = document.querySelector(".calendar-grid");
 const title = document.getElementById("calendar-title");
 let currentDate = new Date();
 
-//TODO : 혹시 나중에 테마별 이미지셋이 변경되도록 된다면 이 부분 수정할 것
-const emotionImageMap = {
-  GOOD: "Good_Cloud_Sun.png",
-  VERY_GOOD: "Very_Good_Sun.png",
-  NORMAL: "Normal_Cloud.png",
-  BAD: "Bad_Cloud_Rain.png",
-  VERY_BAD: "Very_Bad_Cloud_Lightning.png"
-};
-
 function renderCalendar(date, emotionMap = {}) {
   // 헤더 날짜 표시
   const year = date.getFullYear();
@@ -49,6 +40,7 @@ function renderCalendar(date, emotionMap = {}) {
 
     if (emotion) {
       const img = document.createElement("img");
+      //TODO : 혹시 나중에 테마별 이미지셋이 변경되도록 된다면 이 부분 수정할 것
       img.src = `/images/emotion/weather/${emotionImageMap[emotion]}`;
       img.alt = emotion;
       img.className = "emotion-img";
@@ -76,6 +68,7 @@ function renderCalendar(date, emotionMap = {}) {
 }
 
 async function fetchEmotionData(year, month) {
+  //TODO : Auth 구현이 완료되면 사용자 아이디 동적으로 받아올 수 있도록 할 것
   const response = await fetch(`/api/diary/calendar?userId=user01&year=${year}&month=${month}`);
   const data = await response.json();
 

@@ -7,11 +7,16 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  background-color: #E0E8E2;
 }
 
 .main {
-  flex: 1;
   background-color: #E0E8E2;
   padding: 30px;
+  min-height: 100vh;
+  margin-left: 60px;
+  flex: 1;
+  justify-content: center; /* 가로 중앙 정렬 */
 }
+

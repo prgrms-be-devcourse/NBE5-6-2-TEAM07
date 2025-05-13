@@ -6,13 +6,16 @@
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
   <link rel="stylesheet" href="/css/calendar.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/card-list.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
 <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
 
 <div class="main">
+  <!--캘린더 표시 구역-->
   <div class="calendar-container">
     <div class="calendar-inner">
       <div class="calendar-header">
@@ -35,10 +38,20 @@
       </div>
     </div>
   </div>
+  <!--일기 카드 표시 구역-->
+  <div class="recent-title-box">
+    <h2 class="recent-title">최근 일기</h2>
+    <p class="recent-subtitle">최근 14개의 일기가 표시됩니다.</p>
+  </div>
+  <div th:replace="fragments/diary-card-list :: diaryCardList"></div>
 </div>
 
-<script src="/js/calendar.js"></script>
+
+<script src="/js/emotion-map.js"></script>
 <script src="/js/sidebar.js"></script>
+<script src="/js/calendar.js"></script>
+<script src="/js/card-list.js"></script>
+
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.api.diary;
 
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,10 @@ public class DiaryApiController {
 
     private final DiaryService diaryService;
 
+    //TODO : Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
     @GetMapping("/calendar")
     public DiaryCalendarResponse getEmotionsForCalendar(
-        @RequestParam String userId,    // -> Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
+        @RequestParam String userId,
         @RequestParam int year,
         @RequestParam int month
     ) {
@@ -27,6 +29,16 @@ public class DiaryApiController {
 
         return DiaryCalendarResponse.fromEntityList(
             diaryService.getDiariesDateBetween(userId, start, end)
+        );
+    }
+
+    //TODO : Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
+    @GetMapping("/recent")
+    public DiaryCardResponse getRecentDiaryCards(
+        @RequestParam String userId
+    ) {
+        return DiaryCardResponse.fromEntityList(
+            diaryService.getRecentDiariesWithImages(userId)
         );
     }
 }

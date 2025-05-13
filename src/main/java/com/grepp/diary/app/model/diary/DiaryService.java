@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -28,6 +31,7 @@ public class DiaryService {
 
         return diaryRepository.save(diary); // 바로 save() 가능!
     }
+
     /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다. */
     public List<Diary> getDiariesDateBetween(String userId, LocalDate start, LocalDate end) {
         LocalDateTime startDateTime = start.atStartOfDay();
@@ -44,4 +48,9 @@ public class DiaryService {
 
 
 
+    /** 최근 14개의 작성된 일기를 가져옵니다 */
+    public List<Diary> getRecentDiariesWithImages(String userId) {
+        Pageable limit = PageRequest.of(0, 14);
+        return diaryRepository.findRecentDiariesWithImages(userId, limit);
+    }
 }
