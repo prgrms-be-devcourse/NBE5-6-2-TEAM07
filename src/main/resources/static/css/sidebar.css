@@ -1,12 +1,18 @@
 .sidebar {
   width: 60px;
-  background-color: #D2D2B0;
+  background-color: #282420;
   height: 100vh;
   transition: width 0.3s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.sidebar .menu a.active,
+.sidebar .menu a.active i,
+.sidebar .menu a.active span {
+  color: #467750;
 }
 
 .sidebar:hover {
@@ -39,7 +45,7 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: black;
+  color: #D9D8D5;
   font-weight: bold;
   padding: 8px;
 }
@@ -85,7 +91,7 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: black;
+  color: #D9D8D5;
   font-weight: bold;
 }
 
