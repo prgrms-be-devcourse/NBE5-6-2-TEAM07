@@ -48,6 +48,7 @@ INSERT INTO KEYWORD (NAME, IS_USE, TYPE) VALUES
 ('스트레스', 1, 'EMOTION_BAD'),
 ('걱정스러움', 1, 'EMOTION_BAD'),
 ('죄책감', 1, 'EMOTION_BAD'),
+('놀람', 1, 'EMOTION_BAD'),
 ('절망스러움', 1, 'EMOTION_BAD'),
 ('거슬림', 1, 'EMOTION_BAD'),
 ('외로움', 1, 'EMOTION_BAD'),
