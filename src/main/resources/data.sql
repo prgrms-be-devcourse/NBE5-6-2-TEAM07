@@ -70,7 +70,7 @@ INSERT INTO KEYWORD (NAME, IS_USE, TYPE) VALUES
 ('돈', 1, 'SITUATION'),
 ('국내외 이슈', 1, 'SITUATION');
 
-INSERT INTO DIARY (USER_ID, EMOTION, CONTENT, CREATED_AT, UPDATED_AT, IS_USE) VALUES
+INSERT INTO DIARY (USER_ID, EMOTION, CONTENT, CREATED_AT, MODIFIED_AT, IS_USE) VALUES
 ('user01', 'VERY_GOOD', '오늘은 정말 완벽한 하루였다. 모든 게 잘 풀렸다.', '2025-05-08 10:15:00', '2025-05-08 10:15:00', 1),
 ('user02', 'VERY_BAD', '기분이 바닥이다. 모든 게 틀어진 날이었다.', '2025-05-07 14:30:00', '2025-05-07 14:30:00', 1),
 ('user03', 'BAD', '지하철에서 사람들과 부딪히고 너무 지쳤다.', '2025-05-06 08:50:00', '2025-05-06 08:50:00', 1),
@@ -86,9 +86,9 @@ INSERT INTO DIARY_KEYWORD (DIARY_ID, KEYWORD_ID) VALUES
 (1, 1), (1, 15), (1, 33),
 (2, 22), (2, 25), (2, 43),
 (3, 10), (3, 20), (3, 37),
-(4, 5), (4, 14), (4, 32),
+(4, 1), (4, 15), (4, 33),
 (5, 30), (5, 34), (5, 41),
-(6, 2), (6, 13), (6, 35),
+(6, 1), (6, 15), (6, 33),
 (7, 9), (7, 21), (7, 38),
 (8, 3), (8, 6), (8, 31),
 (9, 11), (9, 26), (9, 42),

@@ -2,7 +2,7 @@ const grid = document.querySelector(".calendar-grid");
 const title = document.getElementById("calendar-title");
 let currentDate = new Date();
 
-function renderCalendar(date) {
+function renderCalendar(date, emotionMap = {}) {
   // 헤더 날짜 표시
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -35,7 +35,23 @@ function renderCalendar(date) {
     number.className = "date-number";
     number.textContent = d;
 
-    // 오늘 표시
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const emotion = emotionMap[dateStr];
+
+    if (emotion) {
+      const img = document.createElement("img");
+      //TODO : 혹시 나중에 테마별 이미지셋이 변경되도록 된다면 이 부분 수정할 것
+      img.src = `/images/emotion/weather/${emotionImageMap[emotion]}`;
+      img.alt = emotion;
+      img.className = "emotion-img";
+      img.onerror = () => {
+        img.style.display = "none"; // 이미지 로드 실패 시 감추기
+      };
+      circle.innerHTML = ""; // 기존 배경 제거
+      circle.style.backgroundColor = "transparent"; // 회색 배경 제거
+      circle.appendChild(img);
+    }
+
     if (
         d === today.getDate() &&
         month === today.getMonth() &&
@@ -51,19 +67,34 @@ function renderCalendar(date) {
   }
 }
 
+async function fetchEmotionData(year, month) {
+  //TODO : Auth 구현이 완료되면 사용자 아이디 동적으로 받아올 수 있도록 할 것
+  const response = await fetch(`/api/diary/calendar?userId=user01&year=${year}&month=${month}`);
+  const data = await response.json();
+
+  const emotionMap = {};
+  data.diaryEmotions.forEach(({ createdAt, emotion }) => {
+    emotionMap[createdAt] = emotion;
+  });
+
+  renderCalendar(new Date(year, month - 1), emotionMap);
+}
+
 document.getElementById("prev-month").addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar(currentDate);
+  fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);
 });
 
 document.getElementById("next-month").addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar(currentDate);
+  fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);
 });
 
 document.getElementById("go-today").addEventListener("click", () => {
   currentDate = new Date();
-  renderCalendar(currentDate);
+  fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);
 });
 
-renderCalendar(currentDate);
+
+
+fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);

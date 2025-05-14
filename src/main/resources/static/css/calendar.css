@@ -68,15 +68,23 @@
 .date-circle {
   width: 36px;
   height: 36px;
-  background-color: #e0e0e0;
+  background-color: #D9D8D5;
   border-radius: 50%;
+}
+
+.emotion-img {
+  width: 120%;
+  height: 120%;
+  object-fit: contain;
+  transform: scale(2); /* 이미지 자체 확대 */
+  margin: -4px; /* 공백 줄이기 위한 여백 제거 */
 }
 
 .date-number {
   margin-top: 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #000;
+  color: #282420;
 }
 
 /* 오늘 강조 스타일 */
