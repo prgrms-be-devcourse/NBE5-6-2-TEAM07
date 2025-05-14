@@ -30,14 +30,12 @@
 
   <h1>일기 작성</h1>
   <form th:action="@{/diary}" method="post" enctype="multipart/form-data" th:object="${diaryRequest}">
-    <!-- 일기 내용 입력 -->
+
     <div>
       <label for="content">오늘의 일기</label><br>
       <textarea id="content" th:field="*{content}" rows="8" cols="50" required></textarea>
     </div>
 
-
-    <!-- 감정 선택 (단일 선택) -->
     <div>
       <label>오늘의 기분</label>
       <div class="icon-group">
@@ -58,15 +56,6 @@
       </div>
     </div>
 
-<!--    Very_Good_Sun.png-->
-<!--    Good_Cloud_Sun.png-->
-<!--    Normal_Cloud.png-->
-<!--    Bad_Cloud_Rain.png-->
-<!--    Very_Bad_Cloud_Lightning.png-->
-
-
-
-    <!-- 키워드 선택 (다중 선택 + 스크롤 가능) -->
     <div>
       <label>오늘의 키워드</label><br>
       <div style="height: 120px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">
@@ -77,15 +66,11 @@
       </div>
     </div>
 
-
-
-    <!-- 사진 업로드 (여러 장 가능) -->
     <div>
       <input type="file" id="images" th:field="*{images}" multiple accept="image/*">
       <label for="images">사진 업로드</label>
     </div>
 
-    <!-- 저장 버튼 -->
     <div style="margin-top: 20px;">
       <button type="submit">저장</button>
     </div>
