@@ -28,7 +28,7 @@ import lombok.ToString;
 public class Diary extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer diaryId;
     @Enumerated(EnumType.STRING)
     private Emotion emotion;
