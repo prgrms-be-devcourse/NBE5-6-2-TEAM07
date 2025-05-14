@@ -24,7 +24,7 @@ public class DiaryController {
     @GetMapping
     public String showDiaryWritePage(Model model) {
         model.addAttribute("diaryRequest", new DiaryRequest());
-        model.addAttribute("allKeywords", keywordService.findAllKeywords());
+        model.addAttribute("allKeywords", keywordService.findAllKeywordName());
         return "diary";
     }
 
