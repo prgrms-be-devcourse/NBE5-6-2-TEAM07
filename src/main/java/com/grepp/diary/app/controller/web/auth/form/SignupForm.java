@@ -1,5 +1,7 @@
 package com.grepp.diary.app.controller.web.auth.form;
 
+import com.grepp.diary.app.model.auth.code.Role;
+import com.grepp.diary.app.model.member.dto.MemberDto;
 import com.grepp.diary.app.model.member.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,13 +31,14 @@ public class SignupForm {
     @Size(max = 20)
     private String name;
 
-    public Member toDto() {
-        Member member = new Member();
-        member.setEmail(email);
-        member.setName(name);
-        member.setPassword(password);
-        member.setUserId(userId);
-
-        return member;
+    public MemberDto toDto() {
+        MemberDto dto = new MemberDto();
+        dto.setEmail(email);
+        dto.setName(name);
+        dto.setPassword(password);
+        dto.setUserId(userId);
+        dto.setRole(Role.ROLE_USER);
+        dto.setEnabled(true); // 아이디 활성화 default
+        return dto;
     }
 }
