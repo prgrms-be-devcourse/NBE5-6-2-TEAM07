@@ -38,7 +38,8 @@ public class DiaryApiController {
         @RequestParam String userId
     ) {
         return DiaryCardResponse.fromEntityList(
-            diaryService.getRecentDiariesWithImages(userId)
+            // 최근 작성된 14개의 일기를 가져옵니다.
+            diaryService.getDiariesWithImages(userId, 0, 14)
         );
     }
 }

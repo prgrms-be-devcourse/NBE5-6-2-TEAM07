@@ -38,9 +38,7 @@ public class DiaryService {
         return diaryRepository.save(diary); // 바로 save() 가능!
     }
 
-    /**
-     * 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다.
-     */
+    /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다. */
     public List<Diary> getDiariesDateBetween(String userId, LocalDate start, LocalDate end) {
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
@@ -55,9 +53,13 @@ public class DiaryService {
         return diaryRepository.countByCreatedAtBetweenAndIsUseTrue(startDateTime, endDateTime);
     }
 
-    /** 최근 14개의 작성된 일기를 가져옵니다 */
-    public List<Diary> getRecentDiariesWithImages(String userId) {
-        Pageable limit = PageRequest.of(0, 14);
+    /**
+     * 작성된 일기들을 size 만큼 가져옵니다.
+     * 일기들은 포함된 이미지와 함께 반환됩니다.
+     * 일기들을 하나의 페이지에 표시하기 위해 사용됩니다.
+     * */
+    public List<Diary> getDiariesWithImages(String userId, int page, int size) {
+        Pageable limit = PageRequest.of(page, size);
         return diaryRepository.findRecentDiariesWithImages(userId, limit);
     }
 
