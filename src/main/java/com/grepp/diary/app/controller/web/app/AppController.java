@@ -16,4 +16,9 @@ public class AppController {
     public String showHome() {
         return "app/home";
     }
+
+    @GetMapping("/timeline")
+    public String showTimeline(){
+        return "app/timeline";
+    }
 }
