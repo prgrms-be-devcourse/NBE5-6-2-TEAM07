@@ -7,11 +7,13 @@ import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.mail.MailTemplate;
 import com.grepp.diary.infra.response.ResponseCode;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,6 @@ public class MemberService {
         if (memberRepository.existsById(dto.getUserId())){
             throw new IllegalArgumentException("이미 존재하는 사용자 ID입니다.");
         }
-
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         dto.setPassword(encodedPassword);
 
@@ -50,5 +51,14 @@ public class MemberService {
         mailTemplate.setProperties("domain", domain);
         mailTemplate.setProperties("token", token);
         mailTemplate.send();
+    }
+
+    public Member getMemberByUserId(String userId) {
+
+        Optional<Member> result = memberRepository.findById(userId);
+        if (result.isEmpty()) {
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+        return result.get();
     }
 }

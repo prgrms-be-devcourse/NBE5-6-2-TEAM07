@@ -31,5 +31,4 @@ public class Ai {
 
     @OneToMany(mappedBy = "ai", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();
-
 }
