@@ -76,8 +76,8 @@
     const aiLabels = popularCustoms.map(e => e[0].name);
     const aiData = popularCustoms.map(e => e[1]);
 
-    const keywordLabels = popularKeywords.map(e => e[0].name);
-    const keywordData = popularKeywords.map(e => e[1]);
+    const keywordLabels = popularKeywords.map(e => e.name);
+    const keywordData = popularKeywords.map(e => e.count);
 
     const chartColors = [
       'rgba(90, 154, 179, 0.7)',

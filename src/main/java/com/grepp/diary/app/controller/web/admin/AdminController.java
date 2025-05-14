@@ -3,6 +3,8 @@ package com.grepp.diary.app.controller.web.admin;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
+import com.grepp.diary.app.model.keyword.dto.KeywordAdminDto;
+import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.app.model.member.MemberService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class AdminController {
 
     @GetMapping
     public String index(Model model) {
-        List<List<Object>> popularKeywords = keywordService.getMostPopular();
+        List<KeywordAdminDto> popularKeywords = keywordService.getMostPopular();
         Integer memberCount = memberService.getAllMemberCount();
         Integer monthDiaryCount = diaryService.getMonthDiariesCount();
         List<List<Object>> popularCustoms = customService.getMostPopular();
@@ -44,6 +46,7 @@ public class AdminController {
 
     @GetMapping("keyword")
     public String keyword() {
+
         return "admin/admin-keyword";
     }
 }
