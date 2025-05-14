@@ -1,7 +1,7 @@
-package com.grepp.diary.app.controller.api.reply;
+package com.grepp.diary.app.controller.api.ai;
 
-import com.grepp.diary.app.controller.api.reply.payload.ChatRequest;
-import com.grepp.diary.app.controller.api.reply.payload.Message;
+import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
+import com.grepp.diary.app.controller.api.ai.payload.Message;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
@@ -9,8 +9,7 @@ import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
-import com.grepp.diary.app.model.reply.ReplyAiService;
-import com.grepp.diary.app.model.reply.ReplyService;
+import com.grepp.diary.app.model.ai.AiChatService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,24 +28,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/ai")
-public class ReplyApiController {
+public class AiApiController {
 
-    private final ReplyAiService replyAiService;
+    private final AiChatService aiChatService;
     private final DiaryService diaryService;
-    private final ReplyService replyService;
     private final MemberService memberService;
 
     @GetMapping("test")
     @ResponseBody
     public String test(@RequestParam(required = false) String message){
-        return replyAiService.test(message);
+        return aiChatService.test(message);
     }
 
     @GetMapping("reply")
     @ResponseBody
     public String singleReply(@RequestParam int diaryId){
         String prompt = buildReplyPrompt(diaryId);
-        String replyContent = replyAiService.reply(prompt);
+        String replyContent = aiChatService.reply(prompt);
 
         log.info("prompt : {}", prompt);
         diaryService.registReply(diaryId, replyContent);
@@ -62,7 +60,7 @@ public class ReplyApiController {
             try {
                 Integer diaryId = dto.getDiaryId();
                 String finalPrompt = buildReplyPrompt(diaryId);
-                String replyContent = replyAiService.reply(finalPrompt);
+                String replyContent = aiChatService.reply(finalPrompt);
 
                 log.info("diary id: {}", diaryId);
                 log.info("reply content: {}", replyContent);
@@ -101,7 +99,7 @@ public class ReplyApiController {
         Diary diary = diaryService.getDiaryById(chatRequest.getDiaryId());
         String prompt = buildChatPrompt(diary, chatRequest.getChatHistory(), chatRequest.getUserMessage());
         log.info("prompt : {}", prompt);
-        return replyAiService.chat(prompt);
+        return aiChatService.chat(prompt);
     }
 
     @PostMapping("chat/memo")
@@ -111,7 +109,7 @@ public class ReplyApiController {
         Diary diary = diaryService.getDiaryById(diaryId);
         String prompt = buildMemoPrompt(diary, chatRequest.getChatHistory());
         log.info("prompt : {}", prompt);
-        String memo = replyAiService.memo(prompt);
+        String memo = aiChatService.memo(prompt);
 
         log.info("diary id: {}", diaryId);
         log.info("memo content: {}", memo);

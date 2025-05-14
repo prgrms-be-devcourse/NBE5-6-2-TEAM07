@@ -1,4 +1,4 @@
-package com.grepp.diary.app.controller.api.reply.payload;
+package com.grepp.diary.app.controller.api.ai.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

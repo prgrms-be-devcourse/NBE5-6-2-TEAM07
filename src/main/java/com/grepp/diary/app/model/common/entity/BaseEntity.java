@@ -19,5 +19,5 @@ public class BaseEntity {
     @CreatedDate
     protected LocalDateTime createdAt = LocalDateTime.now();
     @LastModifiedDate
-    protected LocalDateTime updatedAt = LocalDateTime.now();
+    protected LocalDateTime modifiedAt = LocalDateTime.now();
 }

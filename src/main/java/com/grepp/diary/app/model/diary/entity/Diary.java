@@ -49,14 +49,4 @@ public class Diary extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private Member member;
 
-    @Override
-    public String toString() {
-        return "Diary{" +
-            "diaryId=" + diaryId +
-            ", emotion=" + emotion +
-            ", content='" + content + '\'' +
-            ", createdAt=" + createdAt +
-            ", updatedAt=" + updatedAt +
-            '}';
-    }
 }
