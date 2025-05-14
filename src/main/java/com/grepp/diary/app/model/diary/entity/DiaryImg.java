@@ -32,6 +32,7 @@ public class DiaryImg {
     private Boolean isUse;
 
     public String getRenamedPath(){
+
         return "/download/" + savePath + renamedName;
     }
     @ManyToOne
