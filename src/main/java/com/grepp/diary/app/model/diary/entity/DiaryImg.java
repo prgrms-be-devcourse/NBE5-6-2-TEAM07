@@ -37,6 +37,7 @@ public class DiaryImg {
     private Diary diary;
 
     public String getRenamedPath(){
+
         return "/download/" + savePath + renamedName;
     }
 }
