@@ -26,7 +26,7 @@ public class AuthService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username){
         
         Member member = memberRepository.findById(username)
-                            .orElseThrow(() -> new UsernameNotFoundException("사용자가 없습니다."));
+                            .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
         
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(member.getRole().name()));
