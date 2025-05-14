@@ -138,8 +138,13 @@ public class DiaryService {
 
     private DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
         //String uploadDir = "src/main/resources/photo";
+
+        if (diary.getDiaryId() == null) {
+            throw new IllegalArgumentException("Diary must be saved before saving image (diaryId is null)");
+        }
+
         String diaryId = String.valueOf(diary.getDiaryId());
-        String projectRoot = System.getProperty("user.dir");  //프로젝트 폴터 경로
+        String projectRoot = System.getProperty("user.dir");  //프로젝트 폴더 경로
         String uploadDir = projectRoot + File.separator + "photo" + File.separator + diaryId;
 
         String originalFilename = file.getOriginalFilename();
