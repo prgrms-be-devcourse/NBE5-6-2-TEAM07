@@ -9,4 +9,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Integer>, DiaryRep
     List<Diary> findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(String userId, LocalDateTime start, LocalDateTime end);
 
     Integer countByCreatedAtBetweenAndIsUseTrue(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    Integer countByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(String userId, LocalDateTime start, LocalDateTime end);
 }

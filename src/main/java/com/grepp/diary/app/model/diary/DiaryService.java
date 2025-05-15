@@ -43,7 +43,8 @@ public class DiaryService {
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
         return diaryRepository.findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(userId,
-            startDateTime, endDateTime);
+                                                                                 startDateTime, endDateTime);
+
     }
 
     public Integer getMonthDiariesCount() {
@@ -51,6 +52,13 @@ public class DiaryService {
         LocalDateTime endDateTime = startDateTime.plusMonths(1);
 
         return diaryRepository.countByCreatedAtBetweenAndIsUseTrue(startDateTime, endDateTime);
+    }
+
+    /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들의 개수를 반환합니다. */
+    public Integer getUserDiaryCount(String userId, LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
+        return diaryRepository.countByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(userId, startDateTime, endDateTime);
     }
 
     /**
