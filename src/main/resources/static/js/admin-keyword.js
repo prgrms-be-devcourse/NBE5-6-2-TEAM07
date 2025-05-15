@@ -67,14 +67,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'keyword-item';
       div.innerHTML = `
+        <span id="data-keyword-id" style="display: none;">${keyword.keywordId}</span>
         <span><input type="checkbox" class="keyword-checkbox" data-id="${keyword.keywordId}" id="checkbox-${index}"></span>
         <span>${keyword.name}</span>
         <span>${keywordString[keyword.keywordType] || keyword.keywordType}</span>
         <span>${keyword.count}</span>
         <span>${keyword.isUse ? 'O' : 'X'}</span>
-        <span><i class="fa fa-pencil" aria-hidden="true"></i></span>
+        <span><i class="fa fa-pencil edit-keyword" style="cursor: pointer;"></i></span>
     `;
       keywordContent.appendChild(div);
+
+      const editIcon = div.querySelector('.edit-keyword');
+      editIcon.addEventListener('click', () => {
+        window.openModalWithKeyword(keyword);
+      });
     });
   }
 

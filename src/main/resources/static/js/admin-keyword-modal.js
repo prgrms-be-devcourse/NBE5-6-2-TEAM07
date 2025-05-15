@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const openModalBtn = document.getElementById('add-keyword');
   const closeModalBtn = document.getElementById('modal-close');
   const submitBtn = document.getElementById('modal-submit');
-  const segmentButtons = document.querySelectorAll('.segment-button');
-  const typeSelect = document.getElementById('keyword-input-type');
-  const specificTypeDiv = document.querySelector('.keyword-input-specific-type');
 
+  let modalTitle = document.getElementById('modal-title');
+  let nameInput = document.getElementById('keyword-input-name');
+  let typeSelect = document.getElementById('keyword-input-type');
+  let specificTypeDiv = document.querySelector('.keyword-input-specific-type');
+  let specificRadios = specificTypeDiv.querySelectorAll('input[name="specific-type"]');
   const typeInitial = {
     'EMOTION_GOOD': 'EMOTION',
     'EMOTION_BAD': 'EMOTION',
@@ -14,11 +16,22 @@ document.addEventListener('DOMContentLoaded', () => {
     'SITUATION': 'SITUATION',
   };
 
-  function initializeModalType() {
-    typeSelect.value = segmentButtons.value;
-  }
+  openModalBtn.addEventListener('click', () => {
+    modal.style.display = 'flex';
 
-  initializeModalType();
+    modalTitle.textContent = '키워드 등록';
+    submitBtn.textContent = '등록';
+  });
+  closeModalBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+    clearModalFields();
+  });
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+      clearModalFields();
+    }
+  });
 
   function toggleSpecificType() {
     if (typeSelect.value === 'EMOTION') {
@@ -34,25 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSpecificType();
   });
 
-  // 모달 열기
-  openModalBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
-  });
-
-  // 모달 닫기
-  closeModalBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-    clearModalFields();
-  });
-
-  // 바깥 클릭 시 닫기
-  window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-      modal.style.display = 'none';
-      clearModalFields();
-    }
-  });
-
   function setActiveKeywordType(type) {
     const buttons = document.querySelectorAll('.segment-button');
     buttons.forEach(button => {
@@ -64,10 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 모달 제출
   submitBtn.addEventListener('click', () => {
-    const nameInput = document.getElementById('keyword-input-name');
-    const typeSelect = document.getElementById('keyword-input-type');
     const name = nameInput.value.trim();
     let keywordType = typeSelect.value;
 
@@ -90,30 +81,38 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const keywordId = modal.getAttribute('data-keyword-id');
+    const isEdit = !!keywordId;
+
     const requestBody = {
-      id: null,
+      id: isEdit ? Number(keywordId) : null,
       name,
       keywordType
     };
 
-    fetch('/api/admin/keyword', {
-      method: 'POST',
+    const url = isEdit ? '/api/admin/keyword/modify' : '/api/admin/keyword';
+    const method = isEdit ? 'PATCH' : 'POST';
+
+    fetch(url, {
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody)
     })
     .then(res => {
-      if (!res.ok) throw new Error('등록 실패');
+      if (!res.ok) throw new Error(isEdit ? '수정 실패' : '등록 실패');
       return res.json();
     })
     .then(() => {
       modal.style.display = 'none';
       clearModalFields();
+      modal.removeAttribute('data-keyword-id');
+
       const mainType = typeInitial[keywordType];
       fetchKeywords(mainType);
       setActiveKeywordType(mainType);
     })
     .catch(err => {
-      alert('등록 중 오류가 발생했습니다.');
+      alert((isEdit ? '수정' : '등록') + ' 중 오류가 발생했습니다.');
       console.error(err);
     });
   });
@@ -122,13 +121,44 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('keyword-input-name').value = '';
 
     const typeSelect = document.getElementById('keyword-input-type');
-    typeSelect.value = 'EMOTION'; // 기본값으로 리셋
+    typeSelect.value = 'EMOTION';
 
-    // 세부 타입 라디오 버튼 초기화
     const firstRadio = document.querySelector('input[name="specific-type"][value="GOOD"]');
     if (firstRadio) firstRadio.checked = true;
 
     toggleSpecificType();
   }
 
+  function openModalWithKeyword(keyword) {
+    modal.style.display = 'flex';
+
+    modalTitle.textContent = '키워드 편집';
+    submitBtn.textContent = '저장';
+
+    modal.setAttribute('data-keyword-id', keyword.keywordId);
+    nameInput.value = keyword.name;
+
+    let generalType = typeInitial[keyword.keywordType];
+    typeSelect.value = generalType;
+
+    if (generalType === 'EMOTION') {
+      specificTypeDiv.style.display = 'block';
+
+      const specificValue = keyword.keywordType.includes('GOOD') ? 'GOOD' : 'BAD';
+
+      specificRadios.forEach(radio => {
+        radio.checked = (radio.value === specificValue);
+      });
+    } else {
+      specificTypeDiv.style.display = 'none';
+
+      specificRadios.forEach(radio => {
+        radio.checked = false;
+      });
+    }
+
+    modal.setAttribute('data-keyword-id', keyword.keywordId);
+  }
+
+  window.openModalWithKeyword = openModalWithKeyword;
 });

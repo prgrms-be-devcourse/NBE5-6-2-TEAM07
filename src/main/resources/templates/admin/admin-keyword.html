@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-<div th:replace="fragments/admin-sidebar :: adminSidebar"></div>
+<div th:replace="~{fragments/admin-sidebar :: adminSidebar}"></div>
+<div th:replace="~{fragments/keyword-write-modal :: keywordWriteModal}"></div>
 
 <div class="main">
   <div class="keyword-container">
@@ -20,7 +21,6 @@
         <button class="segment-button" data-type="PERSON">사람</button>
         <button class="segment-button" data-type="SITUATION">상황</button>
       </div>
-      <div th:replace="fragments/keyword-write-modal :: keywordWriteModal"></div>
       <div class="keyword-action">
         <button class="action-button" style="border-color: #467750" id="active-keyword">활성화</button>
         <button class="action-button" style="border-color: #467750" id="non-active-keyword">비활성화</button>
@@ -43,6 +43,6 @@
   </div>
 </div>
 <script src="/js/admin-keyword.js"></script>
-<script src="/js/admin-keyword-modal.js"></script>
+<script src="/js/admin-keyword-modal.js" defer></script>
 </body>
 </html>
