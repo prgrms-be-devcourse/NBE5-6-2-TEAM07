@@ -10,7 +10,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,7 +29,7 @@ import lombok.ToString;
 public class Diary extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer diaryId;
     @Enumerated(EnumType.STRING)
     private Emotion emotion;
@@ -35,17 +37,17 @@ public class Diary extends BaseEntity {
     private String content;
     private Boolean isUse = true;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "diary_id")
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<DiaryImg> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "diaryId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryKeyword> keywords;
 
-    @OneToOne(mappedBy = "diary")
+    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Reply reply;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private Member member;
+
 }

@@ -1,8 +1,17 @@
 package com.grepp.diary.app.model.member;
 
+import com.grepp.diary.app.model.auth.code.Role;
+import com.grepp.diary.app.model.member.dto.MemberDto;
+import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
+import com.grepp.diary.infra.error.exceptions.CommonException;
+import com.grepp.diary.infra.mail.MailTemplate;
+import com.grepp.diary.infra.response.ResponseCode;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -10,9 +19,46 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final MailTemplate mailTemplate;
+
+    @Value("${app.domain}")
+    private String domain;
 
     public Integer getAllMemberCount() {
         return memberRepository.countByEnabledTrue();
+    }
+
+    public void signup(MemberDto dto, Role role) {
+        if (memberRepository.existsById(dto.getUserId())){
+            throw new IllegalArgumentException("이미 존재하는 사용자 ID입니다.");
+        }
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        dto.setPassword(encodedPassword);
+
+        dto.setRole(role);
+        memberRepository.save(dto.toEntity());
+    }
+
+    public void sendVerificationMail(String token, MemberDto dto) {
+        if(memberRepository.existsById(dto.getUserId()))
+            throw new CommonException(ResponseCode.BAD_REQUEST);
+
+        mailTemplate.setTo(dto.getEmail());
+        mailTemplate.setTemplatePath("/member/regist-verification");
+        mailTemplate.setSubject("회원가입을 환영합니다!");
+        mailTemplate.setProperties("domain", domain);
+        mailTemplate.setProperties("token", token);
+        mailTemplate.send();
+    }
+
+    public Member getMemberByUserId(String userId) {
+
+        Optional<Member> result = memberRepository.findById(userId);
+        if (result.isEmpty()) {
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+        return result.get();
     }
 }
