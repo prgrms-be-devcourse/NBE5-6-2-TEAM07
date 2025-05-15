@@ -11,7 +11,7 @@
 <main class="green-container">
   <div class="green-visual-box">
     <div class="green-visual-content">
-      <img src="/images/img.png" alt="로그인 이미지">
+      <img src="/images/login/img.png" alt="로그인 이미지">
     </div>
   </div>
   <div class="form-wrapper">
@@ -25,12 +25,18 @@
         <i class="fas fa-lock"></i>
         <input type="password" th:field="*{password}" placeholder="PASSWORD">
       </div>
+
+        <label style="display: flex; align-items: center; gap: 6px;">
+          <input type="checkbox" name="remember-me">
+          자동 로그인
+        </label>
+
       <div class="notice" th:if="${error}" th:text="${error}"></div>
       <button class="green-btn" type="submit">로그인</button>
     </form>
     <div class="links">
       <a onclick="location.href='/member/regist'">회원가입</a>
-      <a onclick="location.href='/member/find_pw'" class="idpw">ID/PW 찾기</a>
+      <a onclick="location.href='/member/find-idpw'" class="idpw">ID/PW 찾기</a>
     </div>
   </div>
 </main>
