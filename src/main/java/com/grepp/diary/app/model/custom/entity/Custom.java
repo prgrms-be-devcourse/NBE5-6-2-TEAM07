@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 public class Custom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="custom_id")
@@ -27,5 +28,5 @@ public class Custom {
 
     @Column(name = "is_long")
     private boolean isLong;
-
 }
+

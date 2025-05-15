@@ -41,12 +41,12 @@ public class Member {
     @Column(length = 20, nullable = false)
     private Role role;
 
-    @Column(name = "is_leave", nullable = false)
-    private boolean isLeave;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Custom custom;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Diary> diaries = new ArrayList<>();
 }

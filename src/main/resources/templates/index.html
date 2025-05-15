@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!--  <script src="/js/login.js" defer></script>-->
+</head>
+<body>
+<main class="green-container">
+  <div class="green-visual-box">
+    <div class="green-visual-content">
+      <img src="/images/img.png" alt="로그인 이미지">
+    </div>
+  </div>
+  <div class="form-wrapper">
+    <h1>환영합니다</h1>
+    <form method="post" th:action="@{/member/login}" th:object="${signinForm}">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" th:field="*{userId}" placeholder="ID">
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" th:field="*{password}" placeholder="PASSWORD">
+      </div>
+      <div class="notice" th:if="${error}" th:text="${error}"></div>
+      <button class="green-btn" type="submit">로그인</button>
+    </form>
+    <div class="links">
+      <a onclick="location.href='/member/regist'">회원가입</a>
+      <a onclick="location.href='/member/find_pw'" class="idpw">ID/PW 찾기</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>
