@@ -7,6 +7,8 @@ import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.mail.MailTemplate;
 import com.grepp.diary.infra.response.ResponseCode;
+import jakarta.transaction.Transactional;
+import java.nio.channels.FileChannel;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +64,28 @@ public class MemberService {
         return result.get();
     }
 
+    @Transactional
     public boolean existsByEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
+    }
+
+    @Transactional
+    public Optional<Member> findById(String userId) {
+        return memberRepository.findById(userId);
+    }
+
+    @Transactional
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public boolean existsByUserIdAndEmail(String userId, String email) {
+        return memberRepository.existsByUserIdAndEmail(userId, email);
+    }
+
+    @Transactional
+    public Optional<Member> findByUserIdAndEmail(String userId, String email) {
+        return memberRepository.findByUserIdAndEmail(userId, email);
     }
 }

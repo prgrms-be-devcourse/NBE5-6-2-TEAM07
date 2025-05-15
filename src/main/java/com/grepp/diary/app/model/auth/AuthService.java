@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.auth;
 
 import com.grepp.diary.app.model.auth.domain.Principal;
+import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.infra.error.exceptions.CommonException;
@@ -29,10 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
     private final MailTemplate mailTemplate;
     private final Map<String, String> authCodeStorage = new HashMap<>(); // 인증번호 저장용
     private final JavaMailSender javaMailSender;
+    private final MemberService memberService;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -40,7 +41,7 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
 
-        Member member = memberRepository.findById(username)
+        Member member = memberService.findById(username)
             .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -76,25 +77,25 @@ public class AuthService implements UserDetailsService {
     }
 
     public String findUserIdByEmail(String sessionEmail) {
-        return memberRepository.findByEmail(sessionEmail)
+        return memberService.findByEmail(sessionEmail)
             .map(Member::getUserId)
             .orElseThrow(
                 () -> new CommonException(ResponseCode.BAD_REQUEST, "해당 이메일로 가입된 계정이 없습니다."));
     }
 
     public boolean existsByUserIdAndEmail(String userId, String email) {
-        return memberRepository.existsByUserIdAndEmail(userId, email);
+        return memberService.existsByUserIdAndEmail(userId, email);
     }
 
     public String getEncodedPassword(String userId, String email) {
-        return memberRepository.findByUserIdAndEmail(userId, email)
+        return memberService.findByUserIdAndEmail(userId, email)
             .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND))
             .getPassword();
     }
 
     @Transactional
     public void updatePassword(String userId, String email, String encodedPassword) {
-        Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, email);
+        Optional<Member> optionalMember = memberService.findByUserIdAndEmail(userId, email);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             member.setPassword(encodedPassword); // 암호화된 비밀번호 설정
