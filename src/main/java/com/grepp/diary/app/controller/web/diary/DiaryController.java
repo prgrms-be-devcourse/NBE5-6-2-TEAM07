@@ -3,7 +3,10 @@ package com.grepp.diary.app.controller.web.diary;
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
+import com.grepp.diary.app.model.keyword.entity.Keyword;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,26 +29,23 @@ public class DiaryController {
     @GetMapping
     public String showDiaryWritePage(Model model) {
         model.addAttribute("diaryRequest", new DiaryRequest());
-        model.addAttribute("allKeywords", keywordService.findAllKeywords());
+        List<Keyword> allKeywords = keywordService.findAllKeywordEntities();
+        Map<String, List<Keyword>> grouped = allKeywords.stream()
+                                                        .collect(Collectors.groupingBy(k -> k.getType().name()));
+        model.addAttribute("keywordGroups", grouped);
+
         return "diary/diary";
     }
 
-//    @PostMapping
-//    public ResponseEntity<Diary> createDiary(@RequestBody Diary diary) {
-//        Diary saved = diaryService.saveDiary(diary);
-//        return ResponseEntity.ok(saved);
-//    }
-
     @PostMapping
     public String writeAndSaveDiary(@ModelAttribute("diaryRequest") DiaryRequest form
-        //@AuthenticationPrincipal CustomUserDetails userDetails
+        //@AuthenticationPrincipal CustomUserDetails user
     ) {
         String userId = "user01";
 
-//        diaryService.saveDiary(form, userDetails.getMember());
+//        diaryService.saveDiary(form, user.getMember());
         diaryService.saveDiary(form, userId);
-        //diaryService.saveDiaryImg(form);
-        return "index"; // 작성 완료 후 목록 페이지로 이동
+        return "app/home"; // 작성 완료 후 목록 페이지로 이동
     }
 
 
