@@ -25,6 +25,12 @@
         <i class="fas fa-lock"></i>
         <input type="password" th:field="*{password}" placeholder="PASSWORD">
       </div>
+
+        <label style="display: flex; align-items: center; gap: 6px;">
+          <input type="checkbox" name="remember-me">
+          자동 로그인
+        </label>
+
       <div class="notice" th:if="${error}" th:text="${error}"></div>
       <button class="green-btn" type="submit">로그인</button>
     </form>
