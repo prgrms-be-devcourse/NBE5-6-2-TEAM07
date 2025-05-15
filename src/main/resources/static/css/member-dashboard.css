@@ -1,0 +1,138 @@
+.dashboard-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 30px;
+}
+
+.dashboard-title {
+  font-weight: bold;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: #282420;
+}
+
+.toggle-container {
+  display: flex;
+  border: 1px solid #467750;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0;
+}
+
+.toggle-btn {
+  padding: 12px 0;
+  border: none;
+  cursor: pointer;
+  background-color: #E0E8E2;
+  font-weight: bold;
+  color: #282420;
+  flex: 1;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn.selected {
+  background-color: #467750;
+  color: #FEFBF6;
+}
+
+.dashboard-content{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
+/* 공통 박스 스타일 */
+.box {
+  background-color: #FEFBF6;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.05);
+  font-weight: bold;
+  color: #282420;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #282420;
+}
+
+.row-1{
+  display: flex;
+  gap: 20px;
+}
+
+/* 감정 흐름 차트 - 너비 100% */
+.flow-chart {
+  width: 100%;
+  height: 150px;
+}
+
+/* 일기 수 + 감정 분포 */
+.row-2 {
+  display: flex;
+  gap: 20px;
+}
+
+.diary-count {
+  flex: 1;
+  height: 150px;
+}
+
+.emotion-distribution {
+  flex: 2;
+  height: 150px;
+}
+
+/* 키워드 랭킹 */
+.row-3 {
+  display: flex;
+  gap: 20px;
+}
+
+.keyword-ranking-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 내부 카드 정렬 */
+.keyword-ranking {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+/* 각각의 카드 */
+.keyword-card {
+  flex: 1;
+  border: 1px solid #467750;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.keyword-card .rank {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.keyword-card .word {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.keyword-card .count {
+  font-size: 0.8rem;
+  color: #444;
+}

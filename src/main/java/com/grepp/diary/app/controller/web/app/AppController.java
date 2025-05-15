@@ -21,4 +21,9 @@ public class AppController {
     public String showTimeline(){
         return "app/timeline";
     }
+
+    @GetMapping("/dashboard")
+    public String showDashboard(){
+        return "app/member-dashboard";
+    }
 }
