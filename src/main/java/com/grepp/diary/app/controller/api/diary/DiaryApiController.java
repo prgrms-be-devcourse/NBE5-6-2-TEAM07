@@ -33,12 +33,14 @@ public class DiaryApiController {
     }
 
     //TODO : Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
-    @GetMapping("/recent")
-    public DiaryCardResponse getRecentDiaryCards(
-        @RequestParam String userId
+    @GetMapping("/cards")
+    public DiaryCardResponse getDiaryCards( // 기본적으로는 최근 작성된 14개의 일기를 가져옵니다.
+        @RequestParam String userId,
+        @RequestParam(defaultValue="0") int page,
+        @RequestParam(defaultValue = "14") int size
     ) {
         return DiaryCardResponse.fromEntityList(
-            diaryService.getRecentDiariesWithImages(userId)
+            diaryService.getDiariesWithImages(userId, page, size)
         );
     }
 }
