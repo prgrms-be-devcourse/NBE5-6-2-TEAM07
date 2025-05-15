@@ -4,6 +4,7 @@ import com.grepp.diary.app.model.diary.code.DiaryImgType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,10 +32,11 @@ public class DiaryImg {
     private String renamedName;
     private Boolean isUse;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diary_id", nullable = false)
+    private Diary diary;
+
     public String getRenamedPath(){
         return "/download/" + savePath + renamedName;
     }
-    @ManyToOne
-    @JoinColumn(name = "diary_id")
-    private Diary diary;
 }
