@@ -6,15 +6,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class KeywordDto {
+public class KeywordAdminDto {
     private Integer keywordId;
     private String name;
     private Boolean isUse;
     private KeywordType keywordType;
+    private Integer count;
 
-    public KeywordDto(String name, Boolean isUse, KeywordType keywordType) {
+    public KeywordAdminDto(Integer keywordId, String name, Boolean isUse, KeywordType keywordType, Integer count) {
+        this.keywordId = keywordId;
         this.name = name;
-        this.isUse = true;
+        this.isUse = isUse;
         this.keywordType = keywordType;
+        this.count = count;
     }
+
 }
