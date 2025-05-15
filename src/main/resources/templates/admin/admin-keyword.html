@@ -16,9 +16,9 @@
     <div class="keyword-title">키워드 관리</div>
     <div class="keyword-buttons">
       <div class="keyword-type">
-        <button class="segment-button active">감정</button>
-        <button class="segment-button">사람</button>
-        <button class="segment-button">상황</button>
+        <button class="segment-button active" data-type="EMOTION">감정</button>
+        <button class="segment-button" data-type="PERSON">사람</button>
+        <button class="segment-button" data-type="SITUATION">상황</button>
       </div>
       <div th:replace="fragments/keyword-write-modal :: keywordWriteModal"></div>
       <div class="keyword-action">
@@ -42,7 +42,7 @@
     </div>
   </div>
 </div>
-</body>
 <script src="/js/admin-keyword.js"></script>
 <script src="/js/admin-keyword-modal.js"></script>
+</body>
 </html>
