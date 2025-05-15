@@ -86,7 +86,7 @@
         </div>
 
 
-        <!-- 👥 누구와 함께 -->
+        <!-- 누구와 함께 -->
         <div class="form-box">
           <div class="form-group">
             <label>누구와 함께였나요?</label>
@@ -94,7 +94,6 @@
               <!-- 동행 키워드들 -->
               <div class="keyword-group">
                 <div th:each="keyword : ${keywordGroups.PERSON}" class="keyword-chip">
-                  <!-- ✅ name="keywords" 로 form에 포함 -->
                   <input type="checkbox"
                          th:id="'kw-person-' + ${keyword.keywordId}"
                          th:name="keywords"
@@ -108,7 +107,7 @@
           </div>
         </div>
 
-        <!-- 🎯 어떤 상황 -->
+        <!-- 어떤 상황 -->
         <div class="form-box">
           <div class="form-group">
             <label>어떤 상황이었나요?</label>
@@ -139,19 +138,19 @@
         </div>
 
 
-        <!-- ✅ 이미지 업로드 - Form 안에서 images 리스트 전송 -->
+        <!-- 이미지 업로드 - Form 안에서 images 리스트 전송 -->
         <div class="form-box">
           <div class="form-group image-upload-wrapper">
             <label>오늘의 사진</label>
 
-            <!-- ✅ 이미지 미리보기 영역 -->
+            <!-- 이미지 미리보기 영역 -->
             <div id="preview-area" class="image-preview-box">
               <span class="placeholder-icon">📷</span>
             </div>
 
-            <!-- ✅ 업로드 버튼 -->
+            <!-- 업로드 버튼 -->
             <div class="upload-btn-wrapper">
-              <!-- ✅ 반드시 form 안에 있어야 하며, name="images"로 서버 전송 가능하게 -->
+              <!-- 반드시 form 안에 있어야 하며, name="images"로 서버 전송 가능하게 -->
               <input type="file" th:field="*{images}" name="images" id="images" multiple accept="image/*" style="display: none;" onchange="previewImages(event)">
               <label for="images" class="upload-btn">사진 추가하기</label>
             </div>
