@@ -40,10 +40,7 @@ public class KeywordService {
             .collect(Collectors.toList());
     }
 
-    public List<String> findAllKeywords() {
-        return keywordRepository.findAll().stream()
-                                     .map(Keyword::getName)
-                                     .distinct()
-                                     .collect(Collectors.toList());
+    public List<Keyword> findAllKeywordEntities() {
+        return keywordRepository.findAll();
     }
 }

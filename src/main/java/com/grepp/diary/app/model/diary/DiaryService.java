@@ -108,23 +108,6 @@ public class DiaryService {
         return diaryRepository.findRecentDiariesWithImages(userId, limit);
     }
 
-//    public void saveDiaryImg(DiaryRequest form) {
-//        List<MultipartFile> images = form.getImages();
-//
-//        List<DiaryImg> imageList = form.getImages().stream()
-//                                       .filter(file -> !file.isEmpty())
-//                                       .map(file -> saveFileAndBuildEntity(file, diary))
-//                                       .collect(Collectors.toList());
-//
-////        for (MultipartFile image : images) {
-////            String originalName = image.getOriginalFilename();
-////            // 파일 저장
-////            image.transferTo(new File("/upload/path/" + originalName));
-////        }
-//
-//    }
-
-
     private DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
         //String uploadDir = "src/main/resources/photo";
 
@@ -149,7 +132,7 @@ public class DiaryService {
             throw new RuntimeException("파일 저장 실패: " + originalFilename, e);
         }
 
-        String webPath = "/photo/" + diaryId + "/" + renamedName; //프론트에서 접근 가능하도록 DB에 저장할 웹 경로 생성
+        String webPath = "photo/" + diaryId + "/" + renamedName; //프론트에서 접근 가능하도록 DB에 저장할 웹 경로 생성
 
         DiaryImg img = new DiaryImg();
         img.setDiary(diary);
