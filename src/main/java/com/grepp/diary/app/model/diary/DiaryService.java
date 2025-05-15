@@ -4,19 +4,36 @@ import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
+import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.custom.entity.Custom;
+import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.repository.DiaryRepository;
+import com.grepp.diary.app.model.member.entity.Member;
+import com.grepp.diary.app.model.reply.entity.Reply;
+import com.grepp.diary.app.model.member.repository.MemberRepository;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.reply.entity.Reply;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -43,7 +60,8 @@ public class DiaryService {
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
         return diaryRepository.findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(userId,
-            startDateTime, endDateTime);
+                                                                                 startDateTime, endDateTime);
+
     }
 
     public Integer getMonthDiariesCount() {
