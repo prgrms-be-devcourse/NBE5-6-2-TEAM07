@@ -14,6 +14,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -32,7 +33,8 @@ public class Diary extends BaseEntity {
     private Integer diaryId;
     @Enumerated(EnumType.STRING)
     private Emotion emotion;
-    @Column(length = 1024)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     private Boolean isUse = true;
 
