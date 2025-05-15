@@ -27,8 +27,6 @@ public class AdminApiController {
     public AdminKeywordResponse getAllKeywords(
         @RequestParam String type
     ) {
-        log.info("keywords : {}", keywordService.findKeywordsByType(type));
-
         return AdminKeywordResponse.fromDtoList(
             keywordService.findKeywordsByType(type)
         );

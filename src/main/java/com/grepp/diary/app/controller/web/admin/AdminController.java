@@ -31,10 +31,6 @@ public class AdminController {
         Integer memberCount = memberService.getAllMemberCount();
         Integer monthDiaryCount = diaryService.getMonthDiariesCount();
         List<List<Object>> popularCustoms = customService.getMostPopular();
-        log.info("popular keywords: {}", keywordService.getMostPopular());
-        log.info("member cnt : {}", memberService.getAllMemberCount());
-        log.info("month diaries cnt : {}", diaryService.getMonthDiariesCount());
-        log.info("popular ai characters: {}", customService.getMostPopular());
 
         model.addAttribute("popularKeywords", popularKeywords);
         model.addAttribute("memberCount", memberCount);
