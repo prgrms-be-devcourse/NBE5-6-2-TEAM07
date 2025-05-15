@@ -1,6 +1,5 @@
 package com.grepp.diary.infra.mail;
 
-import jakarta.mail.Message.RecipientType;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +49,8 @@ public class MailTemplate {
             helper.setSubject(subject);
             helper.setText(render(), true);
 
-            helper.addInline("mail-image", new ClassPathResource("static/images/opend-mail.png"));
+            helper.addInline("mail-image", new ClassPathResource(
+                "static/images/login/opend-mail.png"));
 
 
         });

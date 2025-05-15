@@ -61,4 +61,8 @@ public class MemberService {
         }
         return result.get();
     }
+
+    public boolean existsByEmail(String email) {
+        return memberRepository.findByEmail(email).isPresent();
+    }
 }
