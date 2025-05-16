@@ -4,17 +4,20 @@ import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -27,7 +30,14 @@ public class DiaryController {
     private final KeywordService keywordService;
 
     @GetMapping
-    public String showDiaryWritePage(Model model) {
+    public String showDiaryWritePage(
+        @RequestParam(value = "date", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        Model model
+    ) {
+        LocalDate targetDate = (date != null) ? date : LocalDate.now();
+        model.addAttribute("diaryDate", targetDate);
+
         model.addAttribute("diaryRequest", new DiaryRequest());
         List<Keyword> allKeywords = keywordService.findAllKeywordEntities();
         Map<String, List<Keyword>> grouped = allKeywords.stream()
