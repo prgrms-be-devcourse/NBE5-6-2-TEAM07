@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalTitle.textContent = '키워드 등록';
     submitBtn.textContent = '등록';
+
+    const buttons = document.querySelectorAll('.segment-button.active');
+    typeSelect.value = buttons[0].dataset.type;
+    toggleSpecificType();
   });
   closeModalBtn.addEventListener('click', () => {
     modal.style.display = 'none';
@@ -40,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
       specificTypeDiv.style.display = 'none';
     }
   }
-
-  toggleSpecificType();
 
   typeSelect.addEventListener('change', () => {
     toggleSpecificType();
