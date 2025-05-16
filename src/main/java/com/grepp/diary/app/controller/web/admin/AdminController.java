@@ -30,7 +30,7 @@ public class AdminController {
         List<KeywordAdminDto> popularKeywords = keywordService.getMostPopular();
         Integer memberCount = memberService.getAllMemberCount();
         Integer monthDiaryCount = diaryService.getMonthDiariesCount();
-        List<List<Object>> popularCustoms = customService.getMostPopular();
+        List<AiAdminDto> popularCustoms = customService.getAiByLimit(5);
 
         model.addAttribute("popularKeywords", popularKeywords);
         model.addAttribute("memberCount", memberCount);
