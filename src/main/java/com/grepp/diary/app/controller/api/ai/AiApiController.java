@@ -5,6 +5,7 @@ import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
 import com.grepp.diary.app.controller.api.ai.payload.Message;
 import com.grepp.diary.app.model.ai.AiReplyScheduler;
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.chat.ChatService;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
@@ -34,6 +35,7 @@ public class AiApiController {
     private final DiaryService diaryService;
     private final AiReplyScheduler aiReplyScheduler;
     private final AiRequestQueue aiRequestQueue;
+    private final ChatService chatService;
 
     @GetMapping("reply")
     @ResponseBody
@@ -91,7 +93,11 @@ public class AiApiController {
     @ResponseBody
     public CompletableFuture<String> chatMemo(@RequestBody ChatRequest chatRequest) {
         int diaryId = chatRequest.getDiaryId();
+        int chatCount = chatRequest.getChatHistory().size();
+        log.info("chatCount : {}", chatCount);
         Diary diary = diaryService.getDiaryById(diaryId);
+        String userId = diary.getMember().getUserId();
+        Integer replyId = diary.getReply().getReplyId();
         String prompt = buildMemoPrompt(diary, chatRequest.getChatHistory());
         log.info("prompt : {}", prompt);
 
@@ -102,11 +108,26 @@ public class AiApiController {
                 log.info("diary id: {}", diaryId);
                 log.info("memo content: {}", memo);
                 diaryService.registReply(diaryId, memo);
+                chatService.registCount(userId, replyId, chatCount);
                 return memo;
             }, future)
         );
-
         return future;
+    }
+
+    @PostMapping("chat/end")
+    @ResponseBody
+    public String chatEnd(@RequestBody ChatRequest chatRequest) {
+        int diaryId = chatRequest.getDiaryId();
+        int chatCount = chatRequest.getChatHistory().size();
+        Diary diary = diaryService.getDiaryById(diaryId);
+        String userId = diary.getMember().getUserId();
+        Integer replyId = diary.getReply().getReplyId();
+
+        chatService.registCount(userId, replyId, chatCount);
+        log.info("Updated chat count {} for diaryId {}", chatCount, diaryId);
+
+        return "Updated chat count";
     }
 
     private String buildMemoPrompt(Diary diary, List<Message> chatHistory) {

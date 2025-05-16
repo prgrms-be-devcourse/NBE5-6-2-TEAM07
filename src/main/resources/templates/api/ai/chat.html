@@ -358,7 +358,7 @@
       if (response.ok) {
         showModal('저장 완료', '대화 내용을 답장과 함께 저장했어요!');
         document.getElementById('alert-modal').addEventListener('close', () => {
-          window.location.href = `/record/${diaryId}`;
+          window.location.href = `/diary/${diaryId}`;
         }, {once:true});
       } else {
         showModal('저장 실패', '대화 내용을 저장하지 못했어요. 다시 시도해주세요.');
@@ -372,10 +372,38 @@
   }
 
   function noMemo() {
-    showModal('대화 종료', '대화를 종료합니다.')
+    showLoading();
+
+    fetch('/api/ai/chat/end', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
+      },
+      body: JSON.stringify({
+        diaryId: diaryId,
+        chatHistory: chatHistory,
+        userMessage: ''
+      })
+    })
+    .then(response => {
+      hideLoading();
+      if (response.ok) {
+        window.location.href = `/record/${diaryId}`; // 처리 성공 후 리다이렉트
+      } else {
+        showModal('에러', '대화 종료 처리에 실패했습니다. 다시 시도해주세요.');
+      }
+    })
+    .catch(error => {
+      hideLoading();
+      console.error(error);
+      showModal('에러', '알 수 없는 오류가 발생했습니다.')
+    })
+
+    /*showModal('대화 종료', '대화를 종료합니다.')
     document.getElementById('alert-modal').addEventListener('close', () => {
       window.location.href = `/record/${diaryId}`;
-    }, {once: true});
+    }, {once: true});*/
   }
 
   document.addEventListener("DOMContentLoaded", function () {
