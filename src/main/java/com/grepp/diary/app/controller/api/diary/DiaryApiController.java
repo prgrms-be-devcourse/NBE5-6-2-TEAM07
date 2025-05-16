@@ -3,6 +3,8 @@ package com.grepp.diary.app.controller.api.diary;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.infra.util.date.DateUtil;
+import com.grepp.diary.infra.util.date.dto.DateRangeDto;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiaryApiController {
 
     private final DiaryService diaryService;
+    private final DateUtil dateUtil;
+
 
     //TODO : Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
     @GetMapping("/calendar")
@@ -52,18 +56,9 @@ public class DiaryApiController {
         @RequestParam String period,
         @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
     ){
-        LocalDate now = (date != null)?date:LocalDate.now();
-        LocalDate start, end;
-
-        if("monthly".equals(period)){
-            start = now.withDayOfMonth(1);
-            end = now.withDayOfMonth(now.lengthOfMonth());
-        } else if( "yearly".equals(period)){
-            start = now.withDayOfYear(1);
-            end = now.withDayOfYear(now.lengthOfYear());
-        } else {
-            throw new IllegalArgumentException("Invalid period value: " + period);
-        }
+        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        LocalDate start = range.start();
+        LocalDate end = range.end();
 
         return diaryService.getUserDiaryCount(userId, start, end);
     }

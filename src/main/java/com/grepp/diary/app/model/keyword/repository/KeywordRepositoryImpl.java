@@ -1,13 +1,16 @@
 package com.grepp.diary.app.model.keyword.repository;
 
+import com.grepp.diary.app.model.diary.entity.QDiary;
 import com.grepp.diary.app.model.keyword.code.KeywordType;
 import com.grepp.diary.app.model.keyword.dto.KeywordAdminDto;
+import com.grepp.diary.app.model.keyword.dto.KeywordDto;
 import com.grepp.diary.app.model.keyword.entity.QDiaryKeyword;
 import com.grepp.diary.app.model.keyword.entity.QKeyword;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class KeywordRepositoryImpl implements KeywordRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
+    private final QDiary diary = QDiary.diary;
     private final QKeyword keyword = QKeyword.keyword;
     private final QDiaryKeyword diaryKeyword = QDiaryKeyword.diaryKeyword;
 
@@ -87,4 +91,24 @@ public class KeywordRepositoryImpl implements KeywordRepositoryCustom{
         return keywordIds;
     }
 
+    /** 시작일과 마지막일을 기준으로 해당기간동안 특정유저의 일기에서 가장 많이 사용된 키워드 5개를 반환합니다. */
+    @Override
+    public List<Tuple> findTop5KeywordsByUserIdAndDate(String userId, LocalDateTime start, LocalDateTime end) {
+
+        return queryFactory
+            .select(keyword.name, diaryKeyword.count())
+            .from(diaryKeyword)
+            .join(diaryKeyword.diaryId, diary)
+            .join(diaryKeyword.keywordId, keyword)
+            .where(
+                diary.member.userId.eq(userId),
+                diary.createdAt.between(start, end),
+                diary.isUse.isTrue(),
+                keyword.isUse.isTrue()
+            )
+            .groupBy(keyword.keywordId, keyword.name)
+            .orderBy(diaryKeyword.count().desc())
+            .limit(5)
+            .fetch();
+    }
 }
