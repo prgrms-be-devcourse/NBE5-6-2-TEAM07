@@ -20,6 +20,12 @@ public class Ai {
     @Column(length = 50)
     private String name;
 
+    @Column(length = 10)
+    private String mbti;
+
+    @Column(length = 500)
+    private String info;
+
     @Column(length = 500)
     private String prompt;
 
