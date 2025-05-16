@@ -1,15 +1,15 @@
 package com.grepp.diary.app.controller.api.admin.payload;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminKeywordIdRequest {
     private List<Integer> keywordIds;
-
-    public List<Integer> getKeywordIds() {
-        return keywordIds;
-    }
-
-    public void setKeywordIds(List<Integer> keywordIds) {
-        this.keywordIds = keywordIds;
-    }
 }
