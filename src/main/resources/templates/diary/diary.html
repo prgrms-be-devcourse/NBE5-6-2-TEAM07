@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>일기 작성</title>
-  <link rel="stylesheet" th:href="@{/css/diary.css}">
+  <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" th:href="@{/css/diary.css}">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <div th:replace="~{fragments/member-sidebar :: memberSidebar}"></div>
+  <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
 
-  <div class="container">
+  <div class="main">
 
-    <div class="content">
-      <h1>오늘의 일기를 작성해 볼까요?</h1>
+    <div class="container">
+      <h2>오늘의 일기를 작성해 볼까요?</h2>
 
       <form th:action="@{/diary}" method="post" enctype="multipart/form-data" th:object="${diaryRequest}">
 
         <!-- 날짜 표기 (예: 5월 12일 월요일) -->
         <div class="form-box">
           <div class="date-display">
-            <span th:text="${#temporals.format(T(java.time.LocalDate).now(), 'M월 d일 E요일')}"></span>
+            <div class="date-text" th:text="${#temporals.format(diaryDate, 'M월 d일 E요일')}"></div>
             <button type="button" class="date-change">날짜 변경</button>
           </div>
         </div>
