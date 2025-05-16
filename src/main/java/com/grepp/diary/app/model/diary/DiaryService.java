@@ -128,4 +128,9 @@ public class DiaryService {
         }
         diaryRepository.save(diary);
     }
+
+    public Optional<Diary> findDiaryByUserIdAndDate(String userId, LocalDate targetDate) {
+        return diaryRepository.findByUserIdAndCreatedAt(userId, targetDate);
+
+    }
 }

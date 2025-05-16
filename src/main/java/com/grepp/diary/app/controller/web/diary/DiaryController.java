@@ -2,19 +2,24 @@ package com.grepp.diary.app.controller.web.diary;
 
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -48,7 +53,27 @@ public class DiaryController {
         return "app/home"; // 작성 완료 후 목록 페이지로 이동
     }
 
+    @GetMapping("/record")
+    public String showDiaryRecordPage(
+        Model model,
+        @RequestParam("targetDate")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // 문자열을 날짜 타입으로 변환 "yyyy-MM-dd" 형식(예: 2025-05-15)만 허용
+        LocalDate targetDate
+        //@AuthenticationPrincipal CustomUserDetails user
 
+    ) {
+        String userId = "user01";
+        Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
+        if (diaryExist.isPresent()) {
+            model.addAttribute("diary", diaryExist.get());
+        } else {
+            model.addAttribute("diary", new Diary()); // 빈 객체를 넘겨서 프론트에서 처리
+        }
+
+        return "diary/record";
+
+
+    }
 
 
 }
