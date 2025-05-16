@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("api/keyword")
 public class KeywordApiController {
-    //TODO : Controller 키워드 랭킹 매서드 작성
     private final KeywordService keywordService;
     private final DateUtil dateUtil;
 

@@ -24,6 +24,8 @@ function renderCalendar(date, emotionMap = {}) {
 
   // 날짜 셀 생성
   const today = new Date();
+  today.setHours(0, 0, 0, 0);  // 오늘 기준 정규화
+
   for (let d = 1; d <= lastDate; d++) {
     const cell = document.createElement("div");
     cell.className = "date-cell";
@@ -61,6 +63,34 @@ function renderCalendar(date, emotionMap = {}) {
       number.classList.add("today-number");
     }
 
+    // 날짜 클릭 이벤트 등록
+    cell.addEventListener("click", async () => {
+      const clickedDate = new Date(year, month, d);
+      clickedDate.setHours(0, 0, 0, 0);
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      if (clickedDate >= tomorrow) {
+        return; // 내일 이후는 무시
+      }
+
+      const dateParam = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+      try {
+        const res = await fetch(`/api/diary/check?userId=user01&date=${dateParam}`);
+        const exists = await res.json();
+
+        if (exists) {
+          window.location.href = `/diary/view?date=${dateParam}`; // 일기가 있는 경우
+        } else {
+          window.location.href = `/diary?date=${dateParam}`;  // 일기가 없는 경우
+        }
+      } catch (err) {
+        console.error("날짜 클릭 처리 중 오류:", err);
+      }
+    });
+
     cell.appendChild(circle);
     cell.appendChild(number);
     grid.appendChild(cell);
@@ -95,6 +125,5 @@ document.getElementById("go-today").addEventListener("click", () => {
   fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);
 });
 
-
-
+// 초기 렌더링
 fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);

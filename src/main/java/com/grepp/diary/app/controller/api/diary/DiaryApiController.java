@@ -62,4 +62,14 @@ public class DiaryApiController {
 
         return diaryService.getUserDiaryCount(userId, start, end);
     }
+
+    @GetMapping("/check")
+    public boolean checkDiaryOfDay(
+        @RequestParam String userId,
+        @RequestParam LocalDate date
+    ) {
+        LocalDate nextDate = date.plusDays(1);
+
+        return !diaryService.getDiariesDateBetween(userId, date, nextDate).isEmpty();
+    }
 }
