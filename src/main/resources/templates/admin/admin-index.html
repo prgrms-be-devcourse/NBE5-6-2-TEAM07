@@ -7,11 +7,15 @@
   <link rel="stylesheet" href="/css/sidebar.css">
   <link rel="stylesheet" href="/css/chart.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../../static/css/keyword-management.css">
 </head>
 <body>
-<div th:replace="fragments/admin-sidebar :: adminSidebar"></div>
+<div th:replace="~{fragments/admin-sidebar :: adminSidebar}"></div>
 
 <div class="main">
+  <div class="chart-title-container">
+    <div class="chart-page-title">대시보드</div>
+  </div>
   <div class="three-chart-container">
     <div class="three-chart-box">
       <div class="three-chart-title">
@@ -19,7 +23,7 @@
       </div>
       <div class="three-chart-row">
         <div class="three-chart-circle" style="background-color: #F0CD6E">
-          <img src="/images/admin/user.svg" alt="회원 아이콘"/>
+          <img src="/images/icon/user.svg" alt="회원 아이콘"/>
         </div>
         <div class="three-chart-content">
           [[${memberCount}]]
@@ -32,7 +36,7 @@
       </div>
       <div class="three-chart-row">
         <div class="three-chart-circle" style="background-color: #856B5B">
-          <img src="/images/admin/diary.svg" alt="일기 아이콘"/>
+          <img src="/images/icon/diary.svg" alt="일기 아이콘"/>
         </div>
         <div class="three-chart-content">
           [[${monthDiaryCount}]]
@@ -45,7 +49,7 @@
       </div>
       <div class="three-chart-row">
         <div class="three-chart-circle" style="background-color: #467750">
-          <img src="/images/admin/chat.svg" style="width: 65px; height: 65px" alt="채팅 아이콘"/>
+          <img src="/images/icon/chat.svg" style="width: 65px; height: 65px" alt="채팅 아이콘"/>
         </div>
         <div class="three-chart-content">
           [[${monthDiaryCount}]]
@@ -76,8 +80,8 @@
     const aiLabels = popularCustoms.map(e => e[0].name);
     const aiData = popularCustoms.map(e => e[1]);
 
-    const keywordLabels = popularKeywords.map(e => e[0].name);
-    const keywordData = popularKeywords.map(e => e[1]);
+    const keywordLabels = popularKeywords.map(e => e.name);
+    const keywordData = popularKeywords.map(e => e.count);
 
     const chartColors = [
       'rgba(90, 154, 179, 0.7)',
