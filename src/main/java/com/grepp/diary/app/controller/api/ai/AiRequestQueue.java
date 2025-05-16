@@ -30,7 +30,6 @@ public class AiRequestQueue {
         }
     }
 
-
     @Getter
     public static class AiRequestTask {
         private final Callable<String> callable;

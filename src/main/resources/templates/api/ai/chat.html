@@ -47,6 +47,10 @@
       flex-direction: column;
       align-items: center;
     }
+    .skeleton-bubble {
+      background-color: #f3f3f3;
+      color: #999;
+    }
   </style>
 </head>
 <body>
@@ -113,6 +117,27 @@
     </div>
   </div>
 
+  <!-- 로딩 인디케이터 -->
+  <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="flex flex-col items-center gap-4">
+      <span class="loading loading-spinner loading-lg text-white"></span>
+      <p class="text-white">처리 중입니다...</p>
+    </div>
+  </div>
+
+  <!-- 알림 모달 -->
+  <dialog id="alert-modal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg" id="alert-modal-title">알림</h3>
+      <p class="py-4" id="alert-modal-message">메시지</p>
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="btn">확인</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
 </div>
 
 <script>
@@ -131,6 +156,21 @@
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
+  }
+
+  function showLoading() {
+    document.getElementById('loading-overlay').classList.remove('hidden');
+  }
+
+  function hideLoading() {
+    document.getElementById('loading-overlay').classList.add('hidden');
+  }
+
+  function showModal(title, message) {
+    const modal = document.getElementById('alert-modal');
+    document.getElementById('alert-modal-title').innerText = title;
+    document.getElementById('alert-modal-message').innerText = message;
+    modal.showModal();
   }
 
   userInput.addEventListener('keydown', function (e) {
@@ -158,6 +198,7 @@
 
     const currentTime = getCurrentTime();
 
+    // 사용자 말풍선 추가
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat chat-end';
     messageDiv.innerHTML = `
@@ -169,6 +210,28 @@
 
     chatWindow.appendChild(messageDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // 스켈레톤 말풍선 추가
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'chat chat-start loading-skeleton';
+    loadingDiv.id = 'loading-bubble';
+    loadingDiv.innerHTML = `
+    <div class="chat-image avatar">
+      <div class="w-10 rounded-full">
+        <img alt="ai avatar" src="/images/ai/${aiId}.png"/>
+      </div>
+    </div>
+    <div class="chat-header">
+    </div>
+    <div class="chat-bubble skeleton-bubble">
+      <span class="loading loading-dots loading-sm"></span>
+    </div>
+  `;
+
+    setTimeout(() => {
+      chatWindow.appendChild(loadingDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }, 1000);
 
     // 서버에 요청
     fetch('/api/ai/chat', {
@@ -185,6 +248,12 @@
     })
     .then((response) => response.text())
     .then((data) => {
+      // 스켈레톤 제거
+      const loadingEl = document.getElementById('loading-bubble');
+      if (loadingEl) {
+        loadingEl.remove();
+      }
+
       const responseTime = getCurrentTime();
       const responseDiv = document.createElement('div');
       responseDiv.className = 'chat chat-start';
@@ -207,6 +276,10 @@
       chatWindow.scrollTop = chatWindow.scrollHeight;
     })
     .catch((error) => {
+      const loadingEl = document.getElementById('loading-bubble');
+      if (loadingEl) {
+        loadingEl.remove();
+      }
       console.error(error);
       alert("현재 대화가 어렵습니다. 다시 시도해 주세요.")
     })
@@ -258,15 +331,16 @@
         </div>
       `;
 
-    // 스크롤 조정
     setTimeout(() => {
       chatWindow.appendChild(responseDiv);
       chatWindow.scrollTop = chatWindow.scrollHeight;
-    }, 1000);
+    }, 700);
 
   }
 
   function memo() {
+    showLoading();
+
     fetch('/api/ai/chat/memo', {
       method: 'POST',
       headers: {
@@ -280,18 +354,28 @@
       })
     })
     .then(response => {
+      hideLoading();
       if (response.ok) {
-        alert('대화 내용을 답장과 함께 저장하였습니다!');
-        window.location.href = `/record/${diaryId}`;
+        showModal('저장 완료', '대화 내용을 답장과 함께 저장했어요!');
+        document.getElementById('alert-modal').addEventListener('close', () => {
+          window.location.href = `/record/${diaryId}`;
+        }, {once:true});
       } else {
-        alert('저장에 실패했습니다.')
+        showModal('저장 실패', '대화 내용을 저장하지 못했어요. 다시 시도해주세요.');
       }
+    })
+    .catch(err => {
+      hideLoading();
+      console.error(err);
+      showModal('에러', '알 수 없는 오류가 발생했습니다.')
     })
   }
 
   function noMemo() {
-    alert('대화를 종료합니다.');
-    window.location.href = `/record/${diaryId}`;
+    showModal('대화 종료', '대화를 종료합니다.')
+    document.getElementById('alert-modal').addEventListener('close', () => {
+      window.location.href = `/record/${diaryId}`;
+    }, {once: true});
   }
 
   document.addEventListener("DOMContentLoaded", function () {
