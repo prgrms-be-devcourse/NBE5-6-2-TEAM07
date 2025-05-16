@@ -1,5 +1,6 @@
 package com.grepp.diary.app.controller.api.ai;
 
+import com.grepp.diary.app.controller.api.ai.AiRequestQueue.AiRequestTask;
 import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
 import com.grepp.diary.app.controller.api.ai.payload.Message;
 import com.grepp.diary.app.model.ai.AiReplyScheduler;
@@ -11,6 +12,7 @@ import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.ai.AiChatService;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -31,12 +33,7 @@ public class AiApiController {
     private final AiChatService aiChatService;
     private final DiaryService diaryService;
     private final AiReplyScheduler aiReplyScheduler;
-
-    @GetMapping("test")
-    @ResponseBody
-    public String test(@RequestParam(required = false) String message){
-        return aiChatService.test(message);
-    }
+    private final AiRequestQueue aiRequestQueue;
 
     @GetMapping("reply")
     @ResponseBody
@@ -77,28 +74,39 @@ public class AiApiController {
 
     @PostMapping("chat")
     @ResponseBody
-    public String chatWithAi(@RequestBody ChatRequest chatRequest) {
+    public CompletableFuture<String> chatWithAi(@RequestBody ChatRequest chatRequest) {
         Diary diary = diaryService.getDiaryById(chatRequest.getDiaryId());
         String prompt = buildChatPrompt(diary, chatRequest.getChatHistory(), chatRequest.getUserMessage());
         log.info("prompt : {}", prompt);
-        return aiChatService.chat(prompt);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        aiRequestQueue.addRequest(
+            new AiRequestTask(() -> aiChatService.chat(prompt), future)
+        );
+
+        return future;
     }
 
     @PostMapping("chat/memo")
     @ResponseBody
-    public String chatMemo(@RequestBody ChatRequest chatRequest) {
+    public CompletableFuture<String> chatMemo(@RequestBody ChatRequest chatRequest) {
         int diaryId = chatRequest.getDiaryId();
         Diary diary = diaryService.getDiaryById(diaryId);
         String prompt = buildMemoPrompt(diary, chatRequest.getChatHistory());
         log.info("prompt : {}", prompt);
-        String memo = aiChatService.memo(prompt);
 
-        log.info("diary id: {}", diaryId);
-        log.info("memo content: {}", memo);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        aiRequestQueue.addRequest(
+            new AiRequestTask(() -> {
+                String memo = aiChatService.memo(prompt);
+                log.info("diary id: {}", diaryId);
+                log.info("memo content: {}", memo);
+                diaryService.registReply(diaryId, memo);
+                return memo;
+            }, future)
+        );
 
-        // diary, reply 저장
-        diaryService.registReply(diaryId, memo);
-        return memo;
+        return future;
     }
 
     private String buildMemoPrompt(Diary diary, List<Message> chatHistory) {

@@ -10,9 +10,6 @@ import dev.langchain4j.service.spring.AiServiceWiringMode;
 )
 public interface AiChatService {
 
-    @SystemMessage("너는 다정하고 친절한 상담사야.")
-    String test(String message);
-
     @SystemMessage("당신은 일기를 읽고 그 사람의 하루에 대한 답장을 작성합니다.")
     String reply(String content);
 
