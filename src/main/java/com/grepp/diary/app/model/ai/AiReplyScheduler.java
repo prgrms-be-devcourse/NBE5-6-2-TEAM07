@@ -6,6 +6,7 @@ import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
+import com.grepp.diary.infra.utils.XssProtectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -26,6 +27,7 @@ public class AiReplyScheduler {
     private final DiaryService diaryService;
     private final MemberService memberService;
     private final AiChatService aiChatService;
+    private final XssProtectionUtils xssUtils;
 
     // 자동 실행 메서드
     @Scheduled(cron = "0 0 3 * * *")
@@ -78,9 +80,10 @@ public class AiReplyScheduler {
                 Integer diaryId = dto.getDiaryId();
                 String prompt = buildReplyPrompt(diaryId);
                 String replyContent = aiChatService.reply(prompt);
+                String escaped = xssUtils.escapeHtml(replyContent);
 
                 log.info("Processed diary id: {}", diaryId);
-                diaryService.registReply(diaryId, replyContent);
+                diaryService.registReply(diaryId, escaped);
 
                 Thread.sleep(300); // 개별 요청 사이에도 약간의 텀
             } catch (Exception e) {
