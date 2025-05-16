@@ -31,7 +31,7 @@ CREATE TABLE `AI` (
   PRIMARY KEY (`AI_ID`)
 );
 
--- 일기 사진 테이블
+-- AI 캐릭터 이미지 테이블
 CREATE TABLE `AI_IMAGE` (
     `AI_IMG_ID`     INT            NOT NULL AUTO_INCREMENT,
     `AI_ID`         INT            NOT NULL,
