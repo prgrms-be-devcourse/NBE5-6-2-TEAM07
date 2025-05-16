@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // 활성화 버튼
   document.getElementById('active-keyword')?.addEventListener('click', () => {
     const keywordIds = getCheckedKeywordIds();
-    console.log(keywordIds);
     if (keywordIds.length === 0) return alert('선택된 키워드가 없습니다.');
 
     fetch('/api/admin/keyword/active', {
