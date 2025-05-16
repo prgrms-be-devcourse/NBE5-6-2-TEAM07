@@ -148,6 +148,7 @@
 /* 내부 카드 정렬 */
 .keyword-ranking {
   display: flex;
+  height: 100%;
   gap: 12px;
   justify-content: space-between;
 }
@@ -155,12 +156,14 @@
 /* 각각의 카드 */
 .keyword-card {
   flex: 1;
+  height: 100%;
   border: 1px solid #467750;
   border-radius: 8px;
   padding: 10px;
   text-align: center;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 4px;
 }
 
@@ -172,6 +175,7 @@
 .keyword-card .word {
   font-size: 1.1rem;
   font-weight: bold;
+  margin: auto 0;
 }
 
 .keyword-card .count {
