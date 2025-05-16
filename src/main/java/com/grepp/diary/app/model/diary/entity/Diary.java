@@ -40,7 +40,7 @@ public class Diary extends BaseEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<DiaryImg> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "diaryId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryKeyword> keywords;
 
     @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
