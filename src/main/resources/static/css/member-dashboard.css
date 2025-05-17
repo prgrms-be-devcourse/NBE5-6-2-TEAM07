@@ -71,7 +71,47 @@
 /* 감정 흐름 차트 - 너비 100% */
 .flow-chart {
   width: 100%;
-  height: 250px;
+  display: flex;
+  max-height: 250px;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+}
+
+.flow-chart-inner {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box;
+}
+
+.flow-chart .section-title {
+  padding: 20px 20px 0 20px;  /* 상 좌우 하 */
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#emotionChart {
+  width:100%;
+  height: 100%;
+  display: block;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.y-axis-labels {
+  position: relative;
+  width: 24px;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.y-axis-labels img {
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
 }
 
 /* 일기 수 + 감정 분포 */
