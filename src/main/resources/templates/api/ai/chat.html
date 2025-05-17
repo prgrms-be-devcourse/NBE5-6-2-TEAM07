@@ -202,6 +202,11 @@
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat chat-end';
     messageDiv.innerHTML = `
+      <div class="chat-image avatar">
+        <div class="w-10 rounded-full">
+          <img src="/images/userImg.png" alt="user avatar"/>
+        </div>
+      </div>
       <div class="chat-header">
           <time class="text-xs opacity-50">${currentTime}</time>
       </div>

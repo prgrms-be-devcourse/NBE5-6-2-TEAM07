@@ -66,10 +66,12 @@ public class AiApiController {
     @GetMapping("chat")
     public String chatView(@RequestParam int diaryId, Model model) {
         Diary diary = diaryService.getDiaryById(diaryId);
+        String replyContent = diary.getReply().getContent();
         String aiName = diary.getMember().getCustom().getAi().getName();
         Integer aiId = diary.getMember().getCustom().getAi().getAiId();
         model.addAttribute("diaryId", diaryId);
-        model.addAttribute("diaryReply", diary.getReply().getContent().replace("\n","<br/>"));
+        // 렌더링 시 이스케이프 처리 X -> 여기서 이스케이프
+        model.addAttribute("diaryReply", xssUtils.escapeHtmlWithLineBreaks(replyContent));
         model.addAttribute("aiName", aiName);
         model.addAttribute("aiId", aiId);
         return "api/ai/chat";
@@ -79,14 +81,14 @@ public class AiApiController {
     @ResponseBody
     public CompletableFuture<String> chatWithAi(@RequestBody ChatRequest chatRequest) {
         Diary diary = diaryService.getDiaryById(chatRequest.getDiaryId());
-        String escapedMessage = xssUtils.escapeHtml(chatRequest.getUserMessage());
-        String prompt = buildChatPrompt(diary, chatRequest.getChatHistory(), escapedMessage);
+        String prompt = buildChatPrompt(diary, chatRequest.getChatHistory(), chatRequest.getUserMessage());
         log.info("prompt : {}", prompt);
 
         CompletableFuture<String> future = new CompletableFuture<>();
         aiRequestQueue.addRequest(
             new AiRequestTask(() -> {
                 String response = aiChatService.chat(prompt);
+                // 렌더링 시 이스케이프 처리 X -> 여기서 이스케이프
                 return xssUtils.escapeHtmlWithLineBreaks(response);
             }, future)
         );
@@ -144,7 +146,7 @@ public class AiApiController {
         // 이전 대화 내역
         prompt.append("\n--대화 내용--");
         for (Message msg : chatHistory) {
-            prompt.append("\n사용자: ").append(xssUtils.escapeHtml(msg.getUser()));
+            prompt.append("\n사용자: ").append(msg.getUser());
             prompt.append("\n당신: ").append(xssUtils.unescapeHtmlWithLineBreaks(msg.getAi())); // <br/> 을 개행문자로 되돌림
         }
 
