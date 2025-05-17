@@ -6,6 +6,7 @@ import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.dto.DiaryEmotionAvgDto;
+import com.grepp.diary.app.model.diary.dto.DiaryEmotionCountDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.repository.DiaryRepository;
 import com.grepp.diary.app.model.member.entity.Member;
@@ -13,10 +14,13 @@ import com.grepp.diary.app.model.reply.entity.Reply;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -160,5 +164,30 @@ public class DiaryService {
         }
 
         return result;
+    }
+
+    /**
+     * 기준 달 또는 연도에 작성된 일기들의 감정별 갯수를 반환합니다.
+     * 사용되지 않은 감정의 경우 0으로 처리됩니다.
+     * */
+    public List<DiaryEmotionCountDto> getEmotionsCount(String userId, String period, int value){
+        Map<Emotion, Integer> countMap = Arrays.stream(Emotion.values())
+            .collect(Collectors.toMap(e -> e, e -> 0, (a, b) -> a, () -> new EnumMap<>(Emotion.class)));
+
+        if("monthly".equals(period)){
+            return diaryRepository.findEmotionCountByUserIdAndMonth(userId, value)
+                .stream()
+                .map(row -> new DiaryEmotionCountDto((Emotion) row[0],
+                    Math.toIntExact((Long) row[1])))
+                .toList();
+        } else if("yearly".equals(period)){
+            return diaryRepository.findEmotionCountByUserIdAndYear(userId, value)
+                .stream()
+                .map(row -> new DiaryEmotionCountDto((Emotion) row[0],
+                    Math.toIntExact((Long) row[1])))
+                .toList();
+        } else {
+            throw new IllegalArgumentException("Unsupported period: " + period);
+        }
     }
 }

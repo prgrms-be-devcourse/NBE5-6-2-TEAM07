@@ -55,4 +55,44 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             })
             .toList();
     }
+
+    @Override
+    public List<Object[]> findEmotionCountByUserIdAndMonth(String userId, int month) {
+        return queryFactory
+            .select(diary.emotion, diary.count())
+            .from(diary)
+            .where(
+                diary.member.userId.eq(userId),
+                diary.date.month().eq(month),
+                diary.isUse.isTrue()
+            )
+            .groupBy(diary.emotion)
+            .fetch()
+            .stream()
+            .map(tuple -> new Object[] {
+                tuple.get(diary.emotion),
+                tuple.get(1, Long.class)
+            })
+            .toList();
+    }
+
+    @Override
+    public List<Object[]> findEmotionCountByUserIdAndYear(String userId, int year) {
+        return queryFactory
+            .select(diary.emotion, diary.count())
+            .from(diary)
+            .where(
+                diary.member.userId.eq(userId),
+                diary.date.year().eq(year),
+                diary.isUse.isTrue()
+            )
+            .groupBy(diary.emotion)
+            .fetch()
+            .stream()
+            .map(tuple -> new Object[] {
+                tuple.get(diary.emotion),
+                tuple.get(1, Long.class)
+            })
+            .toList();
+    }
 }

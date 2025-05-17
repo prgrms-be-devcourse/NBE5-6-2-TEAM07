@@ -3,6 +3,7 @@ package com.grepp.diary.app.controller.api.diary;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryDailyEmotionResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryEmotionCountResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.infra.util.date.DateUtil;
@@ -93,6 +94,7 @@ public class DiaryApiController {
         );
     }
 
+    // 특정 날에 대한 일기 유무 API
     @GetMapping("/check")
     public boolean checkDiaryOfDay(
         @RequestParam String userId,
@@ -101,5 +103,17 @@ public class DiaryApiController {
         LocalDate nextDate = date.plusDays(1);
 
         return !diaryService.getDiariesDateBetween(userId, date, nextDate).isEmpty();
+    }
+
+    // 특정 기간내의 작성된 일기 기준 감정별 개수 API
+    @GetMapping("/emotion/count")
+    public DiaryEmotionCountResponse getEmotionCount(
+        @RequestParam String userId,
+        @RequestParam String period,
+        @RequestParam int value
+    ) {
+        return DiaryEmotionCountResponse.fromDtoList(
+            diaryService.getEmotionsCount(userId, period, value)
+        );
     }
 }
