@@ -165,12 +165,6 @@
   color: #282420;
 }
 
-/* 감정 분포 */
-.emotion-distribution {
-  flex: 1;
-  height: 250px;
-}
-
 /* 키워드 랭킹 */
 .row-3 {
   display: flex;
@@ -221,4 +215,84 @@
 .keyword-card .count {
   font-size: 0.8rem;
   color: #444;
+}
+
+/* 기분 분포 막대그래프 */
+.emotion-distribution {
+  flex: 1;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.emotion-bars-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.emotion-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding-right: 8px;
+}
+
+.emotion-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  position: relative;
+}
+
+.emotion-bar-icon {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  overflow: visible;
+}
+
+.emotion-bar-icon img {
+  width: 60px;        /* ✅ 실제 표시될 이미지 크기 (원하는 만큼 조정) */
+  height: 60px;
+  object-fit: contain;
+  position: absolute;       /* ✅ 부모 기준 절대 위치 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* ✅ 가운데 정렬 */
+  pointer-events: none; /* 마우스 충돌 방지 (선택 사항) */
+}
+
+.emotion-bar-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.emotion-bar-track {
+  flex: 1;
+  height: 12px;
+  background-color: #eee;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.emotion-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.emotion-bar-count {
+  width: 20px;
+  text-align: right;
+  font-size: 14px;
+  color: #333;
 }

@@ -235,6 +235,57 @@ function handlePeriodChange(period) {
   drawEmotionChart(userId, period, todayStr);
 }
 
+// 기분 분포 막대 그래프
+function renderEmotionDistribution() {
+  const emotionImageMap = window.emotionImageMap;
+
+  const dummyEmotionData = [
+    { key: 'VERY_GOOD', count: 4, color: '#F3AA6C' },
+    { key: 'GOOD', count: 2, color: '#FFE086' },
+    { key: 'NORMAL', count: 1, color: '#BBCF9A' },
+    { key: 'BAD', count: 1, color: '#B8CCD5' },
+    { key: 'VERY_BAD', count: 1, color: '#6A97AE' },
+  ];
+
+  const maxCount = Math.max(...dummyEmotionData.map(e => e.count));
+  const container = document.getElementById('emotionBars');
+  container.innerHTML = '';
+
+  dummyEmotionData.forEach(item => {
+    const bar = document.createElement('div');
+    bar.className = 'emotion-bar';
+
+    const iconWrapper = document.createElement('div');
+    iconWrapper.className = 'emotion-bar-icon';
+
+    const img = document.createElement('img');
+    img.src = `/images/emotion/weather/${emotionImageMap[item.key]}`;
+    img.alt = item.key;
+    img.className = 'emotion-bar-image';
+
+    const track = document.createElement('div');
+    track.className = 'emotion-bar-track';
+
+    const fill = document.createElement('div');
+    fill.className = 'emotion-bar-fill';
+    fill.style.width = `${(item.count / maxCount) * 100}%`;
+    fill.style.backgroundColor = item.color;
+
+    const count = document.createElement('div');
+    count.className = 'emotion-bar-count';
+    count.textContent = item.count;
+
+    track.appendChild(fill);
+    bar.appendChild(img);
+    bar.appendChild(track);
+    bar.appendChild(count);
+    container.appendChild(bar);
+  });
+}
+
+// DOM
 window.addEventListener('DOMContentLoaded', () => {
   handlePeriodChange('monthly');
+  renderEmotionDistribution();
 });
+
