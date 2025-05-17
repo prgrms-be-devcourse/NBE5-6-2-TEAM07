@@ -51,6 +51,7 @@ public class DiaryApiController {
         );
     }
 
+    // 월간/연간 작성된 일기수 데이터 API
     @GetMapping("/dashboard/count")
     public int getDiaryCount(
         @RequestParam String userId,
@@ -64,6 +65,7 @@ public class DiaryApiController {
         return diaryService.getUserDiaryCount(userId, start, end);
     }
 
+    // 기분 흐름 데이터 API
     @GetMapping("/emotion/flow")
     public DiaryMonthlyEmotionResponse getEmotionFlow(
         @RequestParam String userId,
