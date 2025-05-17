@@ -2,6 +2,7 @@ package com.grepp.diary.app.controller.api.diary;
 
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.infra.util.date.DateUtil;
 import com.grepp.diary.infra.util.date.dto.DateRangeDto;
@@ -50,6 +51,7 @@ public class DiaryApiController {
         );
     }
 
+    // 월간/연간 작성된 일기수 데이터 API
     @GetMapping("/dashboard/count")
     public int getDiaryCount(
         @RequestParam String userId,
@@ -61,6 +63,22 @@ public class DiaryApiController {
         LocalDate end = range.end();
 
         return diaryService.getUserDiaryCount(userId, start, end);
+    }
+
+    // 기분 흐름 데이터 API
+    @GetMapping("/emotion/flow")
+    public DiaryMonthlyEmotionResponse getEmotionFlow(
+        @RequestParam String userId,
+        @RequestParam(defaultValue = "monthly") String period,
+        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
+    ) {
+        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        LocalDate start = range.start();
+        LocalDate end = range.end();
+
+        return DiaryMonthlyEmotionResponse.fromEntityList(
+            diaryService.getDiariesDateBetween(userId, start, end)
+        );
     }
 
     @GetMapping("/check")
