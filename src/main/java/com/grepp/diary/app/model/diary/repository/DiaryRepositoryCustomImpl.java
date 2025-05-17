@@ -36,4 +36,23 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             .distinct() // 중복 Diary 제거 (fetchJoin 시 유용)
             .fetch();
     }
+
+    @Override
+    public List<Object[]> findDateAndEmotionByUserIdAndYear(String userId, int year) {
+        return queryFactory
+            .select(diary.date, diary.emotion)
+            .from(diary)
+            .where(
+                diary.member.userId.eq(userId),
+                diary.isUse.isTrue(),
+                diary.date.year().eq(year)
+            )
+            .fetch()
+            .stream()
+            .map(tuple -> new Object[] {
+                tuple.get(diary.date),
+                tuple.get(diary.emotion)
+            })
+            .toList();
+    }
 }

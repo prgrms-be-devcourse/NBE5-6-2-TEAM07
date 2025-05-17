@@ -2,6 +2,7 @@ package com.grepp.diary.app.controller.api.diary;
 
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryDailyEmotionResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.infra.util.date.DateUtil;
@@ -65,19 +66,30 @@ public class DiaryApiController {
         return diaryService.getUserDiaryCount(userId, start, end);
     }
 
-    // 기분 흐름 데이터 API
-    @GetMapping("/emotion/flow")
-    public DiaryMonthlyEmotionResponse getEmotionFlow(
+    // 기분 흐름 데이터(월간) API
+    @GetMapping("/emotion/flow/monthly")
+    public DiaryDailyEmotionResponse getEmotionFlow(
         @RequestParam String userId,
-        @RequestParam(defaultValue = "monthly") String period,
-        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
+        @RequestParam(required = false) LocalDate date
     ) {
-        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        DateRangeDto range = dateUtil.toDateRangeDto("monthly", date);
         LocalDate start = range.start();
         LocalDate end = range.end();
 
-        return DiaryMonthlyEmotionResponse.fromEntityList(
+        return DiaryDailyEmotionResponse.fromEntityList(
             diaryService.getDiariesDateBetween(userId, start, end)
+        );
+
+    }
+
+    // 기분 흐름 데이터(연간) API
+    @GetMapping("/emotion/flow/yearly")
+    public DiaryMonthlyEmotionResponse getMonthlyEmotionAvg(
+        @RequestParam String userId,
+        @RequestParam(required = false) int year
+    ) {
+        return DiaryMonthlyEmotionResponse.fromDtoList(
+            diaryService.getMonthlyEmotionAvgOfYear(userId, year)
         );
     }
 

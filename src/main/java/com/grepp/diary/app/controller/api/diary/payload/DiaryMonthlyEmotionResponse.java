@@ -1,30 +1,26 @@
 package com.grepp.diary.app.controller.api.diary.payload;
 
-import com.grepp.diary.app.model.diary.code.Emotion;
-import com.grepp.diary.app.model.diary.entity.Diary;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import com.grepp.diary.app.model.diary.dto.DiaryEmotionAvgDto;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record DiaryMonthlyEmotionResponse (
-    List<DiaryMonthlyEmotion> diaryMonthlyEmotionList
+    List<DiaryMonthlyEmotion> diaryMonthlyEmotions
 ) {
     public record DiaryMonthlyEmotion (
-        LocalDate date,
-        Emotion emotion
+        int month,
+        double average
     ) {
-        public static DiaryMonthlyEmotion fromEntity(Diary diary) {
+        public static DiaryMonthlyEmotion fromDto(DiaryEmotionAvgDto emotionAvgDto) {
             return new DiaryMonthlyEmotion(
-                diary.getCreatedAt().toLocalDate(),
-                diary.getEmotion()
+                emotionAvgDto.getMonth(),
+                emotionAvgDto.getAvg()
             );
         }
     }
 
-    public static DiaryMonthlyEmotionResponse fromEntityList(List<Diary> diaries) {
-        List<DiaryMonthlyEmotion> diaryMonthlyEmotionList = diaries.stream().map(DiaryMonthlyEmotion::fromEntity).toList();
-        if (diaryMonthlyEmotionList.isEmpty()) return null;
-        return new DiaryMonthlyEmotionResponse(diaryMonthlyEmotionList);
+    public static DiaryMonthlyEmotionResponse fromDtoList(List<DiaryEmotionAvgDto> emotionAvgDtoList) {
+        List<DiaryMonthlyEmotion> diaryMonthlyEmotions = emotionAvgDtoList.stream().map(DiaryMonthlyEmotion::fromDto).toList();
+        if(diaryMonthlyEmotions.isEmpty()) {return null;}
+        return new DiaryMonthlyEmotionResponse(diaryMonthlyEmotions);
     }
 }

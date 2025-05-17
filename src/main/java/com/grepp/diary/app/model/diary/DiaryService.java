@@ -3,14 +3,19 @@ package com.grepp.diary.app.model.diary;
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
+import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
+import com.grepp.diary.app.model.diary.dto.DiaryEmotionAvgDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.repository.DiaryRepository;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.reply.entity.Reply;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,5 +122,43 @@ public class DiaryService {
             reply.setAi(ai);
         }
         diaryRepository.save(diary);
+    }
+
+    /** 특정 년도에 작성된 일기들을 기준으로 월별 평균 기분점수를 반환합니다. */
+    public List<DiaryEmotionAvgDto> getMonthlyEmotionAvgOfYear(String userId, int year){
+        List<Object []> emotionsByDate = diaryRepository.findDateAndEmotionByUserIdAndYear(userId, year);
+
+        Map<Emotion, Integer> emotionScore = Map.of(
+            Emotion.VERY_GOOD, 5,
+            Emotion.GOOD, 4,
+            Emotion.COMMON, 3,
+            Emotion.BAD, 2,
+            Emotion.VERY_BAD, 1
+        );
+
+        // 월별 감정 점수 모으기
+        Map<Integer, List<Integer>> monthToScores = new HashMap<>();
+        for (Object [] row : emotionsByDate) {
+            LocalDate date = (LocalDate) row[0];
+            Emotion emotion = (Emotion) row[1];
+            int month = date.getMonthValue();
+
+            int score = emotionScore.getOrDefault(emotion, 0);
+            monthToScores.computeIfAbsent(month, k -> new ArrayList<>()).add(score);
+        }
+
+        // 평균 계산
+        List<DiaryEmotionAvgDto> result = new ArrayList<>();
+        for(int month = 1; month <= 12; month++) {
+            List<Integer> scores = monthToScores.get(month);
+            if(scores == null || scores.isEmpty()) {
+                continue;   // 일기가 없는 달은 생략 하도록 합니다.
+            }
+
+            double avg = scores.stream().mapToInt(i -> i).average().orElse(0.0);
+            result.add(new DiaryEmotionAvgDto(month, avg));
+        }
+
+        return result;
     }
 }
