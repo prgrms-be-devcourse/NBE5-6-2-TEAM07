@@ -95,3 +95,27 @@
   font-size: 0.9rem;
   margin-left: 5px;
 }
+
+/* alert banner */
+.alert-banner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #467750;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transition: opacity 0.5s ease, top 0.5s ease;
+}
+
+.alert-banner i {
+  font-size: 1rem;
+}

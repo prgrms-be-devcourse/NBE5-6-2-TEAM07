@@ -14,6 +14,10 @@
 
   <div class="main">
     <div class="main-container">
+      <div th:if="${message}" class="alert-banner">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${message}"></span>
+      </div>
       <div class="setting-bento">
         <div class="bento-title">계정</div>
         <div class="bento-btn">
@@ -31,5 +35,15 @@
   </div>
 
   <script src="/js/sidebar.js"></script>
+  <script>
+    setTimeout(() => {
+      const banner = document.querySelector('.alert-banner');
+      if (banner) {
+        banner.style.opacity = '0';
+        banner.style.top = '0px'; // 위로 올라가는 느낌
+        setTimeout(() => banner.remove(), 500);
+      }
+    }, 3000);
+  </script>
 </body>
 </html>
