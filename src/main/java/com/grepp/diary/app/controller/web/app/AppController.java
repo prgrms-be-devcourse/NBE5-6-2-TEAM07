@@ -36,4 +36,9 @@ public class AppController {
     public String showChangeEmail(){
         return "app/settings/settings-email";
     }
+
+    @GetMapping("/settings/password")
+    public String showChangePassword(){
+        return "app/settings/settings-password";
+    }
 }
