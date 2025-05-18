@@ -29,6 +29,11 @@ public class AppController {
 
     @GetMapping("/settings")
     public String showSetting(){
-        return "app/settings";
+        return "app/settings/settings";
+    }
+
+    @GetMapping("/settings/email")
+    public String showChangeEmail(){
+        return "app/settings/settings-email";
     }
 }
