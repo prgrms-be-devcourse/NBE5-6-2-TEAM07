@@ -41,4 +41,9 @@ public class AppController {
     public String showChangePassword(){
         return "app/settings/settings-password";
     }
+
+    @GetMapping("/settings/ai")
+    public String showChangeAi(){
+        return "app/settings/settings-ai";
+    }
 }
