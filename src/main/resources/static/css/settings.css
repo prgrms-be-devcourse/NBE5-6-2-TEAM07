@@ -89,3 +89,9 @@
 .confirm-btn:hover {
   background-color: #365c3d;
 }
+
+/* validation text */
+.validation-message {
+  font-size: 0.9rem;
+  margin-left: 5px;
+}

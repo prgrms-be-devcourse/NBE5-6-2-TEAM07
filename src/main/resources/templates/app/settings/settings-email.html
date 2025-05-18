@@ -18,8 +18,9 @@
         <div class="bento-title">이메일 변경</div>
         <div class="bento-form">
           <form id="emailForm" action="/update-email" method="post">
-            <input type="email" placeholder="이메일 입력" name="newEmail" required />
+            <input type="email" id="emailInput" placeholder="이메일 입력" name="newEmail" required />
             <input type="password" placeholder="비밀번호 입력" name="password" required />
+            <div id="emailMessage" class="validation-message"></div>
           </form>
         </div>
       </div>
@@ -29,6 +30,26 @@
     </div>
   </div>
 
+  <!--이메일 형식 검사-->
+  <script>
+    const emailInput = document.getElementById('emailInput');
+    const messageBox = document.getElementById('emailMessage');
+
+    emailInput.addEventListener('input', () => {
+      const email = emailInput.value;
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (email === "") {
+        messageBox.textContent = "";
+      } else if (regex.test(email)) {
+        messageBox.textContent = "올바른 이메일 형식입니다.";
+        messageBox.style.color = "green";
+      } else {
+        messageBox.textContent = "이메일 형식이 올바르지 않습니다.";
+        messageBox.style.color = "red";
+      }
+    });
+  </script>
   <script src="/js/sidebar.js"></script>
 </body>
 </html>
