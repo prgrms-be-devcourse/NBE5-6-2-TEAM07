@@ -26,4 +26,9 @@ public class AppController {
     public String showDashboard(){
         return "app/member-dashboard";
     }
+
+    @GetMapping("/settings")
+    public String showSetting(){
+        return "app/settings";
+    }
 }
