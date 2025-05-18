@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>설정 페이지</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" href="/css/settings.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
+
+  <div class="main">
+    <div class="main-container">
+      <div class="setting-bento">
+        <div class="bento-title">계정</div>
+        <div class="bento-btn">
+          <a href="/app/settings/email"><i class="fa-solid fa-envelope"></i><span>이메일 변경하기</span><i class="fa-solid fa-angle-right"></i></a>
+          <a href="/app/settings/password"><i class="fa-solid fa-lock"></i><span>비밀번호 변경하기</span><i class="fa-solid fa-angle-right"></i></a>
+        </div>
+      </div>
+      <div class="setting-bento">
+        <div class="bento-title">서비스</div>
+        <div class="bento-btn">
+          <a href="/app/settings/ai"><i class="fa-solid fa-robot"></i><span>AI 캐릭터 변경하기</span><i class="fa-solid fa-angle-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+</body>
+</html>

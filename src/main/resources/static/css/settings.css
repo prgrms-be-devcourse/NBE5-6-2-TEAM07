@@ -1,0 +1,49 @@
+.setting-bento {
+  width: 100%;
+  background-color: #FEFBF6;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+}
+
+.bento-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #282420;
+  padding-top: 30px;
+  padding-left: 30px;
+  margin-bottom: 10px;
+}
+
+.bento-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-btn a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 30px;
+  color: #282420;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.bento-btn a:hover {
+  background-color: #B3D193;
+}
+
+.bento-btn i {
+  font-size: 1.1rem;
+  color: #467750;
+}
+
+.bento-btn span {
+  flex: 1;
+  margin: 0 10px;
+  text-align: left;
+}
