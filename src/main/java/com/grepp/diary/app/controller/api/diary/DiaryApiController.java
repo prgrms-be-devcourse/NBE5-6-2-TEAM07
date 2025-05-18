@@ -2,15 +2,21 @@ package com.grepp.diary.app.controller.api.diary;
 
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
 import com.grepp.diary.app.model.diary.DiaryService;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,5 +72,22 @@ public class DiaryApiController {
         }
 
         return diaryService.getUserDiaryCount(userId, start, end);
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> editDiary(
+        @RequestPart("request") DiaryEditRequest request,
+        @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages
+    ) {
+        diaryService.updateDiary(
+            request.getDiaryId(),
+            request.getEmotion(),
+            request.getContent(),
+            request.getKeywords(),
+            request.getDeletedImageIds(),
+            newImages
+        );
+
+        return ResponseEntity.ok().build();
     }
 }
