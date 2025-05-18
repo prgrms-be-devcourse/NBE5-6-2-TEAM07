@@ -3,7 +3,10 @@ package com.grepp.diary.app.controller.api.diary;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.infra.util.date.DateUtil;
+import com.grepp.diary.infra.util.date.dto.DateRangeDto;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class DiaryApiController {
 
     private final DiaryService diaryService;
+    private final DateUtil dateUtil;
+
 
     //TODO : Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
     @GetMapping("/calendar")
@@ -52,26 +57,44 @@ public class DiaryApiController {
         );
     }
 
+    // 월간/연간 작성된 일기수 데이터 API
     @GetMapping("/dashboard/count")
     public int getDiaryCount(
         @RequestParam String userId,
         @RequestParam String period,
         @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
     ){
-        LocalDate now = (date != null)?date:LocalDate.now();
-        LocalDate start, end;
-
-        if("monthly".equals(period)){
-            start = now.withDayOfMonth(1);
-            end = now.withDayOfMonth(now.lengthOfMonth());
-        } else if( "yearly".equals(period)){
-            start = now.withDayOfYear(1);
-            end = now.withDayOfYear(now.lengthOfYear());
-        } else {
-            throw new IllegalArgumentException("Invalid period value: " + period);
-        }
+        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        LocalDate start = range.start();
+        LocalDate end = range.end();
 
         return diaryService.getUserDiaryCount(userId, start, end);
+    }
+
+    // 기분 흐름 데이터 API
+    @GetMapping("/emotion/flow")
+    public DiaryMonthlyEmotionResponse getEmotionFlow(
+        @RequestParam String userId,
+        @RequestParam(defaultValue = "monthly") String period,
+        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
+    ) {
+        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        LocalDate start = range.start();
+        LocalDate end = range.end();
+
+        return DiaryMonthlyEmotionResponse.fromEntityList(
+            diaryService.getDiariesDateBetween(userId, start, end)
+        );
+    }
+
+    @GetMapping("/check")
+    public boolean checkDiaryOfDay(
+        @RequestParam String userId,
+        @RequestParam LocalDate date
+    ) {
+        LocalDate nextDate = date.plusDays(1);
+
+        return !diaryService.getDiariesDateBetween(userId, date, nextDate).isEmpty();
     }
 
     @PatchMapping

@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Diary extends BaseEntity {
     private Emotion emotion;
     @Column(length = 1024)
     private String content;
+    private LocalDate date;
     private Boolean isUse = true;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
