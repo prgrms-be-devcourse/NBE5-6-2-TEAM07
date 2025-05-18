@@ -12,6 +12,7 @@ import java.nio.channels.FileChannel;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,5 +88,18 @@ public class MemberService {
     @Transactional
     public Optional<Member> findByUserIdAndEmail(String userId, String email) {
         return memberRepository.findByUserIdAndEmail(userId, email);
+    }
+
+    // 비밀번호 비교를 통한 사용자 검증
+    public boolean isPasswordValid(String userId, String rawPassword) {
+        Member member = memberRepository.findByUserId(userId)
+            .orElseThrow(() -> new CommonException(ResponseCode.MEMBER_NOT_FOUND));
+
+        return passwordEncoder.matches(rawPassword, member.getPassword());
+    }
+
+    @Transactional
+    public boolean updateEmail(String userId, String email) {
+        return memberRepository.updateEmail(userId, email) > 0;
     }
 }
