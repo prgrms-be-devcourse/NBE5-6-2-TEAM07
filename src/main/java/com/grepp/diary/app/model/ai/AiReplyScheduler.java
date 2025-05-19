@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AiReplyScheduler {
 
-    private static final int BATCH_SIZE = 3; // RPM 30 보다 약간 작게
+    private static final int BATCH_SIZE = 20; // RPM 30 보다 약간 작게
     private static final long DELAY_BTW_BATCHES = 60 * 1000; // 1분 대기
 
     private final DiaryService diaryService;
@@ -30,7 +30,8 @@ public class AiReplyScheduler {
     private final XssProtectionUtils xssUtils;
 
     // 자동 실행 메서드
-    @Scheduled(cron = "0 0 3 * * *")
+//    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "0 45 11 * * *")
     public void autoReplyProcess() {
         log.info("Starting the diary reply process");
         initiateReplyProcess();
@@ -53,11 +54,11 @@ public class AiReplyScheduler {
             return;
         }
 
-        // 현재 배치 추출
+        // 이번 배치 추출
         int endIndex = Math.min(startIndex + BATCH_SIZE, diaries.size());
         List<DiaryDto> currentBatch = diaries.subList(startIndex, endIndex);
 
-        // 현재 배치 처리
+        // 이번 배치 처리
         batchProcess(currentBatch);
 
         // 다음 배치 스케줄링
@@ -80,10 +81,9 @@ public class AiReplyScheduler {
                 Integer diaryId = dto.getDiaryId();
                 String prompt = buildReplyPrompt(diaryId);
                 String replyContent = aiChatService.reply(prompt);
-                String escaped = xssUtils.escapeHtml(replyContent);
 
                 log.info("Processed diary id: {}", diaryId);
-                diaryService.registReply(diaryId, escaped);
+                diaryService.registReply(diaryId, replyContent);
 
                 Thread.sleep(300); // 개별 요청 사이에도 약간의 텀
             } catch (Exception e) {
@@ -109,15 +109,17 @@ public class AiReplyScheduler {
 
         StringBuilder builder = new StringBuilder(ai.getPrompt());
         if (custom.isFormal()) {
-            builder.append(" 사용자에게는 존댓말로 정중하게 말해주세요. 따뜻하고 배려 있는 어투를 사용해 주세요.");
+            builder.append(" 사용자에게는 존댓말로 정중하게 말해주세요. 따뜻하고 배려 있는 어투를 사용해 주세요.")
+                .append(" 스스로를 지칭할 땐 '저'를 사용하고 사용자를 지칭할 땐 '당신'을 사용해 주세요.");
         } else {
-            builder.append(" 사용자에게는 반말로, 친구처럼 다정하고 편안한 말투로 이야기해 주세요.");
+            builder.append(" 사용자에게는 반말로, 친구처럼 다정하고 편안한 말투로 이야기해 주세요.")
+                .append(" 스스로를 지칭할 땐 '나'를 사용하고 사용자를 지칭할 땐 '너'를 사용해 주세요.");
         }
 
         if (custom.isLong()) {
-            builder.append(" 답변은 감정이나 상황을 충분히 설명할 수 있도록 길고 풍부하게 작성하되, 공백을 포함하여 약 700~800자 분량으로 작성해 주세요.");
+            builder.append(" 답변은 감정이나 상황을 충분히 설명할 수 있도록 길고 풍부하게 작성하되, 공백을 포함하여 약 500자 분량으로 작성해 주세요.");
         } else {
-            builder.append(" 답변은 감정과 핵심 메시지를 적절히 전달할 수 있도록 간결하게 작성하되, 공백을 포함하여 약 400~500자 분량으로 작성해 주세요.");
+            builder.append(" 답변은 감정과 핵심 메시지를 적절히 전달할 수 있도록 간결하게 작성하되, 공백을 포함하여 약 300자 분량으로 작성해 주세요.");
         }
 
         return builder.append("\n일기 내용: ").append(content).toString();

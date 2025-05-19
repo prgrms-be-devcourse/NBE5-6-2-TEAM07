@@ -79,7 +79,7 @@
               <img alt="ai avatar" th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}"/>
             </div>
           </div>
-          <a class="btn btn-ghost text-xl text-white" th:text="|${aiName}|">daisyUI</a>
+          <a id="ai-button" class="btn btn-ghost text-xl text-white" th:text="|${aiName}|">daisyUI</a>
         </div>
         <a class="btn btn-sm bg-transparent text-white hover:bg-white hover:text-green-800 transition-colors duration-200"
            onclick="closeChat()">대화 종료하기</a>
@@ -321,6 +321,11 @@
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat chat-end md:mr-[calc(50%-384px)]';
     messageDiv.innerHTML = `
+      <div class="chat-image avatar">
+        <div class="w-10 rounded-full">
+          <img src="/images/userImg.png" alt="user avatar">
+        </div>
+      </div>
       <div class="chat-header">
           <time class="text-xs opacity-50">${currentTime}</time>
       </div>

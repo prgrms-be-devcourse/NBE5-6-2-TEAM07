@@ -138,8 +138,26 @@ public class AiApiController {
     }
 
     private String buildMemoPrompt(Diary diary, List<Message> chatHistory) {
+        Member member = diary.getMember();
+        Custom custom = member.getCustom();
+        Ai ai = custom.getAi();
 
-        StringBuilder prompt = new StringBuilder();
+        StringBuilder prompt = new StringBuilder(ai.getPrompt());
+
+        if (custom.isFormal()) {
+            prompt.append(" 사용자에게는 존댓말로 정중하게 말해주세요. 따뜻하고 배려 있는 어투를 사용해 주세요.")
+                .append(" 스스로를 지칭할 땐 '저'를 사용하고 사용자를 지칭할 땐 '당신'을 사용해 주세요.");
+        } else {
+            prompt.append(" 사용자에게는 반말로, 친구처럼 다정하고 편안한 말투로 이야기해 주세요.")
+                .append(" 스스로를 지칭할 땐 '나'를 사용하고 사용자를 지칭할 땐 '너'를 사용해 주세요.");
+        }
+
+        if (custom.isLong()) {
+            prompt.append(" 답변은 감정이나 상황을 충분히 설명할 수 있도록 길고 풍부하게 작성하되, 공백을 포함하여 약 500자 분량으로 작성해 주세요.");
+        } else {
+            prompt.append(" 답변은 감정과 핵심 메시지를 적절히 전달할 수 있도록 간결하게 작성하되, 공백을 포함하여 약 300자 분량으로 작성해 주세요.");
+        }
+
         prompt.append("\n사용자가 작성했던 일기 내용: ").append(diary.getContent());
         prompt.append("\n당신이 작성했던 일기 답변: ").append(diary.getReply().getContent());
 
@@ -161,15 +179,17 @@ public class AiApiController {
         StringBuilder prompt = new StringBuilder(ai.getPrompt());
 
         if (custom.isFormal()) {
-            prompt.append(" 사용자에게는 존댓말로 정중하게 말해주세요. 따뜻하고 배려 있는 어투를 사용해 주세요.");
+            prompt.append(" 사용자에게는 존댓말로 정중하게 말해주세요. 따뜻하고 배려 있는 어투를 사용해 주세요.")
+                .append(" 스스로를 지칭할 땐 '저'를 사용하고 사용자를 지칭할 땐 '당신'을 사용해 주세요.");
         } else {
-            prompt.append(" 사용자에게는 반말로, 친구처럼 다정하고 편안한 말투로 이야기해 주세요.");
+            prompt.append(" 사용자에게는 반말로, 친구처럼 다정하고 편안한 말투로 이야기해 주세요.")
+                .append(" 스스로를 지칭할 땐 '나'를 사용하고 사용자를 지칭할 땐 '너'를 사용해 주세요.");
         }
 
         if (custom.isLong()) {
-            prompt.append(" 답변은 감정이나 상황을 충분히 설명할 수 있도록 길고 풍부하게 작성하되, 공백을 포함하여 약 500~600자 분량으로 작성해 주세요.");
+            prompt.append(" 답변은 감정이나 상황을 충분히 설명할 수 있도록 길고 풍부하게 작성하되, 공백을 포함하여 약 500자 분량으로 작성해 주세요.");
         } else {
-            prompt.append(" 답변은 감정과 핵심 메시지를 적절히 전달할 수 있도록 간결하게 작성하되, 공백을 포함하여 약 300~400자 분량으로 작성해 주세요.");
+            prompt.append(" 답변은 감정과 핵심 메시지를 적절히 전달할 수 있도록 간결하게 작성하되, 공백을 포함하여 약 300자 분량으로 작성해 주세요.");
         }
 
         prompt.append("\n사용자가 작성했던 일기 내용: ").append(diary.getContent());
