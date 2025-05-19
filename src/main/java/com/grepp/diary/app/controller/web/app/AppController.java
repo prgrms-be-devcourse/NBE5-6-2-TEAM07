@@ -52,4 +52,24 @@ public class AppController {
     public String showDashboard(){
         return "app/member-dashboard";
     }
+
+    @GetMapping("/settings")
+    public String showSetting(){
+        return "app/settings/settings";
+    }
+
+    @GetMapping("/settings/email")
+    public String showChangeEmail(){
+        return "app/settings/settings-email";
+    }
+
+    @GetMapping("/settings/password")
+    public String showChangePassword(){
+        return "app/settings/settings-password";
+    }
+
+    @GetMapping("/settings/ai")
+    public String showChangeAi(){
+        return "app/settings/settings-ai";
+    }
 }

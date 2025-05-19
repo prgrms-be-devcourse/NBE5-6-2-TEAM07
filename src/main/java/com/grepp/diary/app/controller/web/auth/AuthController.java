@@ -1,5 +1,6 @@
 package com.grepp.diary.app.controller.web.auth;
 
+import com.grepp.diary.app.controller.web.auth.form.SettingEmailForm;
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
 import com.grepp.diary.app.model.ai.AiChatService;
@@ -22,6 +23,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -407,4 +410,36 @@ public class AuthController {
     }
 
 
+
+    // 회원 이메일 변경 요청
+    @PostMapping("/settings/update-email")
+    public String updateEmail(
+        Authentication authentication,
+        @Valid @ModelAttribute("emailForm") SettingEmailForm settingEmailForm,
+        BindingResult bindingResult,
+        RedirectAttributes redirectAttributes
+    ) {
+        if(bindingResult.hasErrors()) {
+            return "redirect:/app/settings/email";
+        }
+
+        String userId = authentication.getName();
+        System.out.println("[DEBUG]" + userId);
+        System.out.println("[DEBUG]" + settingEmailForm.getPassword());
+        System.out.println("[DEBUG]" + settingEmailForm.getNewEmail());
+
+        // 비밀번호 확인 실패시
+        if(!memberService.isPasswordValid(userId, settingEmailForm.getPassword())) {
+            bindingResult.rejectValue("password", "password.invalid", "비밀번호가 일치하지 않습니다");
+            return "redirect:/app/settings/email";
+        }
+
+        boolean isSuccess = memberService.updateEmail(userId, settingEmailForm.getNewEmail());
+        if(!isSuccess) {
+            redirectAttributes.addFlashAttribute("message", "이메일 변경도중 문제가 발생하였습니다");
+            return "redirect:/app/settings/email";
+        }
+        redirectAttributes.addFlashAttribute("message", "성공적으로 이메일을 변경하였습니다");
+        return "redirect:/app/settings";
+    }
 }

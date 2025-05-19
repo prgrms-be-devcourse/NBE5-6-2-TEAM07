@@ -20,3 +20,11 @@ body {
   justify-content: center; /* 가로 중앙 정렬 */
 }
 
+.main-container{
+  max-width: 800px;
+  width: 100%;
+  margin: 30px auto;
+  height: 100%;
+  justify-content: center;
+}
+
