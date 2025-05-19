@@ -119,3 +119,15 @@
 .alert-banner i {
   font-size: 1rem;
 }
+
+/* leave */
+.leave-text-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.leave-text {
+  font-size: 0.8rem;
+  color : #ADAB9F;
+}
