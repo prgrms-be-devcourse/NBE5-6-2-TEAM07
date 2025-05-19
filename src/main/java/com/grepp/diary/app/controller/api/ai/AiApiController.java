@@ -12,7 +12,7 @@ import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.member.entity.Member;
-import com.grepp.diary.infra.utils.XssProtectionUtils;
+import com.grepp.diary.infra.util.xss.XssProtectionUtils;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,6 @@ package com.grepp.diary.app.controller.web.auth.form;
 
 import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.member.dto.MemberDto;
-import com.grepp.diary.app.model.member.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -16,7 +15,7 @@ public class SignupForm {
     private String userId;
 
     @Size(max = 20)
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Zㄱ-힣])(?!.*[ㄱ-힣]).{8,}$"
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$?%^&*()_+=-]).{8,}$"
         ,message = "비밀번호는 8자리 이상의 영문자, 숫자, 특수문자 조합으로 이루어져야 합니다.")
     private String password;
 

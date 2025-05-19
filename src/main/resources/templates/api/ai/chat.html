@@ -65,6 +65,7 @@
 </head>
 <body>
 <div th:replace="~{fragments/member-sidebar :: memberSidebar}"></div>
+<script src="/js/logout.js"></script>
 
 <div class="main">
   <input type="hidden" id="csrf-token" th:value="${_csrf.token}"/>

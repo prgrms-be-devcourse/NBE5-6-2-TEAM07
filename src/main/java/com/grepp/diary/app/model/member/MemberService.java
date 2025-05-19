@@ -7,6 +7,7 @@ import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.mail.MailTemplate;
 import com.grepp.diary.infra.response.ResponseCode;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,5 +61,48 @@ public class MemberService {
             throw new RuntimeException("존재하지 않는 회원입니다.");
         }
         return result.get();
+    }
+
+    @Transactional
+    public boolean existsByEmail(String email) {
+        return memberRepository.findByEmail(email).isPresent();
+    }
+
+    @Transactional
+    public Optional<Member> findById(String userId) {
+        return memberRepository.findById(userId);
+    }
+
+    @Transactional
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public boolean existsByUserIdAndEmail(String userId, String email) {
+        return memberRepository.existsByUserIdAndEmail(userId, email);
+    }
+
+    @Transactional
+    public Optional<Member> findByUserIdAndEmail(String userId, String email) {
+        return memberRepository.findByUserIdAndEmail(userId, email);
+    }
+
+    // 비밀번호 비교를 통한 사용자 검증
+    public boolean validUser(String userId, String rawPassword) {
+        Member member = memberRepository.findByUserId(userId)
+            .orElseThrow(() -> new CommonException(ResponseCode.MEMBER_NOT_FOUND));
+
+        return passwordEncoder.matches(rawPassword, member.getPassword());
+    }
+
+    @Transactional
+    public boolean updateEmail(String userId, String email) {
+        return memberRepository.updateEmail(userId, email) > 0;
+    }
+
+    @Transactional
+    public boolean updatePassword(String userId, String password) {
+        return memberRepository.updatePassword(userId, passwordEncoder.encode(password)) > 0;
     }
 }

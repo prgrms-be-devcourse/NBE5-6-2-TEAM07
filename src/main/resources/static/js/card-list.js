@@ -1,5 +1,5 @@
 async function loadRecentDiaries(userId) {
-  const response = await fetch(`/api/diary/recent?userId=${userId}`);
+  const response = await fetch(`/api/diary/cards?userId=${userId}`);
   const data = await response.json();
   const diaries = data.diaryCards;
 

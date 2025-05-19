@@ -2,7 +2,7 @@ package com.grepp.diary.app.controller.web.ai;
 
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.entity.Diary;
-import com.grepp.diary.infra.utils.XssProtectionUtils;
+import com.grepp.diary.infra.util.xss.XssProtectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

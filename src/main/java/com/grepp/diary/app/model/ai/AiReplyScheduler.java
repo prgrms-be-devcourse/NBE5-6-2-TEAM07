@@ -6,7 +6,7 @@ import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
-import com.grepp.diary.infra.utils.XssProtectionUtils;
+import com.grepp.diary.infra.util.xss.XssProtectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;

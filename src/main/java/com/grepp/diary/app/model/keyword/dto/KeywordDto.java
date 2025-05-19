@@ -1,20 +1,16 @@
 package com.grepp.diary.app.model.keyword.dto;
 
-import com.grepp.diary.app.model.keyword.code.KeywordType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
+@Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class KeywordDto {
-    private Integer keywordId;
     private String name;
-    private Boolean isUse;
-    private KeywordType keywordType;
-
-    public KeywordDto(String name, Boolean isUse, KeywordType keywordType) {
-        this.name = name;
-        this.isUse = true;
-        this.keywordType = keywordType;
-    }
+    private Integer count;
 }

@@ -1,4 +1,4 @@
-package com.grepp.diary.infra.utils;
+package com.grepp.diary.infra.util.xss;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;

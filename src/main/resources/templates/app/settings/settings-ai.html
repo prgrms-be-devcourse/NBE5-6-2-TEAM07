@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>AI 캐릭터 변경 페이지</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" href="/css/settings.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
+
+  <div class="main">
+    <div class="main-container">
+      <div class="setting-bento">
+        <div class="bento-title">AI 캐릭터 선택</div>
+      </div>
+      <div class="setting-bento">
+        <div class="bento-title">말투 설정</div>
+      </div>
+      <div class="setting-bento">
+        <div class="bento-title">답변 길이 설정</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/logout.js"></script>
+</body>
+</html>

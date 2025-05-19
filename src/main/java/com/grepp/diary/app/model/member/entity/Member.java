@@ -4,20 +4,21 @@ import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.chat.entity.Chat;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.custom.entity.Custom;
+import com.grepp.diary.app.model.diary.entity.Diary;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
 
 @Entity
 @Getter @Setter

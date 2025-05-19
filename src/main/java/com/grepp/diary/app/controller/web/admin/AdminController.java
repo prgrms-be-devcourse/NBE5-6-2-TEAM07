@@ -1,8 +1,10 @@
 package com.grepp.diary.app.controller.web.admin;
 
+import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
+import com.grepp.diary.app.model.keyword.dto.KeywordAdminDto;
 import com.grepp.diary.app.model.member.MemberService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +27,10 @@ public class AdminController {
 
     @GetMapping
     public String index(Model model) {
-        List<List<Object>> popularKeywords = keywordService.getMostPopular();
+        List<KeywordAdminDto> popularKeywords = keywordService.getMostPopular();
         Integer memberCount = memberService.getAllMemberCount();
         Integer monthDiaryCount = diaryService.getMonthDiariesCount();
-        List<List<Object>> popularCustoms = customService.getMostPopular();
-        log.info("popular keywords: {}", keywordService.getMostPopular());
-        log.info("member cnt : {}", memberService.getAllMemberCount());
-        log.info("month diaries cnt : {}", diaryService.getMonthDiariesCount());
-        log.info("popular ai characters: {}", customService.getMostPopular());
+        List<AiAdminDto> popularCustoms = customService.getAiByLimit(5);
 
         model.addAttribute("popularKeywords", popularKeywords);
         model.addAttribute("memberCount", memberCount);
@@ -44,6 +42,19 @@ public class AdminController {
 
     @GetMapping("keyword")
     public String keyword() {
+
         return "admin/admin-keyword";
+    }
+
+    @GetMapping("ai")
+    public String ai() {
+
+        return "admin/admin-ai";
+    }
+
+    @GetMapping("ai/write")
+    public String aiWrite() {
+
+        return "admin/admin-ai-write";
     }
 }
