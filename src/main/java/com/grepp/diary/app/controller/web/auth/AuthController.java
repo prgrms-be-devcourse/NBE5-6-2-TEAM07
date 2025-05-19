@@ -2,12 +2,19 @@ package com.grepp.diary.app.controller.web.auth;
 
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
+import com.grepp.diary.app.model.ai.AiChatService;
+import com.grepp.diary.app.model.ai.AiRepository;
+import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.auth.AuthService;
 import com.grepp.diary.app.model.auth.code.Role;
+import com.grepp.diary.app.model.custom.CustomService;
+import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.dto.MemberDto;
+import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.response.ResponseCode;
+import dev.langchain4j.service.spring.AiService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -15,6 +22,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,6 +48,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
     private final AuthService authService;
+    private final CustomService customService;
+    private final AiRepository aiRepository; // aiService는 사용 불가
 
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute("signinForm") SigninForm signinForm,
@@ -84,7 +94,7 @@ public class AuthController {
     // 회원가입 페이지 반환
     @GetMapping("/regist")
     public String regist(Model model) {
-        if(!model.containsAttribute("signupForm")) {
+        if (!model.containsAttribute("signupForm")) {
             model.addAttribute("signupForm", new SignupForm());
         }
         return "/member/regist";
@@ -317,7 +327,6 @@ public class AuthController {
             return "member/reset-password";
         }
 
-
         try {
             // 이전 비밀번호와 비교
             String currentEncodedPassword = authService.getEncodedPassword(userId, email);
@@ -344,4 +353,58 @@ public class AuthController {
             return "member/reset-password";
         }
     }
+
+    @GetMapping("/onboarding-qna")
+    public String showOnboardingQnaPqge() {
+        return "onboarding/onboarding-qna";
+    }
+
+    @GetMapping("/onboarding-result")
+    public String showOnboardingResultPage(HttpSession session, Model model) {
+        Integer aiId = (Integer) session.getAttribute("aiId");
+        String userId = (String) session.getAttribute("userId");
+
+        // 사용자이름 조회
+        Member member = memberService.getMemberByUserId(userId);
+        String name = member.getName();
+
+        model.addAttribute("aiId", aiId);
+        model.addAttribute("name", name);
+        return "onboarding/onboarding-result";
+    }
+
+    @PostMapping("/custom-ai")
+    public String registerCustomAiResult(@RequestParam("aiId") int aiId,
+        @RequestParam("name") String name,
+        Authentication authentication, HttpSession session) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/";
+        }
+
+        String userId = authentication.getName(); // 로그인된 사용자 ID
+        Object formalObj = session.getAttribute("isFormal");
+        Object longObj = session.getAttribute("isLong");
+
+
+        boolean isFormal = formalObj != null && formalObj.toString().equals("1");
+        boolean isLong = longObj != null && longObj.toString().equals("1");
+
+        Custom custom = new Custom();
+        custom.setFormal(isFormal);
+        custom.setLong(isLong);
+
+
+        Member member = memberService.findById(userId).orElseThrow();
+        custom.setMember(member);
+
+        Ai ai = aiRepository.findById(aiId).orElseThrow(() ->
+            new IllegalArgumentException("해당 ID의 AI가 존재하지 않습니다."));
+        custom.setAi(ai);
+
+        customService.save(custom);
+
+        return "redirect:/app";
+    }
+
+
 }

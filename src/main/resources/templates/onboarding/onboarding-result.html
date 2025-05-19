@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>AI 추천 결과</title>
+  <link rel="stylesheet" href="/css/onboarding-result.css">
+</head>
+<body>
+<main class="container">
+  <h1><span th:text="${name}"></span>님에게 어울리는 AI를 찾았어요.</h1>
+
+  <form method="post" th:action="@{/member/custom-ai}">
+    <div class="ai-preview">
+      <img src="/images/ai_placeholder.png" alt="AI 이미지" class="ai-image">
+      <div class="ai-name">
+        <span th:if="${aiId == 1}">다정한 오소리</span>
+        <span th:if="${aiId == 2}">친절한 두루미</span>
+        <span th:if="${aiId == 3}">용감한 사자</span>
+        <span th:if="${aiId == 4}">용맹한 거북이</span>
+      </div>
+      <p class="ai-desc">
+        <span th:if="${aiId == 1}" th:text="${name + '님의 감정 정리를 돕고 위로와 공감을 드릴게요'}"></span>
+        <span th:if="${aiId == 2}" th:text="${name + '님의 이성 정리를 돕고 위로와 공감을 드릴게요'}"></span>
+        <span th:if="${aiId == 3}" th:text="${name + '님의 감정 정리를 돕고 해결책을 드릴게요'}"></span>
+        <span th:if="${aiId == 4}" th:text="${name + '님의 이성 정리를 돕고 해결책을 드릴게요'}"></span>
+      </p>
+    </div>
+
+    <!-- hidden input으로 aiId 등 필요한 값도 함께 전송 -->
+    <input type="hidden" name="aiId" th:value="${aiId}">
+    <input type="hidden" name="name" th:value="${name}">
+
+    <button type="submit" class="start-btn">시작하기</button>
+  </form>
+
+  <p class="check-other" onclick="location.href='/member/onboarding'">
+    다른 AI도 확인하시겠어요?
+  </p>
+</main>
+</body>
+</html>
