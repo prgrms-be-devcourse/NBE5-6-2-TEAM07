@@ -17,12 +17,29 @@
   <main class="main">
     <div class="content">
       <input type="hidden" id="diaryId" th:value="${diary.diaryId}">
+
       <div class="form-box">
         <div class="date-display">
-          <span th:text="${#temporals.format(diary.createdAt, 'Y년 M월 d일 E요일')}"></span>
+          <span th:text="${#temporals.format(diary.date, 'Y년 M월 d일 E요일')}"></span>
           <button type="button" class="date-change">날짜 변경</button>
         </div>
       </div>
+
+      <div class="form-box">
+        <div class="date-display">
+          <input
+              type="date"
+              id="diary-date"
+              name="date"
+              class="date-input"
+              style="display: none;"
+              th:value="${diary.date}">
+          <div class="date-text" id="date-text" th:text="${#temporals.format(diary.date, 'Y년 M월 d일 E요일')}"></div>
+          <button type="button" class="date-change" id="date-change-btn">날짜 변경</button>
+        </div>
+      </div>
+
+
 
       <div class="form-box">
         <!-- 감정 선택 -->
@@ -327,6 +344,7 @@
     const diaryId = document.getElementById('diaryId').value; // hidden input 필요
     const emotion = document.querySelector('input[name="emotion"]:checked')?.value;
     const content = document.querySelector('textarea[name="content"]').value;
+    const date = document.getElementById('diary-date').value;
 
     const selectedKeywords = Array.from(document.querySelectorAll('input[name="keywords"]:checked'))
     .map(input => input.value);
@@ -339,6 +357,7 @@
       diaryId,
       emotion,
       content,
+      date,
       keywords: selectedKeywords,
       deletedImageIds
     };
@@ -351,14 +370,14 @@
     }
 
     try {
-      const res = await fetch("/api/diary", {
+      const res = await fetch("/api/diary/modify", {
         method: "PATCH",
         body: formData
       });
 
       if (res.ok) {
         alert("일기가 수정되었습니다!");
-        window.location.href = "/diary/record";
+        window.location.href = `/diary/record/${diaryId}`;
       } else {
         alert("수정 중 오류가 발생했습니다.");
       }

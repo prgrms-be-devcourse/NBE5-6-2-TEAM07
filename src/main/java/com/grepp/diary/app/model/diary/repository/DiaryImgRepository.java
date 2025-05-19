@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DiaryImgRepository extends JpaRepository<DiaryImg, Long> {
 
+    void deleteByDiaryDiaryId(Integer id);
 }

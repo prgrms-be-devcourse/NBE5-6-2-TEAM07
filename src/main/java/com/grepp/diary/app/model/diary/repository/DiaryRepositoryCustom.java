@@ -12,5 +12,5 @@ public interface DiaryRepositoryCustom {
     List<Diary> findRecentDiariesWithImages(String userId, Pageable pageable);
 
     // 일기, 이미지, 키워드, reply를 모두 조회
-    Optional<Diary> findDiaryWithAllRelations(String userId, LocalDateTime start, LocalDateTime end);
+    Optional<Diary> findDiaryWithAllRelations(String userId, LocalDate targetDate);
 }

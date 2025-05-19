@@ -5,16 +5,26 @@ import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.app.model.diary.entity.Diary;
+import com.grepp.diary.infra.error.exceptions.CommonException;
+import com.grepp.diary.infra.response.ResponseCode;
 import com.grepp.diary.infra.util.date.DateUtil;
 import com.grepp.diary.infra.util.date.dto.DateRangeDto;
+import jakarta.persistence.EntityNotFoundException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -97,20 +107,36 @@ public class DiaryApiController {
         return !diaryService.getDiariesDateBetween(userId, date, nextDate).isEmpty();
     }
 
-    @PatchMapping
+    @PatchMapping("/modify")
     public ResponseEntity<?> editDiary(
         @RequestPart("request") DiaryEditRequest request,
         @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages
     ) {
-        diaryService.updateDiary(
-            request.getDiaryId(),
-            request.getEmotion(),
-            request.getContent(),
-            request.getKeywords(),
-            request.getDeletedImageIds(),
-            newImages
-        );
+        String username = "user01";
+
+        try {
+            diaryService.updateDiary(username, request, newImages);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDiary(@PathVariable Integer id
+        //@AuthenticationPrincipal UserDetails userDetails
+    )
+    {
+        //String username = userDetails.getUsername();
+        String username = "user01";
+
+        try {
+            diaryService.deleteDiary(id, username);
+            return ResponseEntity.noContent().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
 }

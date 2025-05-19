@@ -22,7 +22,7 @@
     </div>
 
     <div th:if="${diary}">
-      <h2 th:text="${#temporals.format(diary.createdAt, 'yyyy-MM-dd')}">날짜</h2>
+      <h2 th:text="${#temporals.format(diary.date, 'yyyy-MM-dd')}">날짜</h2>
       <p th:text="${diary.content}">일기 내용</p>
 
       <!-- 감정 -->
@@ -55,26 +55,26 @@
 
     </div>
   </main>
-  <script>
+  <script th:inline="javascript">
     function goBack() {
       window.history.back();
     }
 
     function editDiary() {
-      const diaryId = /* 일기 ID를 가져오는 로직 */;
+      const diaryId = '[[${diary.diaryId}]]';
       window.location.href = `/diary/edit/${diaryId}`;
     }
 
     function deleteDiary() {
-      const diaryId = /* 일기 ID를 가져오는 로직 */;
+      const diaryId = [[${diary.diaryId}]];
       if (confirm("정말로 삭제하시겠습니까?")) {
-        fetch(`/diary/${diaryId}`, {
+        fetch(`/api/diary/${diaryId}`, {
           method: 'DELETE'
         })
         .then(response => {
           if (response.ok) {
             alert("삭제되었습니다.");
-            window.location.href = "/diary/list";
+            window.location.href = "/app";
           } else {
             alert("삭제에 실패했습니다.");
           }

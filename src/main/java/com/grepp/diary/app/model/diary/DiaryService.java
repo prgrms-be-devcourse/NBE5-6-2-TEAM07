@@ -1,9 +1,11 @@
 package com.grepp.diary.app.model.diary;
 
+import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
@@ -16,9 +18,12 @@ import com.grepp.diary.app.model.keyword.repository.KeywordRepository;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.app.model.reply.entity.Reply;
+import com.grepp.diary.infra.error.exceptions.CommonException;
+import com.grepp.diary.infra.response.ResponseCode;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -134,11 +139,18 @@ public class DiaryService {
         Member member = memberRepository.findById(userId)
                                         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다: " + userId));
 
+        LocalDate targetDate = form.getDate();
+        boolean exists = diaryRepository.existsByMember_UserIdAndDate(userId, targetDate);
+        if (exists) {
+            throw new CommonException(ResponseCode.DIARY_ALREADY_EXISTS);
+        }
+
         Diary diary = new Diary();
         diary.setEmotion(form.getEmotion());
         diary.setContent(form.getContent());
         diary.setCreatedAt(LocalDateTime.now());
         diary.setModifiedAt(LocalDateTime.now());
+        diary.setDate(form.getDate());
         diary.setIsUse(true);
         diary.setMember(member);
         diaryRepository.save(diary);
@@ -172,7 +184,6 @@ public class DiaryService {
         return diary;
 
     }
-
 
     private DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
         //String uploadDir = "src/main/resources/photo";
@@ -211,9 +222,8 @@ public class DiaryService {
         return img;
     }
 
-    public Optional<Diary> findDiaryByUserIdAndDate(String userId, LocalDateTime start, LocalDateTime end) {
-        return diaryRepository.findDiaryWithAllRelations(userId, start, end);
-
+    public Optional<Diary> findDiaryByUserIdAndDate(String userId, LocalDate targetDate) {
+        return diaryRepository.findDiaryWithAllRelations(userId, targetDate);
     }
 
     public Diary findById(Integer id) {
@@ -225,5 +235,36 @@ public class DiaryService {
 //        diary.setImages(diary.getImages());
 //        diary.setKeywords(diary.getKeywords());
         return diary;
+    }
+
+    @Transactional
+    public void deleteDiary(Integer id, String username) throws AccessDeniedException {
+        Diary diary = diaryRepository.findById(id)
+                                     .orElseThrow(() -> new EntityNotFoundException("Diary not found"));
+
+        if (!diary.getMember().getUserId().equals(username)) {
+            throw new AccessDeniedException("해당 일기를 삭제할 권한이 없습니다.");
+        }
+
+
+        diaryImgRepository.deleteByDiaryDiaryId(id); // 이미지 수동 삭제
+        diaryRepository.delete(diary);
+    }
+
+
+    public void updateDiary(String username, DiaryEditRequest request, List<MultipartFile> newImages)
+        throws AccessDeniedException {
+        Diary diary = diaryRepository.findById(request.getDiaryId())
+                                     .orElseThrow(() -> new EntityNotFoundException("Diary not found"));
+        if (!diary.getMember().getUserId().equals(username)) {
+            throw new AccessDeniedException("해당 일기를 삭제할 권한이 없습니다.");
+        }
+
+        diary.setEmotion(Emotion.valueOf(request.getEmotion()));
+        diary.setContent(request.getContent());
+        diary.setDate(request.getDate());
+
+//        diaryKeywordRepository.deleteByDiary(diary);
+
     }
 }

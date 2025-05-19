@@ -9,6 +9,7 @@ import com.grepp.diary.app.model.keyword.entity.QDiaryKeyword;
 import com.grepp.diary.app.model.keyword.entity.QKeyword;
 import com.grepp.diary.app.model.reply.entity.QReply;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public Optional<Diary> findDiaryWithAllRelations(String userId, LocalDateTime start, LocalDateTime end) {
+    public Optional<Diary> findDiaryWithAllRelations(String userId, LocalDate targetDate) {
 
         // 쿼리 분리
 
@@ -72,7 +73,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             .leftJoin(diary.reply, reply).fetchJoin()
             .where(
                 diary.member.userId.eq(userId),
-                diary.createdAt.between(start, end),
+                diary.date.eq(targetDate),
                 diary.isUse.isTrue()
             )
             .distinct()

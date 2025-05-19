@@ -6,6 +6,7 @@ import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
+import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.util.file.FileUtil;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +40,7 @@ public class DiaryController {
     private final DiaryService diaryService;
     private final KeywordService keywordService;
 
-    @GetMapping
+    @GetMapping("/writing")
     public String showDiaryWritePage(
         @RequestParam(value = "date", required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -47,7 +48,6 @@ public class DiaryController {
     ) {
         LocalDate targetDate = (date != null) ? date : LocalDate.now();
         model.addAttribute("diaryDate", targetDate);
-
         model.addAttribute("diaryRequest", new DiaryRequest());
         List<Keyword> allKeywords = keywordService.findAllKeywordEntities();
         Map<String, List<Keyword>> grouped = allKeywords.stream()
@@ -58,32 +58,31 @@ public class DiaryController {
     }
 
     @PostMapping
-    public String writeAndSaveDiary(@ModelAttribute("diaryRequest") DiaryRequest form
+    public String writeAndSaveDiary(@ModelAttribute("diaryRequest") DiaryRequest form,
+        Model model
         //@AuthenticationPrincipal CustomUserDetails user
     ) {
         String userId = "user01";
 
-//        diaryService.saveDiary(form, user.getMember());
-        diaryService.saveDiary(form, userId);
-        return "app/home"; // 작성 완료 후 목록 페이지로 이동
+        try {
+            diaryService.saveDiary(form, userId);
+            return "redirect:/app";
+        } catch (CommonException e) {
+            model.addAttribute("error", e.getMessage());
+            return "app/home"; // 동일한 페이지로 돌아가되 에러 메시지 표시
+        }
     }
 
     @GetMapping("/record")
     public String showDiaryRecordPage(
-        Model model
-//        @RequestParam("targetDate")
-//        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // 문자열을 날짜 타입으로 변환 "yyyy-MM-dd" 형식(예: 2025-05-15)만 허용
-//        LocalDate targetDate
-        //@AuthenticationPrincipal CustomUserDetails user
-
+        Model model,
+        @RequestParam("date")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // 문자열을 날짜 타입으로 변환 "yyyy-MM-dd" 형식(예: 2025-05-15)만 허용
+        LocalDate targetDate
+        //@AuthenticationPrincipal UserDetails user
     ) {
-        LocalDate targetDate = LocalDate.of(2025, 5,16);
-
-        LocalDateTime start = targetDate.atStartOfDay();
-        LocalDateTime end = targetDate.atTime(LocalTime.MAX);
-
         String userId = "user01";
-        Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, start, end);
+        Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
             //사진 파일 encoding
             List<DiaryImg> encodedImages = diaryExist.get().getImages().stream()
