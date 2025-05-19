@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/ai")
@@ -39,7 +40,6 @@ public class AiApiController {
     private final XssProtectionUtils xssUtils;
 
     @GetMapping("reply")
-    @ResponseBody
     public String singleReply(@RequestParam int diaryId){
         String prompt = aiReplyScheduler.buildReplyPrompt(diaryId);
         String replyContent = aiChatService.reply(prompt);
@@ -51,7 +51,6 @@ public class AiApiController {
     }
 
     @GetMapping("retry-batch")
-    @ResponseBody
     public String retryFailedReplies() {
         List<DiaryDto> failedDiaries = diaryService.getNoReplyDtos();
         if (failedDiaries.isEmpty()) {
@@ -63,7 +62,6 @@ public class AiApiController {
     }
 
     @PostMapping("chat")
-    @ResponseBody
     public CompletableFuture<String> chatWithAi(@RequestBody ChatRequest chatRequest) {
         Diary diary = diaryService.getDiaryById(chatRequest.getDiaryId());
         String prompt = buildChatPrompt(diary, chatRequest.getChatHistory(), chatRequest.getUserMessage());
@@ -82,7 +80,6 @@ public class AiApiController {
     }
 
     @PostMapping("chat/memo")
-    @ResponseBody
     public CompletableFuture<String> chatMemo(@RequestBody ChatRequest chatRequest) {
         int diaryId = chatRequest.getDiaryId();
         int chatCount = chatRequest.getChatHistory().size();
@@ -108,7 +105,6 @@ public class AiApiController {
     }
 
     @PostMapping("chat/end")
-    @ResponseBody
     public String chatEnd(@RequestBody ChatRequest chatRequest) {
         int diaryId = chatRequest.getDiaryId();
         int chatCount = chatRequest.getChatHistory().size();

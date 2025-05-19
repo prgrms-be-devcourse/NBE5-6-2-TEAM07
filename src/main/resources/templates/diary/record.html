@@ -8,82 +8,309 @@
 
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      max-width: 800px;
+      margin: 30px auto;
+      align-content: center;
+      padding: 0 16px;
+    }
 
+    .diary-main {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background-color: #FEFBF6;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+      padding: 24px;
+      margin-top: 10px;
+      margin-bottom: 24px;
+    }
+
+    .reply-main {
+      width: 100%;
+      background-color: #FEFBF6;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+      padding: 24px;
+      margin-bottom: 24px;
+      margin-top: 10px;
+    }
+
+    .diary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .diary-date {
+      display: flex;
+      align-items: center;
+    }
+
+    #diary-emotion {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #diary-emotion img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.5);
+    }
+
+    .button-group {
+      display: flex;
+      align-items: center;
+      margin-right: 7px;
+      width: 200px;
+      text-align: center;
+    }
+
+    .button-group .button {
+      width: 100%;
+      margin-left: 20px;
+      gap: 15px;
+      font-size: 1.5rem;
+      padding: 5px;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .button-group .button:hover {
+      /*color: #89C07E;*/
+      border-color: #6b8e6e;
+      background-color: #e0f0e0;
+      transition: 0.7s ease;
+    }
+
+    .diary-image {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      overflow-x: auto;
+    }
+
+    .diary-image img {
+      border-radius: 12px;
+      width: 600px;
+      height: 300px;
+      object-fit: contain;
+      margin: 0 10px;
+    }
+
+    .diary-text {
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .diary-keyword {
+      display: flex;
+      width: 100%;
+      color: #89C07E;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .keyword {
+      margin-right: 10px;
+    }
+
+    .reply-header {
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
+
+    .reply-text {
+      display: flex;
+    }
+
+    .ai-avatar {
+      width: 10%;
+      height: 100%;
+    }
+
+    .ai-avatar img {
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .ai-reply {
+      width: 90%;
+      height: 100%;
+    }
+
+    .chat-btn-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .chat-btn {
+      background-color: transparent;
+      border: 1px solid #467750;
+      color: #467750;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .chat-btn:hover {
+      background-color: #467750;
+      color: white;
+      border: 1px solid white;
+      transition: 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-  <div th:replace="~{fragments/member-sidebar :: memberSidebar}"></div>
+<div th:replace="~{fragments/member-sidebar :: memberSidebar}"></div>
 
 <!--  class = main으로 바꿔서 여기에 다 있음 -->
-  <main class="main">
-    <div class="button-group">
-      <button onclick="goBack()">뒤로가기</button>
-      <button onclick="editDiary()">수정</button>
-      <button onclick="deleteDiary()">삭제</button>
-    </div>
+<main class="main">
 
-    <div th:if="${diary}">
-      <h2 th:text="${#temporals.format(diary.date, 'yyyy-MM-dd')}">날짜</h2>
-      <p th:text="${diary.content}">일기 내용</p>
+  <div class="container">
 
-      <!-- 감정 -->
-      <p>오늘의 감정: <span th:text="${diary.emotion}"></span></p>
+    <div class="diary-container">
+      <div class="diary-header">
+        <div class="diary-date">
+          <div id="diary-emotion">
 
-      <!-- 키워드 -->
-      <div th:if="${diary.keywords}">
-        <h4>선택된 키워드</h4>
-        <ul>
-          <li th:each="kw : ${diary.keywords}" th:text="${kw.keywordId.name}"></li>
-        </ul>
-      </div>
+          </div>
+          <input type="hidden" id="emotion-text" th:value="${diary.emotion}"/>
+          <h1 th:text="${#temporals.format(diary.date, 'yy.MM.dd')}">날짜</h1>
+        </div>
 
-      <!-- 이미지 -->
-      <div th:if="${diary.images}">
-        <h4>첨부 이미지</h4>
-        <div th:each="image : ${encodedImages}">
-          <img th:src="@{'/uploads/' + ${image.savePath}}" th:alt="${image.originName}" width="150">
+        <div class="button-group">
+          <div class="button" onclick="editDiary()"><i class="fa-solid fa-pen"></i></div>
+          <div class="button" onclick="deleteDiary()"><i class="fa-solid fa-trash-can"></i></div>
+          <div class="button" onclick="goBack()"><i class="fa-solid fa-arrow-left-long"></i></div>
         </div>
       </div>
-
-      <!-- AI 답변 -->
-      <div th:if="${diary.reply != null}">
-        <h4>AI의 답변</h4>
-        <p th:text="${diary.reply.content}"></p>
+      <div class="diary-main">
+        <div class="diary-image">
+          <img th:src="@{/images/examples/cat1.jpg}" alt="cat1">
+          <img th:src="@{/images/examples/cat2.jpg}" alt="cat2">
+          <img th:src="@{/images/examples/cat2.jpg}" alt="cat3">
+          <!--<div th:if="${diary.images}">
+            <div th:each="image : ${encodedImages}">
+              <img th:src="@{'/uploads/' + ${image.savePath}}" th:alt="${image.originName}"
+                   width="150">
+            </div>
+          </div>-->
+        </div>
+        <div class="diary-text">
+          <p th:text="${diary.content}">일기 내용</p>
+        </div>
+        <div class="diary-keyword" th:if="${diary.keywords}">
+          <div class="keyword" th:each="kw : ${diary.keywords}"
+               th:text="|#${kw.keywordId.name} |"></div>
+        </div>
       </div>
-      <div th:unless="${diary.reply != null}">
-        <p>아직 답변이 없습니다.</p>
-      </div>
-
     </div>
-  </main>
-  <script th:inline="javascript">
-    function goBack() {
-      window.history.back();
+
+    <div class="reply-container">
+      <div class="reply-header">
+        <i class="fa-regular fa-envelope" style="font-size: 2rem; padding-right: 7px"></i>
+        <div th:text="|${aiName}의 답장이 도착했어요|" style="font-size: 1.3rem; font-weight: bold">[ai 캐릭터]의
+          답장이 도착했어요
+        </div>
+      </div>
+      <div class="reply-main">
+        <div class="reply-text">
+          <div class="ai-avatar">
+            <img alt="ai avatar" th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}">
+          </div>
+          <div class="ai-reply">
+            <div th:if="${diary.reply != null}">
+              <div th:utext="${replyContent}"></div>
+            </div>
+            <div th:unless="${diary.reply != null}">
+              <p>아직 답변을 작성중이에요 ✏️</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-btn-wrapper" th:if="${diary.reply != null} and ${T(java.time.LocalDate).now().minusDays(7).isBefore(diary.date)}">
+          <div class="chat-btn" onclick="chat()">
+            <i class="fa-regular fa-message" style="margin-right: 7px"></i>
+            <div th:text="|${aiName}와 더 많은 대화하러 가기|">[ai 캐릭터]와 더 많은 대화하러 가기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+<script th:inline="javascript">
+
+  window.emotionImageMap = {
+    GOOD: "Good_Cloud_Sun.png",
+    VERY_GOOD: "Very_Good_Sun.png",
+    NORMAL: "Normal_Cloud.png",
+    BAD: "Bad_Cloud_Rain.png",
+    VERY_BAD: "Very_Bad_Cloud_Lightning.png"
+  };
+  const diaryId = [[${diary.diaryId}]]
+  const diaryDate = [[${diary.date}]]
+  const emotionText = document.getElementById('emotion-text').value;
+  const emotionDiv = document.getElementById('diary-emotion');
+  const emotionIcon = document.createElement('img');
+  emotionIcon.src = `/images/emotion/weather/${emotionImageMap[emotionText]}`
+  emotionIcon.alt = 'emotion';
+  emotionDiv.appendChild(emotionIcon);
+
+  function goBack() {
+    window.history.back();
+  }
+
+  function editDiary() {
+    const diaryId = '[[${diary.diaryId}]]';
+    window.location.href = `/diary/edit/${diaryId}`;
+  }
+
+  function deleteDiary() {
+    const diaryId = [[${diary.diaryId}]];
+    if (confirm("정말로 삭제하시겠습니까?")) {
+      fetch(`/api/diary/${diaryId}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("삭제되었습니다.");
+          window.location.href = "/app";
+        } else {
+          alert("삭제에 실패했습니다.");
+        }
+      });
     }
+  }
 
-    function editDiary() {
-      const diaryId = '[[${diary.diaryId}]]';
-      window.location.href = `/diary/edit/${diaryId}`;
-    }
+  function chat() {
+    window.location.href = `/ai/chat?diaryId=${diaryId}`;
+  }
 
-    function deleteDiary() {
-      const diaryId = [[${diary.diaryId}]];
-      if (confirm("정말로 삭제하시겠습니까?")) {
-        fetch(`/api/diary/${diaryId}`, {
-          method: 'DELETE'
-        })
-        .then(response => {
-          if (response.ok) {
-            alert("삭제되었습니다.");
-            window.location.href = "/app";
-          } else {
-            alert("삭제에 실패했습니다.");
-          }
-        });
-      }
-    }
-  </script>
+</script>
 
 
-  <script src="/js/sidebar.js"></script>
+<script src="/js/sidebar.js"></script>
 </body>
 </html>

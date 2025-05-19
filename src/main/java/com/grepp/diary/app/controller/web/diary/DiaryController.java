@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.web.diary;
 
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
+import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
@@ -8,6 +9,7 @@ import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.util.file.FileUtil;
+import com.grepp.diary.infra.util.xss.XssProtectionUtils;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ public class DiaryController {
 
     private final DiaryService diaryService;
     private final KeywordService keywordService;
+    private final XssProtectionUtils xssUtils;
 
     @GetMapping("/writing")
     public String showDiaryWritePage(
@@ -89,6 +92,13 @@ public class DiaryController {
                                                     return copy;
                                                 }).collect(Collectors.toList());
 
+            // ai 관련 정보 전달
+            Ai ai = diaryExist.get().getReply().getAi();
+            model.addAttribute("aiName", ai.getName());
+            model.addAttribute("aiId", ai.getAiId());
+            // 일기 답장 전달
+            String content = diaryExist.get().getReply().getContent();
+            model.addAttribute("replyContent", xssUtils.escapeHtmlWithLineBreaks(content));
 
             model.addAttribute("encodedImages", encodedImages);
             model.addAttribute("diary", diaryExist.get());
