@@ -2,6 +2,7 @@ package com.grepp.diary.infra.config;
 
 import static org.springframework.http.HttpMethod.GET;
 
+import com.grepp.diary.app.model.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,12 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final UserDetailsService userDetailsService;
 
     @Value("${remember-me.key}")
     private String rememberMeKey;
@@ -28,18 +29,16 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public UserDetailsService userDetailsService(AuthService authService) {
+        return authService;
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
         http
-//            .csrf(csrf -> csrf.disable())
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**")
-                .ignoringRequestMatchers("/admin/**")
-                .ignoringRequestMatchers("/member/**")
-                .ignoringRequestMatchers("/diary/**")
-                .ignoringRequestMatchers("/app/**")
-                .ignoringRequestMatchers("/ai/**")
+                .ignoringRequestMatchers("/api/**", "/admin/**", "/member/**", "/diary/**", "/app/**", "/ai/**", "/auth/**")
             )
             .formLogin(login -> login
                 .loginPage("/")
@@ -47,22 +46,22 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/member/logout")
+                .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID", "remember-me")
-                .invalidateHttpSession(true) // 세션 무효화
+                .invalidateHttpSession(true)
                 .permitAll()
             )
-            .rememberMe(rememberMe -> rememberMe.key(rememberMeKey)
-                .userDetailsService(userDetailsService))
+            .rememberMe(rememberMe -> rememberMe
+                .key(rememberMeKey)
+                .userDetailsService(userDetailsService)
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(GET, "/", "/css/**", "/js/**", "/images/**", "/assets/**").permitAll()
-                    .requestMatchers("/member/login", "/member/logout", "/member/find_id", "/member/find_pw", "/member/regist/**", "/member/regist-mail","/member/auth-id","/member/auth-pw").permitAll()
-                    .requestMatchers("/member/auth-id", "/member/auth-pw", "/member/change-pw", "/member/find-idpw").permitAll()
-//                .anyRequest().permitAll() // 개발 중 전체 열기
+                .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
             );
+
         return http.build();
     }
 }
-

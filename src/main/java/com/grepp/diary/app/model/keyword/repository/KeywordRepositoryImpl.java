@@ -3,7 +3,6 @@ package com.grepp.diary.app.model.keyword.repository;
 import com.grepp.diary.app.model.diary.entity.QDiary;
 import com.grepp.diary.app.model.keyword.code.KeywordType;
 import com.grepp.diary.app.model.keyword.dto.KeywordAdminDto;
-import com.grepp.diary.app.model.keyword.dto.KeywordDto;
 import com.grepp.diary.app.model.keyword.entity.QDiaryKeyword;
 import com.grepp.diary.app.model.keyword.entity.QKeyword;
 import com.querydsl.core.Tuple;

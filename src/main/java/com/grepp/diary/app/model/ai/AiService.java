@@ -1,12 +1,9 @@
 package com.grepp.diary.app.model.ai;
 
-import com.grepp.diary.app.controller.api.admin.payload.AdminAiResponse;
 import com.grepp.diary.app.controller.api.admin.payload.AdminAiWriteRequest;
-import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.ai.dto.AiDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.repository.AiRepository;
-import com.querydsl.core.Tuple;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

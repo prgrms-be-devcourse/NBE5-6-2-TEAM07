@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>설정 페이지</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
@@ -32,10 +35,15 @@
           <a href="/app/settings/ai"><i class="fa-solid fa-robot"></i><span>AI 캐릭터 변경하기</span><i class="fa-solid fa-angle-right"></i></a>
         </div>
       </div>
+      <div class="leave-text-wrapper">
+        <a href="/member/leave" class="leave-text">회원탈퇴</a>
+      </div>
+
     </div>
   </div>
 
   <script src="/js/sidebar.js"></script>
+  <script src="/js/logout.js"></script>
   <script>
     setTimeout(() => {
       const banner = document.querySelector('.alert-banner');

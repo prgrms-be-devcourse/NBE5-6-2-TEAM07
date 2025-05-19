@@ -1,12 +1,18 @@
 package com.grepp.diary.app.model.ai.entity;
+
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.reply.entity.Reply;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
