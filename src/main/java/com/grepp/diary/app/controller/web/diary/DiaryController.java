@@ -59,7 +59,8 @@ public class DiaryController {
         String userId = "user01";
 
         try {
-            diaryService.saveDiary(form, userId);
+            log.info("form : {}", form);
+            diaryService.saveDiary(form.getImages(), form, userId);
             return "redirect:/app";
         } catch (CommonException e) {
             model.addAttribute("error", e.getMessage());

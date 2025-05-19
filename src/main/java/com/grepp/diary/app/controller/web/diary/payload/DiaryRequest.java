@@ -19,5 +19,5 @@ public class DiaryRequest {
     private List<String> keywords = new ArrayList<>();
     private LocalDate date;
     // Multipart 파일 업로드용
-    private List<MultipartFile> images = new ArrayList<>();
+    private List<MultipartFile> images;
 }
