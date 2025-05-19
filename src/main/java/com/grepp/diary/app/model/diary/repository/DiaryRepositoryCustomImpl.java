@@ -3,20 +3,17 @@ package com.grepp.diary.app.model.diary.repository;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.QDiary;
 import com.grepp.diary.app.model.diary.entity.QDiaryImg;
-import com.grepp.diary.app.model.diary.repository.DiaryRepositoryCustom;
 import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
 import com.grepp.diary.app.model.keyword.entity.QDiaryKeyword;
 import com.grepp.diary.app.model.keyword.entity.QKeyword;
 import com.grepp.diary.app.model.reply.entity.QReply;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor

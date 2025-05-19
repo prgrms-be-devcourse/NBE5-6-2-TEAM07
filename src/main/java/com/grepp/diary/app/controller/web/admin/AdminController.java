@@ -5,7 +5,6 @@ import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.dto.KeywordAdminDto;
-import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.app.model.member.MemberService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

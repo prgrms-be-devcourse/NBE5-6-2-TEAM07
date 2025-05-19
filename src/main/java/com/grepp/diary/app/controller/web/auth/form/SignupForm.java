@@ -2,7 +2,6 @@ package com.grepp.diary.app.controller.web.auth.form;
 
 import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.member.dto.MemberDto;
-import com.grepp.diary.app.model.member.entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

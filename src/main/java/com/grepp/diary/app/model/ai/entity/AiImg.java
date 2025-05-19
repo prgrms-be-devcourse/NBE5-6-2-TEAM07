@@ -1,7 +1,6 @@
 package com.grepp.diary.app.model.ai.entity;
 
 import com.grepp.diary.app.model.diary.code.DiaryImgType;
-import com.grepp.diary.app.model.diary.entity.Diary;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
