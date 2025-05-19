@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.web.auth;
 
 import com.grepp.diary.app.controller.web.auth.form.SettingEmailForm;
+import com.grepp.diary.app.controller.web.auth.form.SettingPasswordForm;
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
 import com.grepp.diary.app.model.ai.AiChatService;
@@ -424,9 +425,6 @@ public class AuthController {
         }
 
         String userId = authentication.getName();
-        System.out.println("[DEBUG]" + userId);
-        System.out.println("[DEBUG]" + settingEmailForm.getPassword());
-        System.out.println("[DEBUG]" + settingEmailForm.getNewEmail());
 
         // 비밀번호 확인 실패시
         if(!memberService.isPasswordValid(userId, settingEmailForm.getPassword())) {
@@ -436,10 +434,44 @@ public class AuthController {
 
         boolean isSuccess = memberService.updateEmail(userId, settingEmailForm.getNewEmail());
         if(!isSuccess) {
-            redirectAttributes.addFlashAttribute("message", "이메일 변경도중 문제가 발생하였습니다");
+            redirectAttributes.addFlashAttribute("message", "이메일 변경 도중 문제가 발생하였습니다");
             return "redirect:/app/settings/email";
         }
         redirectAttributes.addFlashAttribute("message", "성공적으로 이메일을 변경하였습니다");
+        return "redirect:/app/settings";
+    }
+
+    // 회원 비밀번호 변경 요청
+    @PostMapping("/settings/update-password")
+    public String updatePassword(
+        @Valid @ModelAttribute("passwordForm") SettingPasswordForm settingPasswordForm,
+        Authentication authentication,
+        BindingResult bindingResult,
+        RedirectAttributes redirectAttributes
+    ) {
+        if(bindingResult.hasErrors()) {
+            return "redirect:/app/settings/password";
+        }
+
+        String userId = authentication.getName();
+        System.out.println("[DEBUG]" + settingPasswordForm.getCurrentPassword());
+        System.out.println("[DEBUG]" + settingPasswordForm.getNewPassword());
+        System.out.println("[DEBUG]" + settingPasswordForm.getCheckPassword());
+
+        // 유저 검증
+        if(!memberService.isPasswordValid(userId, settingPasswordForm.getCurrentPassword())) {
+            bindingResult.rejectValue("currentPassword", "currentPassword.invalid", "비밀번호가 일치하지 않습니다.");
+            System.out.println("[DEBUG] error while validating user");
+            return "redirect:/app/settings/password";
+        }
+
+        boolean isSuccess = memberService.updatePassword(userId, settingPasswordForm.getNewPassword());
+        if(!isSuccess) {
+            redirectAttributes.addFlashAttribute("message", "비밀번호 변경 도중 문제가 발생하였습니다");
+            System.out.println("[DEBUG] error while updating password");
+            return "redirect:/app/settings/password";
+        }
+        redirectAttributes.addFlashAttribute("message", "성공적으로 비밀번호를 변경하였습니다");
         return "redirect:/app/settings";
     }
 }

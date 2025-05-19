@@ -102,4 +102,9 @@ public class MemberService {
     public boolean updateEmail(String userId, String email) {
         return memberRepository.updateEmail(userId, email) > 0;
     }
+
+    @Transactional
+    public boolean updatePassword(String userId, String password) {
+        return memberRepository.updatePassword(userId, passwordEncoder.encode(password)) > 0;
+    }
 }
