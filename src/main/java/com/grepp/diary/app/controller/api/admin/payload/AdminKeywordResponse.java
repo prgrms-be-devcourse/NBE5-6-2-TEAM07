@@ -26,8 +26,8 @@ public record AdminKeywordResponse(
         }
     }
 
-    public static AdminKeywordResponse fromDtoList(List<KeywordAdminDto> kewords) {
-        List<KeywordInfo> keywordInfos = kewords.stream().map(KeywordInfo::fromDto).toList();
+    public static AdminKeywordResponse fromDtoList(List<KeywordAdminDto> keywords) {
+        List<KeywordInfo> keywordInfos = keywords.stream().map(KeywordInfo::fromDto).toList();
         return new AdminKeywordResponse(keywordInfos);
     }
 }

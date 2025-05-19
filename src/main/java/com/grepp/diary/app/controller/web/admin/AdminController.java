@@ -1,5 +1,6 @@
 package com.grepp.diary.app.controller.web.admin;
 
+import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
@@ -30,7 +31,7 @@ public class AdminController {
         List<KeywordAdminDto> popularKeywords = keywordService.getMostPopular();
         Integer memberCount = memberService.getAllMemberCount();
         Integer monthDiaryCount = diaryService.getMonthDiariesCount();
-        List<List<Object>> popularCustoms = customService.getMostPopular();
+        List<AiAdminDto> popularCustoms = customService.getAiByLimit(5);
 
         model.addAttribute("popularKeywords", popularKeywords);
         model.addAttribute("memberCount", memberCount);
@@ -44,5 +45,17 @@ public class AdminController {
     public String keyword() {
 
         return "admin/admin-keyword";
+    }
+
+    @GetMapping("ai")
+    public String ai() {
+
+        return "admin/admin-ai";
+    }
+
+    @GetMapping("ai/write")
+    public String aiWrite() {
+
+        return "admin/admin-ai-write";
     }
 }
