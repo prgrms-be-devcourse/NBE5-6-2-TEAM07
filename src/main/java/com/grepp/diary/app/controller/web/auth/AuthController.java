@@ -451,14 +451,10 @@ public class AuthController {
         }
 
         String userId = authentication.getName();
-        System.out.println("[DEBUG]" + settingPasswordForm.getCurrentPassword());
-        System.out.println("[DEBUG]" + settingPasswordForm.getNewPassword());
-        System.out.println("[DEBUG]" + settingPasswordForm.getCheckPassword());
 
         // 유저 검증
         if(!memberService.validUser(userId, settingPasswordForm.getCurrentPassword())) {
             bindingResult.rejectValue("currentPassword", "currentPassword.invalid", "비밀번호가 일치하지 않습니다.");
-            System.out.println("[DEBUG] error while validating user");
             return "redirect:/app/settings/password";
         }
 
