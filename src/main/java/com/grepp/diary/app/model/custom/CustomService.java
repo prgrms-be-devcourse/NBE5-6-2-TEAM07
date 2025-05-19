@@ -2,6 +2,7 @@ package com.grepp.diary.app.model.custom;
 
 import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.custom.dto.CustomAIDto;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.custom.repository.CustomRepository;
 import com.querydsl.core.Tuple;
@@ -22,7 +23,7 @@ public class CustomService {
     private final ModelMapper mapper;
 
     public Optional<Custom> findByUserId(String userId) {
-        return customRepository.findByMember_UserId(userId);
+        return customRepository.findByMemberUserId(userId);
     }
 
     public List<AiAdminDto> getAiByLimit(Integer limit) {
@@ -43,5 +44,9 @@ public class CustomService {
 
     public void save(Custom custom) {
         customRepository.save(custom);
+    }
+
+    public CustomAIDto getCustomAiByUserId(String id) {
+        return customRepository.getCustomAiByUserId(id);
     }
 }

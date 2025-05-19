@@ -56,5 +56,37 @@ document.addEventListener("DOMContentLoaded", () => {
       card.appendChild(button);
       container.appendChild(card);
     });
+
+    return fetch("/api/custom")
+  })
+  .then(res => res.json())
+  .then(setting => {
+    // AI 카드 중 이름이 일치하는 카드 선택
+    const cards = container.querySelectorAll(".ai-card");
+    cards.forEach(card => {
+      const name = card.querySelector(".ai-name")?.textContent?.trim();
+      const button = card.querySelector(".select-button");
+      if (name === setting.name) {
+        card.classList.add("selected");
+        button.classList.add("selected");
+        button.innerHTML = `<i class="fa-solid fa-check"></i> 선택됨`;
+        selectedInput.value = setting.name; // 또는 ai.id로 매칭되도록 조정 필요
+        currentSelectedCard = card;
+      }
+    });
+
+    // 말투 설정 (tone)
+    const toneRadios = document.querySelectorAll('input[name="tone"]');
+    toneRadios.forEach(radio => {
+      radio.checked = (setting.isFormal && radio.value === "formal") ||
+          (!setting.isFormal && radio.value === "friendly");
+    });
+
+    // 답변 길이 설정 (length)
+    const lengthRadios = document.querySelectorAll('input[name="length"]');
+    lengthRadios.forEach(radio => {
+      radio.checked = (setting.isLong && radio.value === "long") ||
+          (!setting.isLong && radio.value === "short");
+    });
   });
 });
