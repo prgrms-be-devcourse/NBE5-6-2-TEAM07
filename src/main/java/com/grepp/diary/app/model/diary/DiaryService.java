@@ -22,6 +22,7 @@ import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.app.model.reply.entity.Reply;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.response.ResponseCode;
+import com.grepp.diary.infra.util.file.FileUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +60,8 @@ public class DiaryService {
     private final KeywordRepository keywordRepository;
     private final DiaryImgRepository diaryImgRepository;
     private final DiaryKeywordRepository diaryKeywordRepository;
+
+    private final FileUtil fileUtil;
 
     /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다. */
     public List<Diary> getDiariesDateBetween(String userId, LocalDate start, LocalDate end) {
@@ -169,7 +172,6 @@ public class DiaryService {
                                                  .map(name -> {
                                                      Keyword keywordEntity = keywordRepository.findByName(name)
                                                                                               .orElseThrow(() -> new IllegalArgumentException("키워드 없음: " + name));
-
                                                      DiaryKeyword dk = new DiaryKeyword();
                                                      dk.setDiaryId(diary);
                                                      dk.setKeywordId(keywordEntity);
@@ -183,7 +185,7 @@ public class DiaryService {
         if (form.getImages() != null && !form.getImages().isEmpty()) {
             List<DiaryImg> imageList = form.getImages().stream()
                                            .filter(file -> !file.isEmpty())
-                                           .map(file -> saveFileAndBuildEntity(file, diary))
+                                           .map(file -> fileUtil.saveFileAndBuildEntity(file, diary))
                                            .collect(Collectors.toList());
             diaryImgRepository.saveAll(imageList);
         }
@@ -192,42 +194,7 @@ public class DiaryService {
 
     }
 
-    private DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
-        //String uploadDir = "src/main/resources/photo";
 
-        if (diary.getDiaryId() == null) {
-            throw new IllegalArgumentException("Diary must be saved before saving image (diaryId is null)");
-        }
-
-        String diaryId = String.valueOf(diary.getDiaryId());
-        String projectRoot = System.getProperty("user.dir");  //프로젝트 폴더 경로
-        String uploadDir = projectRoot + File.separator + "photo" + File.separator + diaryId;
-
-        String originalFilename = file.getOriginalFilename();
-        String uuid = UUID
-            .randomUUID().toString();
-        String renamedName = uuid + "_" + originalFilename;
-        Path targetPath = Paths
-            .get(uploadDir).resolve(renamedName).normalize();
-
-        try {
-            Files.createDirectories(targetPath.getParent()); // 폴더 없으면 생성
-            file.transferTo(targetPath.toFile()); // 실제 파일 저장
-        } catch (IOException e) {
-            throw new RuntimeException("파일 저장 실패: " + originalFilename, e);
-        }
-
-        String webPath = "photo/" + diaryId + "/" + renamedName; //프론트에서 접근 가능하도록 DB에 저장할 웹 경로 생성
-
-        DiaryImg img = new DiaryImg();
-        img.setDiary(diary);
-        img.setOriginName(originalFilename);
-        img.setRenamedName(renamedName);
-        img.setSavePath(webPath);
-        img.setType(DiaryImgType.THUMBNAIL); // 기본 타입
-        img.setIsUse(true);
-        return img;
-    }
 
     public Optional<Diary> findDiaryByUserIdAndDate(String userId, LocalDate targetDate) {
         return diaryRepository.findDiaryWithAllRelations(userId, targetDate);
@@ -258,7 +225,7 @@ public class DiaryService {
         diaryRepository.delete(diary);
     }
 
-
+    @Transactional
     public void updateDiary(String username, DiaryEditRequest request, List<MultipartFile> newImages)
         throws AccessDeniedException {
         Diary diary = diaryRepository.findById(request.getDiaryId())
@@ -271,7 +238,22 @@ public class DiaryService {
         diary.setContent(request.getContent());
         diary.setDate(request.getDate());
 
-//        diaryKeywordRepository.deleteByDiary(diary);
+        diaryKeywordRepository.deleteByDiary(diary);
+
+        // 키워드를 선택했을 경우 키워드 저장
+        if (request.getKeywords() != null && !request.getKeywords().isEmpty()) {
+            List<DiaryKeyword> keywordList = request.getKeywords().stream()
+                                                 .distinct()
+                                                 .map(name -> {
+                                                     Keyword keywordEntity = keywordRepository.findByName(name)
+                                                                                              .orElseThrow(() -> new IllegalArgumentException("키워드 없음: " + name));
+                                                     DiaryKeyword dk = new DiaryKeyword();
+                                                     dk.setDiaryId(diary);
+                                                     dk.setKeywordId(keywordEntity);
+                                                     return dk;
+                                                 }).collect(Collectors.toList());
+
+
 
     }
 
