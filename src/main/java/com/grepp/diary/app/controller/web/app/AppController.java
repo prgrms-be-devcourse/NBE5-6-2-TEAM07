@@ -1,5 +1,6 @@
 package com.grepp.diary.app.controller.web.app;
 
+import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.member.MemberService;
@@ -30,10 +31,17 @@ public class AppController {
         }
 
         String userId = authentication.getName();
+        Member member = memberService.getMemberByUserId(userId);
+        Role role = member.getRole();
+
+        // 관리자면 신규회원 전용 페이지가 아니라 /admin 페이지로 redirect
+        if( role == Role.ROLE_ADMIN ) {
+            return "redirect:/admin";
+        }
+
         // custom 테이블에서 userId로 조회
         Optional<Custom> custom = customService.findByUserId(userId);
 
-        Member member = memberService.getMemberByUserId(userId);
         String name = member.getName();
         model.addAttribute("name", name);
 
