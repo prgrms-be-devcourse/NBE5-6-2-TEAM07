@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.diary.entity;
 
 import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.infra.util.file.FileDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,11 +31,18 @@ public class DiaryImg {
     private DiaryImgType type;
     private String originName;
     private String renamedName;
-    private Boolean isUse;
+    private Boolean isUse = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id", nullable = false)
     private Diary diary;
+
+    public DiaryImg(DiaryImgType type, FileDto fileDto) {
+        this.type = type;
+        this.renamedName = fileDto.renameFileName();
+        this.originName = fileDto.originFileName();
+        this.savePath = fileDto.savePath();
+    }
 
     public String getRenamedPath(){
         return "/download/" + savePath + renamedName;
