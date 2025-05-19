@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -47,6 +48,11 @@ public class CustomService {
     }
 
     public CustomAIDto getCustomAiByUserId(String id) {
-        return customRepository.getCustomAiByUserId(id);
+        return customRepository.getCustomByUserId(id);
+    }
+
+    @Transactional
+    public boolean updateCustom(String userId, CustomAIDto customAIDto) {
+        return customRepository.updateCustomByUserId(userId, customAIDto) > 0;
     }
 }

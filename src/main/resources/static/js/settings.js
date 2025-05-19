@@ -6,11 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("aiForm").appendChild(selectedInput);
 
   let currentSelectedCard = null;
+  let aiList = [];
 
   fetch("/api/ai/list")
   .then(response => response.json())
   .then(data => {
-    const aiList = data.aiInfoList;
+    aiList = data.aiInfoList;
 
     aiList.forEach((ai, index) => {
       const card = document.createElement("div");
@@ -55,38 +56,43 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       card.appendChild(button);
       container.appendChild(card);
+      card.setAttribute("data-ai-id", ai.id);
     });
 
     return fetch("/api/custom")
   })
   .then(res => res.json())
   .then(setting => {
+    selectedInput.value = setting.aiId;
     // AI 카드 중 이름이 일치하는 카드 선택
     const cards = container.querySelectorAll(".ai-card");
     cards.forEach(card => {
-      const name = card.querySelector(".ai-name")?.textContent?.trim();
       const button = card.querySelector(".select-button");
-      if (name === setting.name) {
+      const aiId = parseInt(card.getAttribute("data-ai-id"), 10);
+      if (aiId === setting.aiId) {
         card.classList.add("selected");
         button.classList.add("selected");
         button.innerHTML = `<i class="fa-solid fa-check"></i> 선택됨`;
-        selectedInput.value = setting.name; // 또는 ai.id로 매칭되도록 조정 필요
+        const matchedAi = aiList.find(ai => ai.name === setting.name);
+        if (matchedAi) {
+          selectedInput.value = matchedAi.id;
+        }
         currentSelectedCard = card;
       }
     });
 
     // 말투 설정 (tone)
-    const toneRadios = document.querySelectorAll('input[name="tone"]');
+    const toneRadios = document.querySelectorAll('input[name="isFormal"]');
     toneRadios.forEach(radio => {
-      radio.checked = (setting.isFormal && radio.value === "formal") ||
-          (!setting.isFormal && radio.value === "friendly");
+      radio.checked = (setting.isFormal && radio.value === "true") ||
+          (!setting.isFormal && radio.value === "false");
     });
 
     // 답변 길이 설정 (length)
-    const lengthRadios = document.querySelectorAll('input[name="length"]');
+    const lengthRadios = document.querySelectorAll('input[name="isLong"]');
     lengthRadios.forEach(radio => {
-      radio.checked = (setting.isLong && radio.value === "long") ||
-          (!setting.isLong && radio.value === "short");
+      radio.checked = (setting.isLong && radio.value === "true") ||
+          (!setting.isLong && radio.value === "false");
     });
   });
 });

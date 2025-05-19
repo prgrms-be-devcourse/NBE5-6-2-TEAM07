@@ -22,7 +22,6 @@ public class CustomRepositoryImpl implements CustomRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final QAi ai = QAi.ai;
     private final QCustom custom = QCustom.custom;
-    private final QMember member = QMember.member;
 
     @Override
     public List<Tuple> getAiByLimit(Integer limit) {
@@ -43,18 +42,28 @@ public class CustomRepositoryImpl implements CustomRepositoryCustom {
     }
 
     @Override
-    public CustomAIDto getCustomAiByUserId(String userId) {
+    public CustomAIDto getCustomByUserId(String userId) {
         return queryFactory
             .select(Projections.constructor(
                 CustomAIDto.class,
-                ai.name,
+                custom.ai.aiId,
                 custom.isFormal,
                 custom.isLong
             ))
             .from(custom)
-            .leftJoin(ai).on(custom.ai.aiId.eq(ai.aiId))
             .where(custom.member.userId.eq(userId))
             .fetchOne();
 
+    }
+
+    @Override
+    public int updateCustomByUserId(String userId, CustomAIDto customAIDto) {
+        long updated = queryFactory
+            .update(custom)
+            .set(custom.ai.aiId, customAIDto.getAiId())
+            .set(custom.isFormal, customAIDto.isFormal())
+            .set(custom.isLong, customAIDto.isLong())
+            .where(custom.member.userId.eq(userId)).execute();
+        return (int) updated;
     }
 }

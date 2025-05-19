@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CustomAIDto {
 
-    private String name;
+    private Integer aiId;
     private boolean isFormal;
     private boolean isLong;
 }

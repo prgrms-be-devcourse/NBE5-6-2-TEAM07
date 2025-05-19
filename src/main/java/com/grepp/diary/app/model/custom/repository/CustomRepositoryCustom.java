@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface CustomRepositoryCustom {
     List<Tuple> getAiByLimit(Integer limit);
-    CustomAIDto getCustomAiByUserId(String id);
+    CustomAIDto getCustomByUserId(String id);
+    int updateCustomByUserId(String userId, CustomAIDto customAIDto);
 }
 
