@@ -3,9 +3,8 @@ package com.grepp.diary.app.controller.web.auth;
 import com.grepp.diary.app.controller.web.auth.form.SettingEmailForm;
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
-import com.grepp.diary.app.model.ai.AiChatService;
-import com.grepp.diary.app.model.ai.AiRepository;
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.ai.repository.AiRepository;
 import com.grepp.diary.app.model.auth.AuthService;
 import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.custom.CustomService;
@@ -15,7 +14,6 @@ import com.grepp.diary.app.model.member.dto.MemberDto;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.response.ResponseCode;
-import dev.langchain4j.service.spring.AiService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -23,8 +21,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -224,7 +220,7 @@ public class AuthController {
 
         if (sessionCode != null && sessionCode.equals(code)) {
             try {
-                String userId = authService.findUserIdByEmail(sessionEmail);
+                String userId = memberService.findUserIdByEmail(sessionEmail);
                 session.removeAttribute("authCode");
                 session.removeAttribute("authEmail");
                 model.addAttribute("message", userId);
@@ -261,7 +257,7 @@ public class AuthController {
             }
 
             // 2. 이메일 + 아이디로 사용자 존재 확인
-            if (!authService.existsByUserIdAndEmail(userId, email)) {
+            if (!memberService.existsByUserIdAndEmail(userId, email)) {
                 model.addAttribute("error", "일치하는 계정이 없습니다.");
                 model.addAttribute("type", "pw");
                 return "member/find-idpw";
@@ -332,7 +328,7 @@ public class AuthController {
 
         try {
             // 이전 비밀번호와 비교
-            String currentEncodedPassword = authService.getEncodedPassword(userId, email);
+            String currentEncodedPassword = memberService.getEncodedPassword(userId, email);
 
             // 현재 비밀번호와 새 비밀번호 비교
             if (passwordEncoder.matches(newPassword, currentEncodedPassword)) {
@@ -344,7 +340,7 @@ public class AuthController {
 
             // 비밀번호 암호화 후 변경
             String encodedPassword = passwordEncoder.encode(newPassword);
-            authService.updatePassword(userId, email, encodedPassword);
+            memberService.updatePassword(userId, email, encodedPassword);
 
 //            model.addAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
             return "member/find-idpw-verification";

@@ -75,32 +75,4 @@ public class AuthService implements UserDetailsService {
 
         return code;
     }
-
-    public String findUserIdByEmail(String sessionEmail) {
-        return memberRepository.findByEmail(sessionEmail)
-            .map(Member::getUserId)
-            .orElseThrow(
-                () -> new CommonException(ResponseCode.BAD_REQUEST, "해당 이메일로 가입된 계정이 없습니다."));
-    }
-
-    public boolean existsByUserIdAndEmail(String userId, String email) {
-        return memberRepository.existsByUserIdAndEmail(userId, email);
-    }
-
-    public String getEncodedPassword(String userId, String email) {
-        return memberRepository.findByUserIdAndEmail(userId, email)
-            .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND))
-            .getPassword();
-    }
-
-    @Transactional
-    public void updatePassword(String userId, String email, String encodedPassword) {
-        Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, email);
-        if (optionalMember.isPresent()) {
-            Member member = optionalMember.get();
-            member.setPassword(encodedPassword); // 암호화된 비밀번호 설정
-        } else {
-            throw new IllegalArgumentException("해당 사용자를 찾을 수 없습니다.");
-        }
-    }
 }

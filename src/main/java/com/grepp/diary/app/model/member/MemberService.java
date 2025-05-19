@@ -91,6 +91,7 @@ public class MemberService {
     }
 
     // 비밀번호 비교를 통한 사용자 검증
+    @Transactional
     public boolean isPasswordValid(String userId, String rawPassword) {
         Member member = memberRepository.findByUserId(userId)
             .orElseThrow(() -> new CommonException(ResponseCode.MEMBER_NOT_FOUND));
@@ -101,5 +102,31 @@ public class MemberService {
     @Transactional
     public boolean updateEmail(String userId, String email) {
         return memberRepository.updateEmail(userId, email) > 0;
+    }
+
+    @Transactional
+    public String getEncodedPassword(String userId, String email) {
+        return memberRepository.findByUserIdAndEmail(userId, email)
+            .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND))
+            .getPassword();
+    }
+
+    @Transactional
+    public void updatePassword(String userId, String email, String encodedPassword) {
+        Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, email);
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            member.setPassword(encodedPassword); // 암호화된 비밀번호 설정
+        } else {
+            throw new IllegalArgumentException("해당 사용자를 찾을 수 없습니다.");
+        }
+    }
+
+    @Transactional
+    public String findUserIdByEmail(String sessionEmail) {
+        return memberRepository.findByEmail(sessionEmail)
+            .map(Member::getUserId)
+            .orElseThrow(
+                () -> new CommonException(ResponseCode.BAD_REQUEST, "해당 이메일로 가입된 계정이 없습니다."));
     }
 }
