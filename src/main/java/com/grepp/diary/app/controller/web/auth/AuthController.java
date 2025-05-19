@@ -4,7 +4,6 @@ import com.grepp.diary.app.controller.web.auth.form.SettingEmailForm;
 import com.grepp.diary.app.controller.web.auth.form.SettingPasswordForm;
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
-import com.grepp.diary.app.model.ai.AiChatService;
 import com.grepp.diary.app.model.ai.AiRepository;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.auth.AuthService;
@@ -16,7 +15,6 @@ import com.grepp.diary.app.model.member.dto.MemberDto;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.response.ResponseCode;
-import dev.langchain4j.service.spring.AiService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,8 +22,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -427,7 +423,7 @@ public class AuthController {
         String userId = authentication.getName();
 
         // 비밀번호 확인 실패시
-        if(!memberService.isPasswordValid(userId, settingEmailForm.getPassword())) {
+        if(!memberService.validUser(userId, settingEmailForm.getPassword())) {
             bindingResult.rejectValue("password", "password.invalid", "비밀번호가 일치하지 않습니다");
             return "redirect:/app/settings/email";
         }
@@ -459,7 +455,7 @@ public class AuthController {
         System.out.println("[DEBUG]" + settingPasswordForm.getCheckPassword());
 
         // 유저 검증
-        if(!memberService.isPasswordValid(userId, settingPasswordForm.getCurrentPassword())) {
+        if(!memberService.validUser(userId, settingPasswordForm.getCurrentPassword())) {
             bindingResult.rejectValue("currentPassword", "currentPassword.invalid", "비밀번호가 일치하지 않습니다.");
             System.out.println("[DEBUG] error while validating user");
             return "redirect:/app/settings/password";
