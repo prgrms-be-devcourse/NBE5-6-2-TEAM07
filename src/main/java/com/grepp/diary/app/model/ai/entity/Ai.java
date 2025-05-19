@@ -7,9 +7,11 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.ToString;
 
 @Entity
 @Getter @Setter
+@ToString
 public class Ai {
 
     @Id
@@ -30,7 +32,7 @@ public class Ai {
     private String prompt;
 
     @Column(name = "is_use")
-    private boolean isUse;
+    private Boolean isUse;
 
     @OneToMany(mappedBy = "ai", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Custom> customs = new ArrayList<>();
