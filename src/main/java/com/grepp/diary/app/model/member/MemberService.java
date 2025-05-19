@@ -8,11 +8,9 @@ import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.mail.MailTemplate;
 import com.grepp.diary.infra.response.ResponseCode;
 import jakarta.transaction.Transactional;
-import java.nio.channels.FileChannel;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -91,7 +89,7 @@ public class MemberService {
     }
 
     // 비밀번호 비교를 통한 사용자 검증
-    public boolean isPasswordValid(String userId, String rawPassword) {
+    public boolean validUser(String userId, String rawPassword) {
         Member member = memberRepository.findByUserId(userId)
             .orElseThrow(() -> new CommonException(ResponseCode.MEMBER_NOT_FOUND));
 
@@ -101,5 +99,10 @@ public class MemberService {
     @Transactional
     public boolean updateEmail(String userId, String email) {
         return memberRepository.updateEmail(userId, email) > 0;
+    }
+
+    @Transactional
+    public boolean updatePassword(String userId, String password) {
+        return memberRepository.updatePassword(userId, passwordEncoder.encode(password)) > 0;
     }
 }
