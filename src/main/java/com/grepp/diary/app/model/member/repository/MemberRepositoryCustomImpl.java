@@ -23,4 +23,16 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
         return (int) updated;
     }
+
+    @Override
+    public int updatePassword(String userId, String password) {
+        long updated = queryFactory
+            .update(member)
+            .set(member.password, password)
+            .where(member.userId.eq(userId))
+            .execute();
+        return (int) updated;
+    }
+
+
 }
