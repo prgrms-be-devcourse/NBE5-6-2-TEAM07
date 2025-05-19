@@ -2,7 +2,12 @@ package com.grepp.diary.app.controller.api.diary;
 
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryDailyEmotionResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryEmotionCountResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.infra.util.date.DateUtil;
+import com.grepp.diary.infra.util.date.dto.DateRangeDto;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiaryApiController {
 
     private final DiaryService diaryService;
+    private final DateUtil dateUtil;
+
 
     //TODO : Auth 구현되면 @AuthnticationPrincipal CustomUserDetails user 로 변경 할 것
     @GetMapping("/calendar")
@@ -46,25 +53,67 @@ public class DiaryApiController {
         );
     }
 
+    // 월간/연간 작성된 일기수 데이터 API
     @GetMapping("/dashboard/count")
     public int getDiaryCount(
         @RequestParam String userId,
         @RequestParam String period,
         @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
     ){
-        LocalDate now = (date != null)?date:LocalDate.now();
-        LocalDate start, end;
-
-        if("monthly".equals(period)){
-            start = now.withDayOfMonth(1);
-            end = now.withDayOfMonth(now.lengthOfMonth());
-        } else if( "yearly".equals(period)){
-            start = now.withDayOfYear(1);
-            end = now.withDayOfYear(now.lengthOfYear());
-        } else {
-            throw new IllegalArgumentException("Invalid period value: " + period);
-        }
+        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        LocalDate start = range.start();
+        LocalDate end = range.end();
 
         return diaryService.getUserDiaryCount(userId, start, end);
+    }
+
+    // 기분 흐름 데이터(월간) API
+    @GetMapping("/emotion/flow/monthly")
+    public DiaryDailyEmotionResponse getEmotionFlow(
+        @RequestParam String userId,
+        @RequestParam(required = false) LocalDate date
+    ) {
+        DateRangeDto range = dateUtil.toDateRangeDto("monthly", date);
+        LocalDate start = range.start();
+        LocalDate end = range.end();
+
+        return DiaryDailyEmotionResponse.fromEntityList(
+            diaryService.getDiariesDateBetween(userId, start, end)
+        );
+
+    }
+
+    // 기분 흐름 데이터(연간) API
+    @GetMapping("/emotion/flow/yearly")
+    public DiaryMonthlyEmotionResponse getMonthlyEmotionAvg(
+        @RequestParam String userId,
+        @RequestParam(required = false) int year
+    ) {
+        return DiaryMonthlyEmotionResponse.fromDtoList(
+            diaryService.getMonthlyEmotionAvgOfYear(userId, year)
+        );
+    }
+
+    // 특정 날에 대한 일기 유무 API
+    @GetMapping("/check")
+    public boolean checkDiaryOfDay(
+        @RequestParam String userId,
+        @RequestParam LocalDate date
+    ) {
+        LocalDate nextDate = date.plusDays(1);
+
+        return !diaryService.getDiariesDateBetween(userId, date, nextDate).isEmpty();
+    }
+
+    // 특정 기간내의 작성된 일기 기준 감정별 개수 API
+    @GetMapping("/emotion/count")
+    public DiaryEmotionCountResponse getEmotionCount(
+        @RequestParam String userId,
+        @RequestParam String period,
+        @RequestParam int value
+    ) {
+        return DiaryEmotionCountResponse.fromDtoList(
+            diaryService.getEmotionsCount(userId, period, value)
+        );
     }
 }

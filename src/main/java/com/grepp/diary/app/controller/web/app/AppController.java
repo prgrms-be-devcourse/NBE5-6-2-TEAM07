@@ -1,8 +1,15 @@
 package com.grepp.diary.app.controller.web.app;
 
+import com.grepp.diary.app.model.custom.CustomService;
+import com.grepp.diary.app.model.custom.entity.Custom;
+import com.grepp.diary.app.model.member.MemberService;
+import com.grepp.diary.app.model.member.entity.Member;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -12,8 +19,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("app")
 public class AppController {
 
+    private final CustomService customService;
+    private final MemberService memberService;
+
     @GetMapping
-    public String showHome() {
+    public String showHome(Authentication authentication, Model model) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/"; // 인증 안 된 경우 로그인 페이지로
+        }
+
+        String userId = authentication.getName();
+        // custom 테이블에서 userId로 조회
+        Optional<Custom> custom = customService.findByUserId(userId);
+
+        Member member = memberService.getMemberByUserId(userId);
+        String name = member.getName();
+        model.addAttribute("name", name);
+
+        if (custom.isEmpty()) {
+            return "onboarding/onboarding"; // 신규회원 전용 페이지
+        }
         return "app/home";
     }
 
@@ -25,5 +51,25 @@ public class AppController {
     @GetMapping("/dashboard")
     public String showDashboard(){
         return "app/member-dashboard";
+    }
+
+    @GetMapping("/settings")
+    public String showSetting(){
+        return "app/settings/settings";
+    }
+
+    @GetMapping("/settings/email")
+    public String showChangeEmail(){
+        return "app/settings/settings-email";
+    }
+
+    @GetMapping("/settings/password")
+    public String showChangePassword(){
+        return "app/settings/settings-password";
+    }
+
+    @GetMapping("/settings/ai")
+    public String showChangeAi(){
+        return "app/settings/settings-ai";
     }
 }

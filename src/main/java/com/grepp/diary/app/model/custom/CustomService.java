@@ -2,10 +2,13 @@ package com.grepp.diary.app.model.custom;
 
 import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.custom.repository.CustomRepository;
 import com.querydsl.core.Tuple;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,10 @@ public class CustomService {
 
     private final CustomRepository customRepository;
     private final ModelMapper mapper;
+
+    public Optional<Custom> findByUserId(String userId) {
+        return customRepository.findByMember_UserId(userId);
+    }
 
     public List<AiAdminDto> getAiByLimit(Integer limit) {
         List<Tuple> result = customRepository.getAiByLimit(limit);
@@ -34,5 +41,9 @@ public class CustomService {
                 return aiDto;
             })
             .collect(Collectors.toList());
+    }
+
+    public void save(Custom custom) {
+        customRepository.save(custom);
     }
 }

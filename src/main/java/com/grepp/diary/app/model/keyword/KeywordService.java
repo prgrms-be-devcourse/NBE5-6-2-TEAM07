@@ -1,11 +1,13 @@
 package com.grepp.diary.app.model.keyword;
 
-import com.grepp.diary.app.controller.api.admin.payload.AdminKeywordResponse;
 import com.grepp.diary.app.controller.api.admin.payload.AdminKeywordWriteRequest;
 import com.grepp.diary.app.model.keyword.dto.KeywordAdminDto;
+import com.grepp.diary.app.model.keyword.dto.KeywordDto;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.app.model.keyword.repository.KeywordRepository;
 import com.querydsl.core.Tuple;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,5 +87,22 @@ public class KeywordService {
         keywordRepository.save(keyword);
 
         return true;
+    }
+
+    public List<KeywordDto> getTop5Keywords(String userId, LocalDate start, LocalDate end) {
+
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
+
+        List<Tuple> tuples = keywordRepository.findTop5KeywordsByUserIdAndDate(userId, startDateTime, endDateTime);
+
+        return tuples.stream()
+            .map(t -> {
+                String name = t.get(0, String.class);
+                Long count = t.get(1, Long.class);
+
+                return new KeywordDto(name, Math.toIntExact(count));
+            })
+            .toList();
     }
 }
