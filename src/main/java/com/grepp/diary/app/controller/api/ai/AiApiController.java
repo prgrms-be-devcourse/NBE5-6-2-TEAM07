@@ -3,6 +3,7 @@ package com.grepp.diary.app.controller.api.ai;
 import com.grepp.diary.app.controller.api.ai.AiRequestQueue.AiRequestTask;
 import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
 import com.grepp.diary.app.controller.api.ai.payload.Message;
+import com.grepp.diary.app.model.ai.AiChatService;
 import com.grepp.diary.app.model.ai.AiReplyScheduler;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.chat.ChatService;
@@ -11,14 +12,12 @@ import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.member.entity.Member;
-import com.grepp.diary.app.model.ai.AiChatService;
 import com.grepp.diary.infra.utils.XssProtectionUtils;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +50,7 @@ public class AiApiController {
         return replyContent;
     }
 
-    @GetMapping("retry-failed-replies")
+    @GetMapping("retry-batch")
     @ResponseBody
     public String retryFailedReplies() {
         List<DiaryDto> failedDiaries = diaryService.getNoReplyDtos();
@@ -61,20 +60,6 @@ public class AiApiController {
         log.info("Start retry for {} failed replies", failedDiaries.size());
         aiReplyScheduler.schedulingBatchProcess(failedDiaries, 0);
         return "Complete retry for " + failedDiaries.size() + " failed replies";
-    }
-
-    @GetMapping("chat")
-    public String chatView(@RequestParam int diaryId, Model model) {
-        Diary diary = diaryService.getDiaryById(diaryId);
-        String replyContent = diary.getReply().getContent();
-        String aiName = diary.getMember().getCustom().getAi().getName();
-        Integer aiId = diary.getMember().getCustom().getAi().getAiId();
-        model.addAttribute("diaryId", diaryId);
-        // 렌더링 시 이스케이프 처리 X -> 여기서 이스케이프
-        model.addAttribute("diaryReply", xssUtils.escapeHtmlWithLineBreaks(replyContent));
-        model.addAttribute("aiName", aiName);
-        model.addAttribute("aiId", aiId);
-        return "api/ai/chat";
     }
 
     @PostMapping("chat")
