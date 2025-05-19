@@ -32,6 +32,12 @@ async function loadRecentDiaries(userId) {
     const right = clone.querySelector(".diary-right");
     right.textContent = diary.content || "(내용 없음)";
 
+    // 상세 페이지로 이동 이벤트 추가
+    card.addEventListener("click", () => {
+      const dateParam = diary.date;
+      window.location.href = `/diary/record?date=${dateParam}`;
+    });
+
     container.appendChild(clone);
   });
 }
