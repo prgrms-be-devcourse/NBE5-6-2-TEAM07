@@ -4,7 +4,7 @@ import com.grepp.diary.app.controller.web.auth.form.SettingEmailForm;
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
 import com.grepp.diary.app.model.ai.AiChatService;
-import com.grepp.diary.app.model.ai.AiRepository;
+import com.grepp.diary.app.model.ai.repository.AiRepository;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.auth.AuthService;
 import com.grepp.diary.app.model.auth.code.Role;
