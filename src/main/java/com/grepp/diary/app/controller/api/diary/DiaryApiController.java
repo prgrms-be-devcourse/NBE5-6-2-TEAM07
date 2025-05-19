@@ -2,7 +2,9 @@ package com.grepp.diary.app.controller.api.diary;
 
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCalendarResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryCardResponse;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryDailyEmotionResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
+import com.grepp.diary.app.controller.api.diary.payload.DiaryEmotionCountResponse;
 import com.grepp.diary.app.controller.api.diary.payload.DiaryMonthlyEmotionResponse;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.entity.Diary;
@@ -81,22 +83,34 @@ public class DiaryApiController {
         return diaryService.getUserDiaryCount(userId, start, end);
     }
 
-    // 기분 흐름 데이터 API
-    @GetMapping("/emotion/flow")
-    public DiaryMonthlyEmotionResponse getEmotionFlow(
+    // 기분 흐름 데이터(월간) API
+    @GetMapping("/emotion/flow/monthly")
+    public DiaryDailyEmotionResponse getEmotionFlow(
         @RequestParam String userId,
-        @RequestParam(defaultValue = "monthly") String period,
-        @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
+        @RequestParam(required = false) LocalDate date
     ) {
-        DateRangeDto range = dateUtil.toDateRangeDto(period, date);
+        DateRangeDto range = dateUtil.toDateRangeDto("monthly", date);
         LocalDate start = range.start();
         LocalDate end = range.end();
 
-        return DiaryMonthlyEmotionResponse.fromEntityList(
+        return DiaryDailyEmotionResponse.fromEntityList(
             diaryService.getDiariesDateBetween(userId, start, end)
+        );
+
+    }
+
+    // 기분 흐름 데이터(연간) API
+    @GetMapping("/emotion/flow/yearly")
+    public DiaryMonthlyEmotionResponse getMonthlyEmotionAvg(
+        @RequestParam String userId,
+        @RequestParam(required = false) int year
+    ) {
+        return DiaryMonthlyEmotionResponse.fromDtoList(
+            diaryService.getMonthlyEmotionAvgOfYear(userId, year)
         );
     }
 
+    // 특정 날에 대한 일기 유무 API
     @GetMapping("/check")
     public boolean checkDiaryOfDay(
         @RequestParam String userId,
@@ -139,4 +153,16 @@ public class DiaryApiController {
         }
     }
 
+
+    // 특정 기간내의 작성된 일기 기준 감정별 개수 API
+    @GetMapping("/emotion/count")
+    public DiaryEmotionCountResponse getEmotionCount(
+        @RequestParam String userId,
+        @RequestParam String period,
+        @RequestParam int value
+    ) {
+        return DiaryEmotionCountResponse.fromDtoList(
+            diaryService.getEmotionsCount(userId, period, value)
+        );
+    }
 }

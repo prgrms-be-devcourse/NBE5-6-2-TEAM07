@@ -9,6 +9,7 @@ public enum ResponseCode {
     INVALID_TOKEN("4002", HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     NOT_FOUND("4004", HttpStatus.NOT_FOUND, "비밀번호를 찾을 수 없습니다."),
     DIARY_ALREADY_EXISTS("4005", HttpStatus.CONFLICT, "해당 날짜에 작성된 일기가 이미 존재합니다."),
+    MEMBER_NOT_FOUND("4010", HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
     INTERNAL_SERVER_ERROR("5000", HttpStatus.INTERNAL_SERVER_ERROR, "서버에러 입니다.");
 
     private final String code;

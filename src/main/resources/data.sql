@@ -1,15 +1,15 @@
 INSERT INTO MEMBER (USER_ID, EMAIL, NAME, PASSWORD, ROLE, ENABLED) VALUES
-('user01', 'user01@test.com', '홍길동', '1111', 'ROLE_USER', 1),
+('user01', 'user01@test.com', '홍길동', '$2a$10$RScW/24nY32vqhHs6tlxYe7964v8rJLWPpnP1KSr6Np9oTfSYPd3C', 'ROLE_USER', 1),
 ('user02', 'user02@test.com', '김영희', '2222', 'ROLE_USER', 1),
 ('user03', 'user03@test.com', '이철수', '3333', 'ROLE_USER', 1),
 ('user04', 'user04@test.com', '박민수', '4444', 'ROLE_USER', 1),
-('admin', 'admin@test.com', '관리자', 'admin', 'ROLE_ADMIN', 1);
+('admin', 'admin@test.com', '관리자', '$2a$10$iC0JoLYyZ1kflTuNTtVsr.3rKS0Hl7jaCe4xjSxMWbFcYd0DOb0AO', 'ROLE_ADMIN', 1);
 
-INSERT INTO AI (name, prompt, is_use) VALUES
-('다정한 오소리', '사용자의 감정을 이해하고 공감하는 방식으로 답변해주세요.', 1),
-('친절한 두루미', '사용자가 자신의 감정을 더 깊이 탐색할 수 있도록 질문을 던져주세요.', 1),
-('용감한 사자', '항상 긍정적인 관점에서 사용자를 격려해주세요.', 1),
-('용맹한 거북이', '사용자의 문제에 대한 실질적인 조언을 제공해주세요.', 1);
+INSERT INTO AI (name, mbti, info, prompt, is_use) VALUES
+('다정한 오소리', 'ENFP', '저는 사용자의 감정을 이해하고 공감하는 다정한 오소리입니다.', '사용자의 감정을 이해하고 공감하는 방식으로 답변해주세요.', 1),
+('친절한 두루미', 'ISTJ', '저는 사용자가 자신의 감정을 더 깊이 탐색할 수 있도록 도와주는 친절한 두루미입니다.', '사용자가 자신의 감정을 더 깊이 탐색할 수 있도록 질문을 던져주세요.', 1),
+('용감한 사자', 'ENFJ', '저는 항상 긍정적인 관점에서 사용자를 격려해주는 용감한 사자입니다.', '항상 긍정적인 관점에서 사용자를 격려해주세요.', 1),
+('용맹한 거북이', 'ISTP', '저는 사용자의 문제에 대한 실질적인 조언을 제공하는 용맹한 거북이입니다.', '사용자의 문제에 대한 실질적인 조언을 제공해주세요.', 1);
 
 INSERT INTO CUSTOM (user_id, ai_id, is_formal, is_long) VALUES
 ('user01', 1, 0, 0),
