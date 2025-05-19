@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>대시보드</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
@@ -102,6 +105,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
   <script src="/js/emotion-map.js"></script>
   <script src="/js/sidebar.js"></script>
+  <script src="/js/logout.js"></script>
   <script src="/js/member-dashboard.js"></script>
 </body>
 </html>
