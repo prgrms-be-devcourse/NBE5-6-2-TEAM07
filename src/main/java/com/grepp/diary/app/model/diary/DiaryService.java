@@ -4,7 +4,7 @@ import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
-import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.app.model.common.code.ImgType;
 import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.dto.DiaryEmotionAvgDto;
@@ -25,12 +25,8 @@ import com.grepp.diary.infra.response.ResponseCode;
 import com.grepp.diary.infra.util.file.FileDto;
 import com.grepp.diary.infra.util.file.FileUtil;
 import jakarta.persistence.EntityNotFoundException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -158,8 +153,6 @@ public class DiaryService {
                 throw new CommonException(ResponseCode.DIARY_ALREADY_EXISTS);
             }
 
-            log.info("form : {}", form);
-
             Diary diary = new Diary();
             diary.setEmotion(form.getEmotion());
             diary.setContent(form.getContent());
@@ -197,7 +190,7 @@ public class DiaryService {
             // 사진을 업로드 했을 경우 사진 저장
             if (form.getImages() != null && !form.getImages().isEmpty()) {
                 List<FileDto> imageList = fileUtil.upload(images, "diary", savedDiary.getDiaryId());
-                DiaryImg diaryImg = new DiaryImg(DiaryImgType.THUMBNAIL, imageList.getFirst());
+                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
                 diaryImg.setDiary(diary);
                 diaryImgRepository.save(diaryImg);
 
