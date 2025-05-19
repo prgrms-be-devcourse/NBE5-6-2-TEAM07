@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class KeywordService {
 
     private final KeywordRepository keywordRepository;
@@ -62,15 +61,15 @@ public class KeywordService {
 
     @Transactional
     public Boolean modifyKeyword(AdminKeywordWriteRequest keywordWriteRequest) {
-        Optional<Keyword> optionalKeyword = keywordRepository.findById(keywordWriteRequest.id());
+        Optional<Keyword> optionalKeyword = keywordRepository.findById(keywordWriteRequest.getId());
 
         if (optionalKeyword.isEmpty()) {
             throw new RuntimeException("Keyword not found");
         }
 
         Keyword keyword = optionalKeyword.get();
-        keyword.setName(keywordWriteRequest.name());
-        keyword.setType(keywordWriteRequest.keywordType());
+        keyword.setName(keywordWriteRequest.getName());
+        keyword.setType(keywordWriteRequest.getKeywordType());
 
         keywordRepository.save(keyword);
 
@@ -81,8 +80,8 @@ public class KeywordService {
     public Boolean createKeyword(AdminKeywordWriteRequest keywordWriteRequest) {
         Keyword keyword = new Keyword();
 
-        keyword.setName(keywordWriteRequest.name());
-        keyword.setType(keywordWriteRequest.keywordType());
+        keyword.setName(keywordWriteRequest.getName());
+        keyword.setType(keywordWriteRequest.getKeywordType());
         keyword.setIsUse(true);
 
         keywordRepository.save(keyword);

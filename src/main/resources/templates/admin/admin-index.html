@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="/css/sidebar.css">
   <link rel="stylesheet" href="/css/chart.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../../static/css/keyword-management.css">
 </head>
 <body>
 <div th:replace="~{fragments/admin-sidebar :: adminSidebar}"></div>
@@ -70,15 +69,15 @@
   </div>
 </div>
 </body>
-
+<script src="/js/sidebar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:inline="javascript">
   const popularCustoms = [[${popularCustoms}]];
   const popularKeywords = [[${popularKeywords}]];
 
   document.addEventListener('DOMContentLoaded', () => {
-    const aiLabels = popularCustoms.map(e => e[0].name);
-    const aiData = popularCustoms.map(e => e[1]);
+    const aiLabels = popularCustoms.map(e => e.name);
+    const aiData = popularCustoms.map(e => e.count);
 
     const keywordLabels = popularKeywords.map(e => e.name);
     const keywordData = popularKeywords.map(e => e.count);

@@ -5,6 +5,6 @@ import com.querydsl.core.Tuple;
 import java.util.List;
 
 public interface CustomRepositoryCustom {
-    List<Tuple> getMostPopularAis();
+    List<Tuple> getAiByLimit(Integer limit);
 }
 
