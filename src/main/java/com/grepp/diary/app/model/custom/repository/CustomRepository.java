@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomRepository extends JpaRepository<Custom, Integer>, CustomRepositoryCustom {
 
-    Optional<Custom> findByMember_UserId(String userId);
+    Optional<Custom> findByMemberUserId(String userId);
 }
