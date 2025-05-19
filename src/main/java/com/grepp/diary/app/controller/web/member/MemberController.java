@@ -57,7 +57,6 @@ public class MemberController {
         }
     }
 
-
     @GetMapping("/onboarding-qna")
     public String showOnboardingQnaPqge() {
         return "onboarding/onboarding-qna";
@@ -108,9 +107,6 @@ public class MemberController {
         }
 
         String userId = authentication.getName();
-        System.out.println("[DEBUG]" + userId);
-        System.out.println("[DEBUG]" + settingEmailForm.getPassword());
-        System.out.println("[DEBUG]" + settingEmailForm.getNewEmail());
 
         // 비밀번호 확인 실패시
         if(!memberService.validUser(userId, settingEmailForm.getPassword())) {
