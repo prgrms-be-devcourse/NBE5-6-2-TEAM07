@@ -1,11 +1,10 @@
 package com.grepp.diary.app.model.custom;
 
-import com.grepp.diary.app.model.ai.dto.AiDto;
+import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.custom.repository.CustomRepository;
 import com.querydsl.core.Tuple;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +27,18 @@ public class CustomService {
         return customRepository.findByMember_UserId(userId);
     }
 
-    public List<List<Object>> getMostPopular() {
-        List<Tuple> result = customRepository.getMostPopularAis();
+    public List<AiAdminDto> getAiByLimit(Integer limit) {
+        List<Tuple> result = customRepository.getAiByLimit(limit);
 
         return result.stream()
             .map(tuple -> {
                 Ai ai = tuple.get(0, Ai.class);
                 Long count = tuple.get(1, Long.class);
-                AiDto dto = mapper.map(ai, AiDto.class);
 
-                List<Object> pairList = new ArrayList<>();
-                pairList.add(dto);
-                pairList.add(count.intValue());
+                AiAdminDto aiDto = mapper.map(ai, AiAdminDto.class);
+                aiDto.setCount(count.intValue());
 
-                return pairList;
+                return aiDto;
             })
             .collect(Collectors.toList());
     }
