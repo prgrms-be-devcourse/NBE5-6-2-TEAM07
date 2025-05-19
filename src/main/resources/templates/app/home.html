@@ -14,6 +14,10 @@
 
 <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
 <script src="/js/logout.js"></script>
+  <script th:if="${error}">
+    alert('[[${error}]]');
+  </script>
+
 
 <div class="main">
   <!--캘린더 표시 구역-->

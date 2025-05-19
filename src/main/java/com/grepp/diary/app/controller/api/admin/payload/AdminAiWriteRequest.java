@@ -1,6 +1,5 @@
 package com.grepp.diary.app.controller.api.admin.payload;
 
-import com.grepp.diary.app.model.keyword.code.KeywordType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

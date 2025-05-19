@@ -19,11 +19,17 @@
 
       <form th:action="@{/diary}" method="post" enctype="multipart/form-data" th:object="${diaryRequest}">
 
-        <!-- 날짜 표기 (예: 5월 12일 월요일) -->
         <div class="form-box">
           <div class="date-display">
-            <div class="date-text" th:text="${#temporals.format(diaryDate, 'M월 d일 E요일')}"></div>
-            <button type="button" class="date-change">날짜 변경</button>
+            <input
+                type="date"
+                id="diary-date"
+                name="date"
+                class="date-input"
+                style="display: none;"
+                th:value="${diaryDate}"> <!-- 서버에서 LocalDate를 yyyy-MM-dd로 변환해서 전달해야 함 -->
+            <div class="date-text" id="date-text" th:text="${#temporals.format(diaryDate, 'Y년 M월 d일 E요일')}"></div>
+            <button type="button" class="date-change" id="date-change-btn">날짜 변경</button>
           </div>
         </div>
 
@@ -166,9 +172,6 @@
       </form>
     </div>
   </div>
-
-
-
   <script src="/js/diary.js"></script>
   <script src="/js/sidebar.js"></script>
 

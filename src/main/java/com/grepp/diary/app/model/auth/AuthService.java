@@ -1,7 +1,6 @@
 package com.grepp.diary.app.model.auth;
 
 import com.grepp.diary.app.model.auth.domain.Principal;
-import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.infra.error.exceptions.CommonException;

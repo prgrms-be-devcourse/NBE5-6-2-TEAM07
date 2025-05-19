@@ -2,6 +2,7 @@ package com.grepp.diary.app.controller.api.ai;
 
 import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
 import com.grepp.diary.app.controller.api.ai.payload.Message;
+import com.grepp.diary.app.model.ai.AiChatService;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
@@ -9,7 +10,6 @@ import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
-import com.grepp.diary.app.model.ai.AiChatService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
