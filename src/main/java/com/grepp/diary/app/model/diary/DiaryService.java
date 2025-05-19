@@ -62,7 +62,6 @@ public class DiaryService {
     private final DiaryKeywordRepository diaryKeywordRepository;
 
     private final FileUtil fileUtil;
-
     /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다. */
     public List<Diary> getDiariesDateBetween(String userId, LocalDate start, LocalDate end) {
         LocalDateTime startDateTime = start.atStartOfDay();
@@ -238,23 +237,27 @@ public class DiaryService {
         diary.setContent(request.getContent());
         diary.setDate(request.getDate());
 
-        diaryKeywordRepository.deleteByDiary(diary);
+        diaryKeywordRepository.deleteByDiaryId(diary);
 
         // 키워드를 선택했을 경우 키워드 저장
         if (request.getKeywords() != null && !request.getKeywords().isEmpty()) {
-            List<DiaryKeyword> keywordList = request.getKeywords().stream()
-                                                 .distinct()
-                                                 .map(name -> {
-                                                     Keyword keywordEntity = keywordRepository.findByName(name)
-                                                                                              .orElseThrow(() -> new IllegalArgumentException("키워드 없음: " + name));
-                                                     DiaryKeyword dk = new DiaryKeyword();
-                                                     dk.setDiaryId(diary);
-                                                     dk.setKeywordId(keywordEntity);
-                                                     return dk;
-                                                 }).collect(Collectors.toList());
+            List<DiaryKeyword> keywordList = request
+                .getKeywords()
+                .stream()
+                .distinct()
+                .map(name -> {
+                    Keyword keywordEntity = keywordRepository
+                        .findByName(name)
+                        .orElseThrow(() -> new IllegalArgumentException("키워드 없음: " + name));
+                    DiaryKeyword dk = new DiaryKeyword();
+                    dk.setDiaryId(diary);
+                    dk.setKeywordId(keywordEntity);
+                    return dk;
+                })
+                .collect(Collectors.toList());
 
 
-
+        }
     }
 
     /** 특정 년도에 작성된 일기들을 기준으로 월별 평균 기분점수를 반환합니다. */
@@ -320,3 +323,4 @@ public class DiaryService {
         }
     }
 }
+

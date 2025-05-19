@@ -48,7 +48,7 @@ public class DiaryController {
                                                         .collect(Collectors.groupingBy(k -> k.getType().name()));
         model.addAttribute("keywordGroups", grouped);
 
-        return "wirte-diary";
+        return "diary/write-diary";
     }
 
     @PostMapping

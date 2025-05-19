@@ -27,7 +27,7 @@ public class FileUtil {
         return dir + encodedFilename;
     }
 
-    private DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
+    public DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
         //String uploadDir = "src/main/resources/photo";
 
         if (diary.getDiaryId() == null) {

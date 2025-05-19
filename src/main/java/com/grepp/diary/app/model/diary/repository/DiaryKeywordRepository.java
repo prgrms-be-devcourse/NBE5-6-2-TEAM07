@@ -5,6 +5,5 @@ import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DiaryKeywordRepository extends JpaRepository<DiaryKeyword, Long> {
-
-    void deleteByDiary(Diary diary);
+    void deleteByDiaryId(Diary diaryId);
 }
