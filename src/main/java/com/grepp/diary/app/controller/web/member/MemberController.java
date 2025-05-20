@@ -3,15 +3,17 @@ package com.grepp.diary.app.controller.web.member;
 import com.grepp.diary.app.controller.web.member.form.SettingEmailForm;
 import com.grepp.diary.app.model.ai.AiService;
 import com.grepp.diary.app.model.ai.dto.AiDto;
+import com.grepp.diary.app.model.auth.domain.Principal;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
-import com.grepp.diary.infra.error.exceptions.CommonException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -100,5 +102,39 @@ public class MemberController {
         }
         redirectAttributes.addFlashAttribute("message", "성공적으로 이메일을 변경하였습니다");
         return "redirect:/app/settings";
+    }
+
+    // 1. 탈퇴 확인 페이지 렌더링
+    @GetMapping("/leave")
+    public String showLeavePage(@AuthenticationPrincipal Principal principal, Model model) {
+        String aiName = memberService.findAiNameByUserId(principal.getUsername());
+        model.addAttribute("aiName", aiName);
+        return "member/leave";
+    }
+
+    @PostMapping("/leave")
+    public String deleteAccount(@AuthenticationPrincipal Principal principal,
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
+        String userId = principal.getUsername();
+
+        try {
+            memberService.withdraw(userId);
+
+            SecurityContextHolder.clearContext(); // 인증 정보 제거
+            session.invalidate(); // 세션 무효화
+
+            redirectAttributes.addFlashAttribute("message", "탈퇴가 완료되었습니다.");
+            return "redirect:/member/leave-success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "탈퇴 중 오류가 발생했습니다.");
+            return "redirect:/member/leave";
+        }
+    }
+
+
+    @GetMapping("/leave-success")
+    public String leaveSuccessPage(Model model) {
+        return "member/leave-success";
     }
 }

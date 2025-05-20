@@ -75,4 +75,5 @@ public class CustomService {
     public boolean updateCustom(String userId, CustomAIDto customAIDto) {
         return customRepository.updateCustomByUserId(userId, customAIDto) > 0;
     }
+
 }
