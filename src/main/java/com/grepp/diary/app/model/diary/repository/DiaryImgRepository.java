@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface DiaryImgRepository extends JpaRepository<DiaryImg, Long> {
 
-    //void deleteByDiaryDiaryId(Integer id);
-
     @Modifying
     @Query("UPDATE DiaryImg d SET d.isUse = false WHERE d.imgId = :imgId")
-    int deactivateByDiaryId(@Param("diaryId") Integer imgId); //
+    int deactivateDiaryImgByDiaryId(@Param("diaryId") Integer imgId); //
 }

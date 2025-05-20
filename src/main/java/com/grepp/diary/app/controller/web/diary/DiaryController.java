@@ -1,15 +1,12 @@
 package com.grepp.diary.app.controller.web.diary;
 
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
-import com.grepp.diary.app.model.ai.entity.Ai;
-import com.grepp.diary.app.model.ai.entity.AiImg;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryRecordDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.infra.error.exceptions.CommonException;
-import com.grepp.diary.infra.util.file.FileUtil;
 import com.grepp.diary.infra.util.xss.XssProtectionUtils;
 import java.time.LocalDate;
 import java.util.List;
@@ -85,8 +82,7 @@ public class DiaryController {
         log.info("user : {}", user.getUsername());
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
-
-            // ai 관련 정보 전달
+//             ai 관련 정보 전달
 
 //            Ai ai = diaryExist.get().getReply().getAi();
 //            AiImg aiImg = ai.getImages().getFirst();
@@ -97,8 +93,6 @@ public class DiaryController {
 //            String content = diaryExist.get().getReply().getContent();
 //            model.addAttribute("replyContent", xssUtils.escapeHtmlWithLineBreaks(content));
 
-            // 일기 사진 전달
-            //model.addAttribute("encodedImages", encodedImages);
             model.addAttribute("diary", DiaryRecordDto.fromEntity(diaryExist.get()));
         } else {
             log.info("Diary not found");
@@ -108,12 +102,17 @@ public class DiaryController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showDiaryEditPage(@PathVariable Integer id, Model model) {
-        Diary diary = diaryService.findById(id);
-        model.addAttribute("diary", diary);
+    public String showDiaryEditPage(@PathVariable Integer id, Model model,
+        @AuthenticationPrincipal UserDetails user
+
+    ) {
+        String userId = user.getUsername();
+        Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDiaryId(userId, id);
+
+        model.addAttribute("diary", DiaryRecordDto.fromEntity(diaryExist.get()));
 
         // 선택했던 키워드들
-        List<String> keywordNames = diary.getKeywords().stream()
+        List<String> keywordNames = diaryExist.get().getKeywords().stream()
                                          .filter(k -> k.getKeywordId() != null)
                                          .map(k -> k.getKeywordId().getName())
                                          .collect(Collectors.toList());

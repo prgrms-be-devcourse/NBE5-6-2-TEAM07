@@ -12,5 +12,5 @@ public interface ReplyRepository extends JpaRepository<Reply, Integer> {
 
     @Modifying
     @Query("UPDATE Reply d SET d.isUse = false WHERE d.diary.diaryId = :diaryId")
-    void deactivateByDiaryId(@Param("diaryId") Integer diaryId);
+    void deactivateReplyByDiaryId(@Param("diaryId") Integer diaryId);
 }
