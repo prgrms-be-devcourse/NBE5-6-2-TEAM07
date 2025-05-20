@@ -49,7 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       card.innerHTML = `
-          <div class="ai-image"></div>
+          <div class="ai-image">
+            <img src="${ai.renamedPath}" alt="${ai.name}" />
+          </div>
           <div class="ai-name">${ai.name}</div>
           <div class="ai-mbti">${ai.mbti}</div>
           <div class="ai-info">${ai.info}</div>
