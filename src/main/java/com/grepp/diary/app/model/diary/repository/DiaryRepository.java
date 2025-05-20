@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DiaryRepository extends JpaRepository<Diary, Integer>, DiaryRepositoryCustom {
-    List<Diary> findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(String userId, LocalDateTime start, LocalDateTime end);
+    List<Diary> findByMemberUserIdAndDateBetweenAndIsUseTrueOrderByDateAsc(String userId, LocalDate start, LocalDate end);
 
     Integer countByCreatedAtBetweenAndIsUseTrue(LocalDateTime startDateTime, LocalDateTime endDateTime);
     Integer countByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(String userId, LocalDateTime start, LocalDateTime end);
