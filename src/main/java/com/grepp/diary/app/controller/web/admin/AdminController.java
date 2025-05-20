@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.web.admin;
 
 import com.grepp.diary.app.model.ai.dto.AiWithCountDto;
+import com.grepp.diary.app.model.chat.ChatService;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.keyword.KeywordService;
@@ -24,6 +25,7 @@ public class AdminController {
     private final MemberService memberService;
     private final CustomService customService;
     private final DiaryService diaryService;
+    private final ChatService chatService;
 
     @GetMapping
     public String index(Model model) {
@@ -31,11 +33,13 @@ public class AdminController {
         Integer memberCount = memberService.getAllMemberCount();
         Integer monthDiaryCount = diaryService.getMonthDiariesCount();
         List<AiWithCountDto> popularCustoms = customService.getAiByLimit(5);
+        Integer monthChatCount = chatService.getMonthChatCount();
 
         model.addAttribute("popularKeywords", popularKeywords);
         model.addAttribute("memberCount", memberCount);
         model.addAttribute("monthDiaryCount", monthDiaryCount);
         model.addAttribute("popularCustoms", popularCustoms);
+        model.addAttribute("monthChatCount", monthChatCount);
 
         return "admin/admin-index";
     }
