@@ -1,11 +1,14 @@
 package com.grepp.diary.app.controller.web.app;
 
+import com.grepp.diary.app.model.ai.AiService;
+import com.grepp.diary.app.model.ai.dto.AiDto;
 import com.grepp.diary.app.model.app.AppService;
 import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AppController {
 
     private final AppService appService;
+    private final AiService aiService;
 
     @GetMapping
     public String showHome(Authentication authentication, Model model) {
@@ -36,7 +40,10 @@ public class AppController {
             return redirect;
         }
 
+        List<AiDto> allAi = aiService.getAllAi();
+
         model.addAttribute("name", appService.getUserName(userId));
+        model.addAttribute("allAi", allAi);
 
         return appService.isNewUser(userId)
             ? "onboarding/onboarding"
