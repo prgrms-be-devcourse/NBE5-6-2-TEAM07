@@ -4,7 +4,7 @@
 
   const form = document.createElement('form');
   form.method = 'post';
-  form.action = '/member/logout';
+  form.action = '/auth/logout';
 
   // CSRF 토큰 삽입
   const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');

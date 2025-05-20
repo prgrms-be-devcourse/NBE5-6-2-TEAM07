@@ -1,7 +1,7 @@
-package com.grepp.diary.app.controller.api.auth;
+package com.grepp.diary.app.controller.api.member;
 
 
-import com.grepp.diary.app.controller.api.auth.payload.OnboardingRequest;
+import com.grepp.diary.app.controller.api.member.payload.OnboardingRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
-public class AuthApiController {
+public class MemberApiController {
 
     @PostMapping("/onboarding-ai")
     @ResponseBody

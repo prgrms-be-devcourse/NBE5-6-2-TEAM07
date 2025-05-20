@@ -1,4 +1,4 @@
-package com.grepp.diary.app.controller.api.auth.payload;
+package com.grepp.diary.app.controller.api.member.payload;
 
 import lombok.Data;
 
