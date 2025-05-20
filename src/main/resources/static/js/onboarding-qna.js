@@ -64,7 +64,6 @@ function handleClick(option) {
       ai_id = 4;
     }
 
-    // 여기에 fetch로 /member/onboarding-ai 로 ai_id, is_formal, is_long 을 전달할거야
     fetch('/api/member/onboarding-ai', {
       method: 'POST',
       headers: {

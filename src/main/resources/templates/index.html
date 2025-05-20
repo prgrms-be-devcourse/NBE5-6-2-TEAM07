@@ -16,7 +16,7 @@
   </div>
   <div class="form-wrapper">
     <h1>환영합니다</h1>
-    <form method="post" th:action="@{/member/login}" th:object="${signinForm}">
+    <form method="post" th:action="@{/auth/login}" th:object="${signinForm}">
       <div class="input-group">
         <i class="fas fa-user"></i>
         <input type="text" th:field="*{userId}" placeholder="ID">
@@ -35,8 +35,8 @@
       <button class="green-btn" type="submit">로그인</button>
     </form>
     <div class="links">
-      <a onclick="location.href='/member/regist'">회원가입</a>
-      <a onclick="location.href='/member/find-idpw'" class="idpw">ID/PW 찾기</a>
+      <a onclick="location.href='/auth/regist'">회원가입</a>
+      <a onclick="location.href='/auth/find-idpw'" class="idpw">ID/PW 찾기</a>
     </div>
   </div>
 </main>
