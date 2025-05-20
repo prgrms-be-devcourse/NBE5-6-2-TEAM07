@@ -8,12 +8,14 @@ import com.grepp.diary.app.controller.api.admin.payload.AdminKeywordResponse;
 import com.grepp.diary.app.controller.api.admin.payload.AdminKeywordWriteRequest;
 import com.grepp.diary.app.model.ai.AiService;
 import com.grepp.diary.app.model.ai.dto.AiDto;
+import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -114,18 +116,18 @@ public class AdminApiController {
 
     @PatchMapping("ai/modify")
     public Boolean modifyAi(
-        @RequestBody AdminAiWriteRequest adminAiWriteRequest
+        @ModelAttribute AdminAiWriteRequest request
     ) {
-        aiService.modifyAi(adminAiWriteRequest);
+        aiService.modifyAi(request.getImages(), request);
 
         return true;
     }
 
     @PostMapping("ai")
     public Boolean createAi(
-        @RequestBody AdminAiWriteRequest adminAiWriteRequest
+        @ModelAttribute AdminAiWriteRequest request
     ) {
-        aiService.createAi(adminAiWriteRequest);
+        aiService.createAi(request.getImages(), request);
 
         return true;
     }

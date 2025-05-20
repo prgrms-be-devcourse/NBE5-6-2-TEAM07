@@ -1,6 +1,6 @@
 package com.grepp.diary.app.controller.api.admin.payload;
 
-import com.grepp.diary.app.model.ai.dto.AiAdminDto;
+import com.grepp.diary.app.model.ai.dto.AiWithCountDto;
 import java.util.List;
 
 public record AdminAiResponse(
@@ -15,20 +15,20 @@ public record AdminAiResponse(
         Boolean isUse,
         Integer count
     ) {
-        public static AiInfo fromDto(AiAdminDto aiAdminDto) {
+        public static AiInfo fromDto(AiWithCountDto aiWithCountDto) {
             return new AiInfo(
-                aiAdminDto.getAiId(),
-                aiAdminDto.getName(),
-                aiAdminDto.getMbti(),
-                aiAdminDto.getInfo(),
-                aiAdminDto.getPrompt(),
-                aiAdminDto.getIsUse(),
-                aiAdminDto.getCount()
+                aiWithCountDto.getAiId(),
+                aiWithCountDto.getName(),
+                aiWithCountDto.getMbti(),
+                aiWithCountDto.getInfo(),
+                aiWithCountDto.getPrompt(),
+                aiWithCountDto.getIsUse(),
+                aiWithCountDto.getCount()
             );
         }
     }
 
-    public static AdminAiResponse fromDtoList(List<AiAdminDto> ais) {
+    public static AdminAiResponse fromDtoList(List<AiWithCountDto> ais) {
         List<AiInfo> aiInfos = ais.stream().map(AiInfo::fromDto).toList();
         return new AdminAiResponse(aiInfos);
     }
