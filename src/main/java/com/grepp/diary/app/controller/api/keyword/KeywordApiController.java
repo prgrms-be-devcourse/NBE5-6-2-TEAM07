@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,13 +23,14 @@ public class KeywordApiController {
 
     @GetMapping("/ranking")
     public KeywordRankResponse getKeywordRanking(
-        @RequestParam String userId,
+        Authentication authentication,
         @RequestParam String period,
         @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date
     ) {
         DateRangeDto range = dateUtil.toDateRangeDto(period, date);
         LocalDate start = range.start();
         LocalDate end = range.end();
+        String userId = authentication.getName();
 
         return KeywordRankResponse.fromDtoList(keywordService.getTop5Keywords(userId, start, end));
     }
