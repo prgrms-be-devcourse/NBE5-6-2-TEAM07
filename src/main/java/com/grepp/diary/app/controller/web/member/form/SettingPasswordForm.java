@@ -1,4 +1,4 @@
-package com.grepp.diary.app.controller.web.auth.form;
+package com.grepp.diary.app.controller.web.member.form;
 
 import lombok.Data;
 
