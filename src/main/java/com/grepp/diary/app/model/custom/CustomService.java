@@ -3,6 +3,7 @@ package com.grepp.diary.app.model.custom;
 import com.grepp.diary.app.model.ai.dto.AiAdminDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.repository.AiRepository;
+import com.grepp.diary.app.model.custom.dto.CustomAIDto;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.custom.repository.CustomRepository;
 import com.grepp.diary.app.model.member.MemberService;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -31,7 +33,7 @@ public class CustomService {
     private final AiRepository aiRepository;
 
     public Optional<Custom> findByUserId(String userId) {
-        return customRepository.findByMember_UserId(userId);
+        return customRepository.findByMemberUserId(userId);
     }
 
     public List<AiAdminDto> getAiByLimit(Integer limit) {
@@ -65,5 +67,14 @@ public class CustomService {
         custom.setAi(ai);
 
         customRepository.save(custom);
+    }
+
+    public CustomAIDto getCustomAiByUserId(String id) {
+        return customRepository.getCustomByUserId(id);
+    }
+
+    @Transactional
+    public boolean updateCustom(String userId, CustomAIDto customAIDto) {
+        return customRepository.updateCustomByUserId(userId, customAIDto) > 0;
     }
 }

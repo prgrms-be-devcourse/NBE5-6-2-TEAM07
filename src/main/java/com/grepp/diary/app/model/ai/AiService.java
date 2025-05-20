@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.ai;
 
 import com.grepp.diary.app.controller.api.admin.payload.AdminAiWriteRequest;
+import com.grepp.diary.app.model.ai.dto.AiInfoDto;
 import com.grepp.diary.app.model.ai.dto.AiDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.repository.AiRepository;
@@ -74,5 +75,10 @@ public class AiService {
         aiRepository.save(ai);
 
         return true;
+    }
+
+    /** 모든 AI에 대한 정보를 반환합니다.(프롬프트 제외) */
+    public List<AiInfoDto> getAIList() {
+        return aiRepository.getAIListDto();
     }
 }

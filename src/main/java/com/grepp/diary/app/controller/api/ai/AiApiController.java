@@ -1,8 +1,10 @@
 package com.grepp.diary.app.controller.api.ai;
 
+import com.grepp.diary.app.controller.api.ai.payload.AiListResponse;
 import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
 import com.grepp.diary.app.controller.api.ai.payload.Message;
 import com.grepp.diary.app.model.ai.AiChatService;
+import com.grepp.diary.app.model.ai.AiService;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
@@ -23,14 +25,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/ai")
 public class AiApiController {
 
     private final AiChatService aiChatService;
+    private final AiService aiService;
     private final DiaryService diaryService;
     private final MemberService memberService;
 
@@ -195,5 +200,10 @@ public class AiApiController {
         }
 
         return builder.append("\n일기 내용: ").append(content).toString();
+    }
+
+    @GetMapping("/list")
+    private AiListResponse getAiInfoList() {
+        return AiListResponse.fromDtoList(aiService.getAIList());
     }
 }

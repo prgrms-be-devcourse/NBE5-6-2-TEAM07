@@ -59,6 +59,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(GET, "/", "/css/**", "/js/**", "/images/**", "/assets/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/member/login", "/member/logout", "/member/find_id", "/member/find_pw", "/member/regist/**", "/member/regist-mail","/member/auth-id","/member/auth-pw").permitAll()
+                .requestMatchers("/member/auth-id", "/member/auth-pw", "/member/change-pw", "/member/find-idpw").permitAll()
+                .requestMatchers("/custom/**").permitAll()
+//                .anyRequest().permitAll() // 개발 중 전체 열기
                 .anyRequest().authenticated()
             );
 
