@@ -9,6 +9,7 @@ import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.response.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class AuthController {
     public String login(@Valid @ModelAttribute("signinForm") SigninForm signinForm,
         BindingResult bindingResult,
         RedirectAttributes redirectAttributes,
-        HttpServletRequest request) {
+        HttpServletRequest request, HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute(
@@ -52,7 +53,7 @@ public class AuthController {
         }
 
         try {
-            authService.verifyPasswordAndLogin(signinForm, request);
+            authService.verifyPasswordAndLogin(signinForm, request, response);
             return "redirect:/app";
         } catch (UsernameNotFoundException | IllegalArgumentException e) {
             // 로그인 실패 시
