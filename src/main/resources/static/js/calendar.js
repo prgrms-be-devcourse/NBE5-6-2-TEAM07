@@ -103,8 +103,8 @@ async function fetchEmotionData(year, month) {
   const data = await response.json();
 
   const emotionMap = {};
-  data.diaryEmotions.forEach(({ createdAt, emotion }) => {
-    emotionMap[createdAt] = emotion;
+  data.diaryEmotions.forEach(({ diaryDate, emotion }) => {
+    emotionMap[diaryDate] = emotion;
   });
 
   renderCalendar(new Date(year, month - 1), emotionMap);

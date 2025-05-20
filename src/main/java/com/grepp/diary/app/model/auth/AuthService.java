@@ -1,27 +1,32 @@
 package com.grepp.diary.app.model.auth;
 
+import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.model.auth.domain.Principal;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
-import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.mail.MailTemplate;
-import com.grepp.diary.infra.response.ResponseCode;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class AuthService implements UserDetailsService {
     private final Map<String, String> authCodeStorage = new HashMap<>(); // 인증번호 저장용
     private final JavaMailSender javaMailSender;
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -51,55 +57,52 @@ public class AuthService implements UserDetailsService {
         return Principal.createPrincipal(member, authorities);
     }
 
-    public String generateAndSendCode(String email) {
-        // 1. 인증번호 생성
+    public void verifyPasswordAndLogin(SigninForm signinForm, HttpServletRequest request) {
+
+        // 1. 사용자 데이터 조회
+        UserDetails userDetails = loadUserByUsername(signinForm.getUserId());
+
+        // 2. 비밀번호 체크
+        if (!passwordEncoder.matches(signinForm.getPassword(), userDetails.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        }
+
+        // 3. 강제 인증 설정
+        UsernamePasswordAuthenticationToken authToken =
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        request.getSession()
+            .setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+    }
+
+
+    public void generateAndSendCode(String email, HttpSession session, String userId) {
         String code = String.valueOf((int) ((Math.random() * 900000) + 100000));
         authCodeStorage.put(email, code);
 
-        // 2. 메일 내용 구성
-        String subject = "Diary 인증번호 안내"; // 추후에 앱이름으로 대체
+        String subject = "Diary 인증번호 안내";
         String text = "안녕하세요.\n\n" +
             "요청하신 인증번호는 아래와 같습니다.\n\n" +
             "인증번호는 [" + code + "] 입니다.\n\n" +
             "감사합니다.";
 
-        // 3. 메일 전송
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setFrom(from);
         message.setSubject(subject);
         message.setText(text);
-
         javaMailSender.send(message);
 
-        return code;
-    }
+        session.setAttribute("authCode", code);
+        session.setAttribute("authEmail", email);
 
-    public String findUserIdByEmail(String sessionEmail) {
-        return memberRepository.findByEmail(sessionEmail)
-            .map(Member::getUserId)
-            .orElseThrow(
-                () -> new CommonException(ResponseCode.BAD_REQUEST, "해당 이메일로 가입된 계정이 없습니다."));
-    }
-
-    public boolean existsByUserIdAndEmail(String userId, String email) {
-        return memberRepository.existsByUserIdAndEmail(userId, email);
-    }
-
-    public String getEncodedPassword(String userId, String email) {
-        return memberRepository.findByUserIdAndEmail(userId, email)
-            .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND))
-            .getPassword();
-    }
-
-    @Transactional
-    public void updatePassword(String userId, String email, String encodedPassword) {
-        Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, email);
-        if (optionalMember.isPresent()) {
-            Member member = optionalMember.get();
-            member.setPassword(encodedPassword); // 암호화된 비밀번호 설정
-        } else {
-            throw new IllegalArgumentException("해당 사용자를 찾을 수 없습니다.");
+        if (userId != null) {
+            session.setAttribute("authUserId", userId);
         }
     }
+
+
 }

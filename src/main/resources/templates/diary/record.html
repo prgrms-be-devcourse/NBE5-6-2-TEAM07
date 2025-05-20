@@ -96,17 +96,19 @@
 
     .diary-image {
       width: 100%;
-      height: 100%;
+      height: 300px;
       display: flex;
+      justify-content: center;
       overflow-x: auto;
+      gap: 10px;
     }
 
     .diary-image img {
       border-radius: 12px;
-      width: 600px;
-      height: 300px;
-      object-fit: contain;
-      /*margin: 0 10px;*/
+      height: 100%;
+      width: auto;
+      object-fit: cover;
+      flex: 0 0 auto;
     }
 
     .diary-text {
@@ -208,8 +210,8 @@
       <div class="diary-main">
         <div class="diary-image">
           <img th:src="@{/images/examples/cat1.jpg}" alt="cat1">
-<!--          <img th:src="@{/images/examples/cat2.jpg}" alt="cat2">-->
-<!--          <img th:src="@{/images/examples/cat2.jpg}" alt="cat3">-->
+          <img th:src="@{/images/examples/cat2.jpg}" alt="cat2">
+          <img th:src="@{/images/examples/cat2.jpg}" alt="cat3">
           <!--<div th:if="${diary.images}">
             <div th:each="image : ${encodedImages}">
               <img th:src="@{'/uploads/' + ${image.savePath}}" th:alt="${image.originName}"
@@ -307,6 +309,23 @@
   function chat() {
     window.location.href = `/ai/chat?diaryId=${diaryId}`;
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // diary-image div 요소 찾기
+    const diaryImageDiv = document.querySelector('.diary-image');
+
+    // 이미지 태그 개수 확인
+    if (diaryImageDiv) {
+      const images = diaryImageDiv.querySelectorAll('img');
+
+      // 이미지가 1개인 경우에만 center 정렬 적용, 그 외에는 해제
+      if (images.length === 1) {
+        diaryImageDiv.style.justifyContent = 'center';
+      } else {
+        diaryImageDiv.style.justifyContent = 'flex-start';
+      }
+    }
+  });
 
 </script>
 

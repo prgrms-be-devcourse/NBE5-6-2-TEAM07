@@ -1,5 +1,7 @@
 package com.grepp.diary.app.controller.web.app;
 
+import com.grepp.diary.app.model.app.AppService;
+import com.grepp.diary.app.model.auth.code.Role;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.member.MemberService;
@@ -19,28 +21,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("app")
 public class AppController {
 
-    private final CustomService customService;
-    private final MemberService memberService;
+    private final AppService appService;
 
     @GetMapping
     public String showHome(Authentication authentication, Model model) {
-
         if (authentication == null || !authentication.isAuthenticated()) {
-            return "redirect:/"; // 인증 안 된 경우 로그인 페이지로
+            return "redirect:/";
         }
 
         String userId = authentication.getName();
-        // custom 테이블에서 userId로 조회
-        Optional<Custom> custom = customService.findByUserId(userId);
 
-        Member member = memberService.getMemberByUserId(userId);
-        String name = member.getName();
-        model.addAttribute("name", name);
-
-        if (custom.isEmpty()) {
-            return "onboarding/onboarding"; // 신규회원 전용 페이지
+        String redirect = appService.getRedirectViewIfAdmin(userId);
+        if (redirect != null) {
+            return redirect;
         }
-        return "app/home";
+
+        model.addAttribute("name", appService.getUserName(userId));
+
+        return appService.isNewUser(userId)
+            ? "onboarding/onboarding"
+            : "app/home";
     }
 
     @GetMapping("/timeline")

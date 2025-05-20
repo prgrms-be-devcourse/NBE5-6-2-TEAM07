@@ -27,7 +27,7 @@
   </div>
   <div class="form-wrapper">
     <h1>회원가입</h1>
-    <form class="regist_form" method="post" th:action="@{/member/regist}" th:object="${signupForm}">
+    <form class="regist_form" method="post" th:action="@{/auth/regist}" th:object="${signupForm}">
       <div class="input-group">
         <input class="inputBox" th:field="*{userId}" placeholder="아이디"/>
       </div>

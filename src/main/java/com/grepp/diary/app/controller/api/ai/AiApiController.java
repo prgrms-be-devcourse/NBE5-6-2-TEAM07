@@ -1,9 +1,11 @@
 package com.grepp.diary.app.controller.api.ai;
 
+import com.grepp.diary.app.controller.api.ai.payload.AiListResponse;
 import com.grepp.diary.app.controller.api.ai.AiRequestQueue.AiRequestTask;
 import com.grepp.diary.app.controller.api.ai.payload.ChatRequest;
 import com.grepp.diary.app.controller.api.ai.payload.Message;
 import com.grepp.diary.app.model.ai.AiChatService;
+import com.grepp.diary.app.model.ai.AiService;
 import com.grepp.diary.app.model.ai.AiReplyScheduler;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.chat.ChatService;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AiApiController {
 
     private final AiChatService aiChatService;
+    private final AiService aiService;
     private final DiaryService diaryService;
     private final AiReplyScheduler aiReplyScheduler;
     private final AiRequestQueue aiRequestQueue;
