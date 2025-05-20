@@ -193,22 +193,18 @@ public class DiaryService {
 
                 List<DiaryImg> diaryImgs = imageList.stream()
                                                     .map(fileDto -> {
-                                                        DiaryImg diaryImg = new DiaryImg(DiaryImgType.THUMBNAIL, fileDto);
+                                                        DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, fileDto);
                                                         diaryImg.setDiary(savedDiary);
                                                         return diaryImg;
                                                     })
                                                     .collect(Collectors.toList());
                 diaryImgRepository.saveAll(diaryImgs);
 
-//                DiaryImg diaryImg = new DiaryImg(DiaryImgType.THUMBNAIL, imageList.getFirst());
+
+
+//                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
 //                diaryImg.setDiary(diary);
 //                diaryImgRepository.save(diaryImg);
-                List<FileDto> imageList = fileUtil.upload(images, "diary", savedDiary.getDiaryId());
-                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
-                diaryImg.setDiary(diary);
-                diaryImgRepository.save(diaryImg);
-
-                //            diaryImgRepository.saveAll(imageList);
             }
             return diary;
         } catch (IOException e) {
@@ -264,6 +260,8 @@ public class DiaryService {
         diary.setDate(request.getDate());
 
 
+        log.info("request : {}", request.getDeletedImageIds());
+
         diaryKeywordRepository.deleteByDiaryId(diary);
         // 키워드를 선택했을 경우 키워드 저장
         if (request.getKeywords() != null && !request.getKeywords().isEmpty()) {
@@ -301,7 +299,7 @@ public class DiaryService {
 
             List<DiaryImg> diaryImgs = imageList.stream()
                                                 .map(fileDto -> {
-                                                    DiaryImg diaryImg = new DiaryImg(DiaryImgType.THUMBNAIL, fileDto);
+                                                    DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, fileDto);
                                                     diaryImg.setDiary(updateDiary);
                                                     return diaryImg;
                                                 })
