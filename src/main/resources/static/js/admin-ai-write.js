@@ -24,6 +24,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       mbtiInput.value = ai.mbti || '';
       infoInput.value = ai.info || '';
       promptInput.value = ai.prompt || '';
+
+      if (ai.images && ai.images.length > 0) {
+        const thumbImage = ai.images.find(img => img.type === 'THUMBNAIL') || ai.images[0];
+
+        thumbnail.src = thumbImage.renamedName;
+        thumbnail.style.display = 'block';
+      }
     } catch (err) {
       console.error('AI 데이터 로드 오류:', err);
       alert('AI 캐릭터 정보를 불러오지 못했습니다.');
@@ -51,19 +58,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mbti = mbtiInput.value.trim();
     const info = infoInput.value.trim();
     const prompt = promptInput.value.trim();
+    const imageFile = imageInput.files[0];
 
     if (!name) return alert('이름을 입력하세요');
     if (!mbti) return alert('MBTI를 입력하세요');
     if (!info) return alert('소개글을 입력하세요');
     if (!prompt) return alert('프롬프트를 입력하세요');
+    if (!thumbnail.src) return alert('사진을 업로드하세요');
 
-    const aiData = {
-      id: editingAiId ? parseInt(editingAiId) : null,
-      name,
-      mbti,
-      info,
-      prompt
-    };
+    const formData = new FormData();
+    if(editingAiId) formData.append('id', editingAiId);
+    formData.append('name', name);
+    formData.append('mbti', mbti);
+    formData.append('info', info);
+    formData.append('prompt', prompt);
+    if(imageFile) formData.append('images', imageFile);
 
     try {
       const url = editingAiId ? '/api/admin/ai/modify' : '/api/admin/ai';
@@ -71,8 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(aiData)
+        body: formData
       });
 
       if (!res.ok) throw new Error(editingAiId ? '수정 실패' : '등록 실패');

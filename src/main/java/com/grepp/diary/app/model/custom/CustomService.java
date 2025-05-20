@@ -1,6 +1,6 @@
 package com.grepp.diary.app.model.custom;
 
-import com.grepp.diary.app.model.ai.dto.AiAdminDto;
+import com.grepp.diary.app.model.ai.dto.AiWithCountDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.repository.AiRepository;
 import com.grepp.diary.app.model.custom.dto.CustomAIDto;
@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -36,7 +35,7 @@ public class CustomService {
         return customRepository.findByMemberUserId(userId);
     }
 
-    public List<AiAdminDto> getAiByLimit(Integer limit) {
+    public List<AiWithCountDto> getAiByLimit(Integer limit) {
         List<Tuple> result = customRepository.getAiByLimit(limit);
 
         return result.stream()
@@ -44,7 +43,7 @@ public class CustomService {
                 Ai ai = tuple.get(0, Ai.class);
                 Long count = tuple.get(1, Long.class);
 
-                AiAdminDto aiDto = mapper.map(ai, AiAdminDto.class);
+                AiWithCountDto aiDto = mapper.map(ai, AiWithCountDto.class);
                 aiDto.setCount(count.intValue());
 
                 return aiDto;
