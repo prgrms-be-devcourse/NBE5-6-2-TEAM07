@@ -29,28 +29,31 @@
       <p>오늘의 감정: <span th:text="${diary.emotion}"></span></p>
 
       <!-- 키워드 -->
-      <div th:if="${diary.keywords}">
+      <div th:if="${diary.keywordNames}">
         <h4>선택된 키워드</h4>
         <ul>
-          <li th:each="kw : ${diary.keywords}" th:text="${kw.keywordId.name}"></li>
+          <li th:each="kw : ${diary.keywordNames}" th:text="${kw}"></li>
         </ul>
       </div>
 
       <!-- 이미지 -->
       <div th:if="${diary.images}">
         <h4>첨부 이미지</h4>
-        <div th:each="image : ${encodedImages}">
-          <img th:src="@{'/uploads/' + ${image.savePath}}" th:alt="${image.originName}" width="150">
+        <div th:each="image : ${diary.images}">
+          <img th:src="@{${image.path}}" th:alt="${image.originName}" width="150">
         </div>
       </div>
 
       <!-- AI 답변 -->
-      <div th:if="${diary.reply != null}">
-        <h4>AI의 답변</h4>
-        <p th:text="${diary.reply.content}"></p>
-      </div>
-      <div th:unless="${diary.reply != null}">
-        <p>아직 답변이 없습니다.</p>
+
+      <div class="form-box">
+        <div th:if="${diary.reply != null}">
+          <h4>AI의 답변</h4>
+          <p th:text="${diary.reply.content}"></p>
+        </div>
+        <div th:unless="${diary.reply != null}">
+          <p>아직 답변이 없습니다.</p>
+        </div>
       </div>
 
     </div>
@@ -82,8 +85,6 @@
       }
     }
   </script>
-
-
   <script src="/js/sidebar.js"></script>
 </body>
 </html>

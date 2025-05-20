@@ -58,10 +58,6 @@ dateInput.addEventListener('change', async() => {
 });
 
 
-
-
-
-
 console.log('emotionInputs:', emotionInputs);
 emotionInputs.forEach(input => {
   console.log(input.name, input.checked);

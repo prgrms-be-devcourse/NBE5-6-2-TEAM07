@@ -4,7 +4,6 @@ import com.grepp.diary.app.controller.web.auth.form.SettingEmailForm;
 import com.grepp.diary.app.controller.web.auth.form.SettingPasswordForm;
 import com.grepp.diary.app.controller.web.auth.form.SigninForm;
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
-import com.grepp.diary.app.model.ai.repository.AiRepository;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.repository.AiRepository;
 import com.grepp.diary.app.model.auth.AuthService;

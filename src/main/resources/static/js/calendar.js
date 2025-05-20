@@ -84,7 +84,7 @@ function renderCalendar(date, emotionMap = {}) {
         if (exists) {
           window.location.href = `/diary/record?date=${dateParam}`; // 일기가 있는 경우
         } else {
-          window.location.href = `/diary/writing?date=${dateParam}`;  // 일기가 없는 경우
+          window.location.href = `/diary/writing?date=${dateParam}`; // 일기가 없는 경우
         }
       } catch (err) {
         console.error("날짜 클릭 처리 중 오류:", err);
