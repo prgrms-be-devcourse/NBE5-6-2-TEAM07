@@ -29,7 +29,6 @@ public class AiImgDto {
         dto.setAiImgId(aiImg.getAiImgId());
         dto.setSavePath(aiImg.getSavePath());
         dto.setOriginName(aiImg.getOriginName());
-        dto.setRenamedName(aiImg.getRenamedName());
         dto.setIsUSe(aiImg.getIsUse());
         dto.setRenamedName(aiImg.getRenamedPath());
         dto.setType(aiImg.getType());
