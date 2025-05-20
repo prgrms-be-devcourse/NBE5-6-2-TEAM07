@@ -45,6 +45,6 @@ public class DiaryImg {
     }
 
     public String getRenamedPath(){
-        return "/download/" + savePath + renamedName;
+        return "/uploads/" + savePath + renamedName;
     }
 }
