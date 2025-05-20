@@ -26,7 +26,8 @@ public class AIRepositoryCustomImpl implements AIRepositoryCustom {
                 ai.name,
                 ai.mbti,
                 ai.info,
-                aiImg.savePath
+                aiImg.savePath,
+                aiImg.renamedName
             ))
             .from(ai)
             .leftJoin(aiImg)
