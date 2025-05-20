@@ -70,6 +70,8 @@
 <div class="main">
   <input type="hidden" id="csrf-token" th:value="${_csrf.token}"/>
   <input type="hidden" id="csrf-header" th:value="${_csrf.headerName}"/>
+  <input type="hidden" id="ai-img-url" th:value="@{'/uploads/' + ${imgSavePath} + ${imgRenamedName}}"/>
+
 
   <div id="nav-container">
     <div class="navbar bg-green-800 shadow-sm justify-center">
@@ -77,7 +79,7 @@
         <div class="flex items-center gap-2">
           <div class="avatar">
             <div class="w-10 rounded-full">
-              <img alt="ai avatar" th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}"/>
+              <img alt="ai avatar" th:src="@{'/uploads/'+ ${imgSavePath} + ${imgRenamedName}}"/>
             </div>
           </div>
           <a id="ai-button" class="btn btn-ghost text-xl text-white" th:text="|${aiName}|">daisyUI</a>
@@ -94,7 +96,8 @@
     <div class="chat chat-start md:ml-[calc(50%-384px)]">
       <div class="chat-image avatar">
         <div class="w-10 rounded-full">
-          <img alt="ai avatar" th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}"/>
+<!--          <img alt="ai avatar" th:src="@{/images/ai/{aiId}.png(aiId=${aiId})}"/>-->
+          <img alt="ai avatar" th:src="@{'/uploads/'+ ${imgSavePath} + ${imgRenamedName}}"/>
         </div>
       </div>
       <div class="chat-header">
@@ -149,10 +152,12 @@
 
 </div>
 
-<script>
+<script th:inline="javascript">
   const chatHistory = [];
   const diaryId = [[${diaryId}]]
+  const diaryDate = [[${diaryDate}]]
   const aiId = [[${aiId}]]
+  const aiImgUrl = document.getElementById('ai-img-url').value;
   const mainDiv = document.querySelector('.main');
   const userInput = document.getElementById('user-input');
   const chatForm = document.getElementById('chat-form');
@@ -160,6 +165,8 @@
   const sendButton = document.getElementById('send-button');
   const csrfToken = document.getElementById('csrf-token').value;
   const csrfHeader = document.getElementById('csrf-header').value;
+  console.log(aiImgUrl);
+  console.log(diaryDate);
 
   function getCurrentTime() {
     const now = new Date();
@@ -238,7 +245,7 @@
     loadingDiv.innerHTML = `
     <div class="chat-image avatar">
       <div class="w-10 rounded-full">
-        <img alt="ai avatar" src="/images/ai/${aiId}.png"/>
+        <img alt="ai avatar" src=${aiImgUrl}/>
       </div>
     </div>
     <div class="chat-header">
@@ -281,7 +288,7 @@
       responseDiv.innerHTML = `
         <div class="chat-image avatar">
           <div class="w-10 rounded-full">
-            <img alt="ai avatar" src="/images/ai/${aiId}.png"/>
+            <img alt="ai avatar" src=${aiImgUrl}/>
           </div>
         </div>
         <div class="chat-header">
@@ -344,7 +351,7 @@
     responseDiv.innerHTML = `
         <div class="chat-image avatar">
           <div class="w-10 rounded-full">
-            <img alt="ai avatar" src="/images/ai/${aiId}.png"/>
+            <img alt="ai avatar" src=${aiImgUrl}/>
           </div>
         </div>
         <div class="chat-header">
@@ -384,7 +391,7 @@
       if (response.ok) {
         showModal('저장 완료', '대화 내용을 답장과 함께 저장했어요!');
         document.getElementById('alert-modal').addEventListener('close', () => {
-          window.location.href = `/diary/${diaryId}`;
+          window.location.href = `/diary/record?date=${diaryDate}`;
         }, {once: true});
       } else {
         showModal('저장 실패', '대화 내용을 저장하지 못했어요. 다시 시도해주세요.');
@@ -415,7 +422,7 @@
     .then(response => {
       hideLoading();
       if (response.ok) {
-        window.location.href = `/record/${diaryId}`; // 처리 성공 후 리다이렉트
+        window.location.href = `/diary/record?date=${diaryDate}`; // 처리 성공 후 리다이렉트
       } else {
         showModal('에러', '대화 종료 처리에 실패했습니다. 다시 시도해주세요.');
       }

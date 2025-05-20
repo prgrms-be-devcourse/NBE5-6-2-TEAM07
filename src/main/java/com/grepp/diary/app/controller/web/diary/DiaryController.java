@@ -2,6 +2,7 @@ package com.grepp.diary.app.controller.web.diary;
 
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.ai.entity.AiImg;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
@@ -95,12 +96,14 @@ public class DiaryController {
 
             // ai 관련 정보 전달
             Ai ai = diaryExist.get().getReply().getAi();
+            AiImg aiImg = ai.getImages().getFirst();
             model.addAttribute("aiName", ai.getName());
-            model.addAttribute("aiId", ai.getAiId());
+            model.addAttribute("imgSavePath", aiImg.getSavePath());
+            model.addAttribute("imgRenamedName", aiImg.getRenamedName());
             // 일기 답장 전달
             String content = diaryExist.get().getReply().getContent();
             model.addAttribute("replyContent", xssUtils.escapeHtmlWithLineBreaks(content));
-
+            // 일기 사진 전달
             model.addAttribute("encodedImages", encodedImages);
             model.addAttribute("diary", diaryExist.get());
         } else {

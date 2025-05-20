@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.web.ai;
 
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.ai.entity.AiImg;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
@@ -37,19 +38,27 @@ public class AiController {
             return "redirect:/";
         }
         String userId = authentication.getName();
+        Diary diary = diaryService.getDiaryById(diaryId);
+        String diaryWriter = diary.getMember().getUserId();
+        if (!userId.equals(diaryWriter)) {
+            return "redirect:/";
+        }
 
         Optional<Custom> result = customService.findByUserId(userId);
         if (result.isEmpty()) {
             return "onboarding/onboarding";
         }
         Ai ai = result.get().getAi();
+        AiImg aiImg = ai.getImages().getFirst();
 
-        Diary diary = diaryService.getDiaryById(diaryId);
         // 렌더링 시 이스케이프 처리 X -> 여기서 이스케이프
         model.addAttribute("diaryId", diaryId);
+        model.addAttribute("diaryDate", diary.getDate());
         model.addAttribute("diaryReply", xssUtils.escapeHtmlWithLineBreaks(diary.getReply().getContent()));
         model.addAttribute("aiName", ai.getName());
         model.addAttribute("aiId", ai.getAiId());
+        model.addAttribute("imgSavePath", aiImg.getSavePath());
+        model.addAttribute("imgRenamedName", aiImg.getRenamedName());
         return "api/ai/chat";
     }
 

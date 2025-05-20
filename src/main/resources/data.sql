@@ -1,6 +1,6 @@
 INSERT INTO MEMBER (USER_ID, EMAIL, NAME, PASSWORD, ROLE, ENABLED) VALUES
 ('user01', 'user01@test.com', '홍길동', '$2a$10$RScW/24nY32vqhHs6tlxYe7964v8rJLWPpnP1KSr6Np9oTfSYPd3C', 'ROLE_USER', 1),
-('user02', 'user02@test.com', '김영희', '2222', 'ROLE_USER', 1),
+('user02', 'user02@test.com', '김영희', '$2a$10$4dTVUJL9Rp/b8.q3upjZIuIewKcu6cBTlzskYQnasQZfZoI5RtgMK', 'ROLE_USER', 1),
 ('user03', 'user03@test.com', '이철수', '3333', 'ROLE_USER', 1),
 ('user04', 'user04@test.com', '박민수', '4444', 'ROLE_USER', 1),
 ('admin', 'admin@test.com', '관리자', '$2a$10$iC0JoLYyZ1kflTuNTtVsr.3rKS0Hl7jaCe4xjSxMWbFcYd0DOb0AO', 'ROLE_ADMIN', 1);
