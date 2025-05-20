@@ -31,7 +31,7 @@ public class AiReplyScheduler {
 
     // 자동 실행 메서드
 //    @Scheduled(cron = "0 0 3 * * *")
-    @Scheduled(cron = "0 45 11 * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void autoReplyProcess() {
         log.info("Starting the diary reply process");
         initiateReplyProcess();
