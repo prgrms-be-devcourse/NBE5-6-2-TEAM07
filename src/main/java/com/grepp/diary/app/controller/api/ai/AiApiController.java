@@ -165,4 +165,9 @@ public class AiApiController {
         }
     }
 
+    @GetMapping("/list")
+    private AiListResponse getAiInfoList() {
+        return AiListResponse.fromDtoList(aiService.getAIList());
+    }
+
 }
