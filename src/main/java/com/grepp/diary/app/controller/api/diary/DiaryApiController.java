@@ -18,6 +18,8 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -126,9 +128,10 @@ public class DiaryApiController {
     @PatchMapping("/modify")
     public ResponseEntity<?> editDiary(
         @RequestPart("request") DiaryEditRequest request,
-        @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages
+        @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+        @AuthenticationPrincipal UserDetails user
     ) {
-        String username = "user01";
+        String username = user.getUsername();
 
         try {
             diaryService.updateDiary(username, request, newImages);
@@ -140,12 +143,11 @@ public class DiaryApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDiary(@PathVariable Integer id
-        //@AuthenticationPrincipal UserDetails userDetails
+    public ResponseEntity<?> deleteDiary(@PathVariable Integer id,
+        @AuthenticationPrincipal UserDetails user
     )
     {
-        //String username = userDetails.getUsername();
-        String username = "user01";
+        String username = user.getUsername();
 
         try {
             diaryService.deleteDiary(id, username);

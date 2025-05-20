@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.diary.repository;
 
 import com.grepp.diary.app.model.diary.entity.Diary;
+import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.diary.entity.QDiary;
 import com.grepp.diary.app.model.diary.entity.QDiaryImg;
 import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
@@ -11,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -45,25 +47,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public Optional<Diary> findDiaryWithAllRelations(String userId, LocalDate targetDate) {
-
-        // 쿼리 분리
-
-//        Diary result = queryFactory
-//            .selectFrom(diary)
-//            .leftJoin(diary.images, diaryImg).fetchJoin()
-//            .leftJoin(diary.keywords, diaryKeyword).fetchJoin()
-//            .leftJoin(diary.reply, reply).fetchJoin()
-//            .where(
-//                diary.member.userId.eq(userId),
-//                diary.createdAt.between(start, end),
-//                diary.isUse.isTrue(),
-//                reply.isUse.isTrue()
-//            )
-//            .distinct()
-//            .fetchOne();
-
-        // Diary와 images만 fetch join
+    public Optional<Diary> findActiveDiaryByDateWithAllRelations(String userId, LocalDate targetDate) {
         Diary diaryWithImages = queryFactory
             .selectFrom(diary)
             .leftJoin(diary.images, diaryImg).fetchJoin()
@@ -81,6 +65,14 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             return Optional.empty();
         }
 
+        // 이미지 중 isUse == true인 것만 남기기
+        if (diaryWithImages.getImages() != null) {
+            List<DiaryImg> filteredImages = diaryWithImages.getImages().stream()
+                                                           .filter(DiaryImg::getIsUse)
+                                                           .collect(Collectors.toList());
+            diaryWithImages.setImages(filteredImages);
+        }
+
         // Diary와 keywords만 fetch join
         List<DiaryKeyword> keywordsList = queryFactory
             .selectFrom(diaryKeyword)
@@ -94,6 +86,57 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
         }
 
         return Optional.ofNullable(diaryWithImages);
+    }
+
+    @Override
+    public Optional<Diary> findActiveDiaryByDiaryIdWithAllRelations(String userId, Integer diaryId) {
+        Diary diaryWithImages = queryFactory
+            .selectFrom(diary)
+            .leftJoin(diary.images, diaryImg).fetchJoin()
+            .leftJoin(diary.reply, reply).fetchJoin()
+            .where(
+                diary.member.userId.eq(userId),
+                diary.diaryId.eq(diaryId),
+                diary.isUse.isTrue()
+            )
+            .distinct()
+            .fetchOne(); // 결과가 1건이면 Diary 객체 반환, 없으면 null 반환
+
+        // Diary가 없으면 바로 반환
+        if (diaryWithImages == null) {
+            return Optional.empty();
+        }
+
+        // 이미지 중 isUse == true인 것만 남기기
+        if (diaryWithImages.getImages() != null) {
+            List<DiaryImg> filteredImages = diaryWithImages.getImages().stream()
+                                                           .filter(DiaryImg::getIsUse)
+                                                           .collect(Collectors.toList());
+            diaryWithImages.setImages(filteredImages);
+        }
+
+        // Diary와 keywords만 fetch join
+        List<DiaryKeyword> keywordsList = queryFactory
+            .selectFrom(diaryKeyword)
+            .leftJoin(diaryKeyword.keywordId, keyword).fetchJoin()
+            .where(diaryKeyword.diaryId.eq(diaryWithImages))
+            .fetch();
+
+        // keywords만 diaryWithImages에 병합
+        if (keywordsList != null) {
+            diaryWithImages.setKeywords(keywordsList);
+        }
+
+        return Optional.ofNullable(diaryWithImages);
+    }
+
+    @Override
+    public void deactivateDiaryByDiaryId(Integer id) {
+        long updatedCount = queryFactory
+            .update(diary)
+            .set(diary.isUse, false)
+            .where(diary.diaryId.eq(id))
+            .execute();
     }
 
     @Override

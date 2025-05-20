@@ -19,6 +19,7 @@ import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.app.model.keyword.repository.KeywordRepository;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
+import com.grepp.diary.app.model.reply.ReplyRepository;
 import com.grepp.diary.app.model.reply.entity.Reply;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.response.ResponseCode;
@@ -58,6 +59,8 @@ public class DiaryService {
     private final DiaryKeywordRepository diaryKeywordRepository;
 
     private final FileUtil fileUtil;
+    private final ReplyRepository replyRepository;
+
     /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다. */
     public List<Diary> getDiariesDateBetween(String userId, LocalDate start, LocalDate end) {
         return diaryRepository.findByMemberUserIdAndDateBetweenAndIsUseTrueOrderByDateAsc(userId, start, end);
@@ -141,7 +144,7 @@ public class DiaryService {
     }
 
     @Transactional
-    public Diary saveDiary(List<MultipartFile> images, DiaryRequest form, String userId) {
+    public Diary saveDiary(DiaryRequest form, String userId) {
         try {
 
             Member member = memberRepository
@@ -190,14 +193,20 @@ public class DiaryService {
 
             // 사진을 업로드 했을 경우 사진 저장
             if (form.getImages() != null && !form.getImages().isEmpty()) {
-                List<FileDto> imageList = fileUtil.upload(images, "diary", savedDiary.getDiaryId());
-                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
-                diaryImg.setDiary(diary);
-                diaryImgRepository.save(diaryImg);
+                List<FileDto> imageList = fileUtil.upload(form.getImages(), "diary", savedDiary.getDiaryId());
 
-                //            diaryImgRepository.saveAll(imageList);
+                List<DiaryImg> diaryImgs = imageList.stream()
+                                                    .map(fileDto -> {
+                                                        DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, fileDto);
+                                                        diaryImg.setDiary(savedDiary);
+                                                        return diaryImg;
+                                                    })
+                                                    .collect(Collectors.toList());
+                diaryImgRepository.saveAll(diaryImgs);
+//                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
+//                diaryImg.setDiary(diary);
+//                diaryImgRepository.save(diaryImg);
             }
-
             return diary;
         } catch (IOException e) {
             throw new CommonException(ResponseCode.INTERNAL_SERVER_ERROR,e.getMessage());
@@ -205,21 +214,8 @@ public class DiaryService {
 
     }
 
-
-
     public Optional<Diary> findDiaryByUserIdAndDate(String userId, LocalDate targetDate) {
-        return diaryRepository.findDiaryWithAllRelations(userId, targetDate);
-    }
-
-    public Diary findById(Integer id) {
-
-        Diary diary = diaryRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Diary not found"));
-        diary.getImages();
-        diary.getKeywords();
-//        diary.setImages(diary.getImages());
-//        diary.setKeywords(diary.getKeywords());
-        return diary;
+        return diaryRepository.findActiveDiaryByDateWithAllRelations(userId, targetDate);
     }
 
     @Transactional
@@ -231,9 +227,11 @@ public class DiaryService {
             throw new AccessDeniedException("해당 일기를 삭제할 권한이 없습니다.");
         }
 
+        diaryImgRepository.deactivateDiaryImgByDiaryId(id);
+        diaryRepository.deactivateDiaryByDiaryId(id);
+        replyRepository.deactivateReplyByDiaryId(id);
 
-        diaryImgRepository.deleteByDiaryDiaryId(id); // 이미지 수동 삭제
-        diaryRepository.delete(diary);
+
     }
 
     @Transactional
@@ -249,8 +247,10 @@ public class DiaryService {
         diary.setContent(request.getContent());
         diary.setDate(request.getDate());
 
-        diaryKeywordRepository.deleteByDiaryId(diary);
 
+        log.info("request : {}", request.getDeletedImageIds());
+
+        diaryKeywordRepository.deleteByDiaryId(diary);
         // 키워드를 선택했을 경우 키워드 저장
         if (request.getKeywords() != null && !request.getKeywords().isEmpty()) {
             List<DiaryKeyword> keywordList = request
@@ -267,8 +267,32 @@ public class DiaryService {
                     return dk;
                 })
                 .collect(Collectors.toList());
+        }
+
+        for (Integer deletedImageId : request.getDeletedImageIds()) {
+            diaryImgRepository.deactivateDiaryImgByDiaryId(deletedImageId);
+        }
+
+        Diary updateDiary = diaryRepository.findById(request.getDiaryId())
+                                     .orElseThrow(() -> new EntityNotFoundException("Diary not found"));
 
 
+        if (newImages != null && !newImages.isEmpty()) {
+            List<FileDto> imageList = null;
+            try {
+                imageList = fileUtil.upload(newImages, "diary", request.getDiaryId());
+            } catch (IOException e) {
+                throw new CommonException(ResponseCode.INTERNAL_SERVER_ERROR,e.getMessage());
+            }
+
+            List<DiaryImg> diaryImgs = imageList.stream()
+                                                .map(fileDto -> {
+                                                    DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, fileDto);
+                                                    diaryImg.setDiary(updateDiary);
+                                                    return diaryImg;
+                                                })
+                                                .collect(Collectors.toList());
+            diaryImgRepository.saveAll(diaryImgs);
         }
     }
 
@@ -333,6 +357,10 @@ public class DiaryService {
         } else {
             throw new IllegalArgumentException("Unsupported period: " + period);
         }
+    }
+
+    public Optional<Diary> findDiaryByUserIdAndDiaryId(String userId, Integer diaryId) {
+        return diaryRepository.findActiveDiaryByDiaryIdWithAllRelations(userId, diaryId);
     }
 }
 
