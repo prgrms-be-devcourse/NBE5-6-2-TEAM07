@@ -86,7 +86,6 @@ public class DiaryController {
         @AuthenticationPrincipal UserDetails user
     ) {
         String userId = user.getUsername();
-        log.info("user : {}", user.getUsername());
         Member member = memberService.getMemberByUserId(userId);
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
@@ -100,16 +99,20 @@ public class DiaryController {
                                                     // 필요한 다른 필드도 복사
                                                     return copy;
                                                 }).collect(Collectors.toList());
-
             // ai 관련 정보 전달
             Ai ai = member.getCustom().getAi();
-            AiImg aiImg = ai.getImages().getFirst();
             model.addAttribute("aiName", ai.getName());
+            AiImg aiImg = ai.getImages().getFirst();
             model.addAttribute("imgSavePath", aiImg.getSavePath());
             model.addAttribute("imgRenamedName", aiImg.getRenamedName());
-            // 일기 답장 전달
-            String content = diaryExist.get().getReply().getContent();
-            model.addAttribute("replyContent", xssUtils.escapeHtmlWithLineBreaks(content));
+
+            // 답장 존재 여부 확인
+            if (diaryExist.get().getReply() != null) {
+                // 일기 답장 전달
+                String content = diaryExist.get().getReply().getContent();
+                model.addAttribute("replyContent", xssUtils.escapeHtmlWithLineBreaks(content));
+            }
+
             // 일기 사진 전달
             model.addAttribute("encodedImages", encodedImages);
             model.addAttribute("diary", diaryExist.get());
