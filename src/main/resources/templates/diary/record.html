@@ -105,10 +105,23 @@
 
     .diary-image img {
       border-radius: 12px;
-      height: 100%;
+      max-height: 300px;
+      max-width: 100%;
+      object-fit: contain;
+      height: auto;
       width: auto;
-      object-fit: cover;
       flex: 0 0 auto;
+    }
+
+    .diary-image-wrapper {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      gap: 10px;
+      align-items: center;
+      background: #fafafa;
     }
 
     .diary-text {
@@ -209,22 +222,20 @@
       </div>
       <div class="diary-main">
         <div class="diary-image">
-          <img th:src="@{/images/examples/cat1.jpg}" alt="cat1">
-          <img th:src="@{/images/examples/cat2.jpg}" alt="cat2">
-          <img th:src="@{/images/examples/cat2.jpg}" alt="cat3">
-          <!--<div th:if="${diary.images}">
-            <div th:each="image : ${encodedImages}">
-              <img th:src="@{'/uploads/' + ${image.savePath}}" th:alt="${image.originName}"
-                   width="150">
+          <div th:if="${diary.images}">
+            <div class="diary-image-wrapper">
+              <div th:each="image : ${diary.images}">
+                <img th:src="@{${image.path}}" th:alt="${image.originName}" class="diary-image-img">
+              </div>
             </div>
-          </div>-->
+          </div>
         </div>
         <div class="diary-text">
           <p th:text="${diary.content}">일기 내용</p>
         </div>
-        <div class="diary-keyword" th:if="${diary.keywords}">
-          <div class="keyword" th:each="kw : ${diary.keywords}"
-               th:text="|#${kw.keywordId.name} |"></div>
+        <div class="diary-keyword" th:if="${diary.keywordNames}">
+          <div class="keyword" th:each="kw : ${diary.keywordNames}"
+               th:text="|#${kw} |"></div>
         </div>
       </div>
     </div>
@@ -232,9 +243,9 @@
     <div class="reply-container">
       <div class="reply-header">
         <i class="fa-regular fa-envelope" style="font-size: 2rem; padding-right: 7px"></i>
-        <div th:text="|${aiName}의 답장이 도착했어요|" style="font-size: 1.3rem; font-weight: bold">[ai 캐릭터]의
-          답장이 도착했어요
-        </div>
+<!--        <div th:text="|${aiName}의 답장이 도착했어요|" style="font-size: 1.3rem; font-weight: bold">[ai 캐릭터]의-->
+<!--          답장이 도착했어요-->
+<!--        </div>-->
       </div>
       <div class="reply-main">
         <div class="reply-text">
@@ -255,7 +266,7 @@
         <div class="chat-btn-wrapper" th:if="${diary.reply != null}">
           <div class="chat-btn" onclick="chat()">
             <i class="fa-regular fa-message" style="margin-right: 7px"></i>
-            <div th:text="|${aiName}와 더 많은 대화하러 가기|">[ai 캐릭터]와 더 많은 대화하러 가기</div>
+<!--            <div th:text="|${aiName}와 더 많은 대화하러 가기|">[ai 캐릭터]와 더 많은 대화하러 가기</div>-->
           </div>
         </div>
       </div>
@@ -330,10 +341,6 @@
   });
 
 </script>
-
-
 <script src="/js/sidebar.js"></script>
-  </script>
-  <script src="/js/sidebar.js"></script>
 </body>
 </html>
