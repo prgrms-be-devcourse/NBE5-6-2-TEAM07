@@ -133,4 +133,8 @@ public class AiService {
     public List<AiInfoDto> getAIList() {
         return aiRepository.getAIListDto();
     }
+
+    public Optional<Ai> findById(Integer id) {
+        return aiRepository.findById(id);
+    }
 }

@@ -73,7 +73,7 @@ public class SecurityConfig {
                     .requestMatchers(GET, "/", "/css/**", "/js/**", "/images/**", "/assets/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/auth/login", "/auth/logout", "/auth/find_id", "/auth/find_pw", "/auth/regist/**", "/auth/regist-mail","/auth/auth-id","/auth/auth-pw").permitAll()
-                .requestMatchers("/auth/change-pw", "/auth/find-idpw").permitAll()
+                .requestMatchers("/auth/change-pw", "/auth/find-idpw","/member/leave", "/member/leave-success").permitAll()
                 .requestMatchers("/custom/**").permitAll()
 //                .anyRequest().permitAll() // 개발 중 전체 열기
                 .anyRequest().authenticated()
