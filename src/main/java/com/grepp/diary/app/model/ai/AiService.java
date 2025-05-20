@@ -15,6 +15,7 @@ import com.grepp.diary.infra.util.file.FileUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,14 @@ public class AiService {
             .orElseThrow(() -> new RuntimeException("AI not found"));
 
         return AiDto.fromEntity(ai);
+    }
+
+    public List<AiDto> getAllAi() {
+        List<Ai> aiList = aiRepository.findAll();
+
+        return aiList.stream()
+            .map(AiDto::fromEntity)
+            .collect(Collectors.toList());
     }
 
     @Transactional

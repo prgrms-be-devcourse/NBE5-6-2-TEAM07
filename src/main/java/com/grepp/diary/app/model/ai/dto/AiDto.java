@@ -35,5 +35,4 @@ public class AiDto {
 
         return dto;
     }
-
 }

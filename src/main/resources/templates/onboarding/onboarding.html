@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>시작하기 전</title>
   <link rel="stylesheet" href="/css/onboarding.css">
+  <link rel="stylesheet" href="../../static/css/onboarding.css">
 </head>
 <body>
 <main class="container">
@@ -13,10 +14,15 @@
     <button class="start-btn" onclick="location.href='/member/onboarding-qna'">답변하기</button>
 
     <div class="circle-container">
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
+      <th:block th:each="ai : ${allAi}">
+        <div class="circle">
+          <img
+              th:if="${ai.images != null and !#lists.isEmpty(ai.images)}"
+              th:src="@{${ai.images[0].renamedName}}"
+              alt="AI 썸네일"
+          />
+        </div>
+      </th:block>
     </div>
   </section>
 </main>

@@ -96,6 +96,11 @@ public class AdminApiController {
         return aiService.getSingleAi(id);
     }
 
+    @GetMapping("ai/all")
+    public List<AiDto> getAllAi() {
+        return aiService.getAllAi();
+    }
+
     @PatchMapping("ai/active")
     public List<Integer> modifyAiActive(
         @RequestBody AdminAiIdRequest request
