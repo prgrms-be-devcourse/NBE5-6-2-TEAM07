@@ -8,6 +8,8 @@ import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
+import com.grepp.diary.app.model.member.MemberService;
+import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.infra.error.exceptions.CommonException;
 import com.grepp.diary.infra.util.file.FileUtil;
 import com.grepp.diary.infra.util.xss.XssProtectionUtils;
@@ -38,6 +40,7 @@ public class DiaryController {
 
     private final DiaryService diaryService;
     private final KeywordService keywordService;
+    private final MemberService memberService;
     private final XssProtectionUtils xssUtils;
 
     @GetMapping("/writing")
@@ -84,6 +87,7 @@ public class DiaryController {
     ) {
         String userId = user.getUsername();
         log.info("user : {}", user.getUsername());
+        Member member = memberService.getMemberByUserId(userId);
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
             //사진 파일 encoding
@@ -98,7 +102,7 @@ public class DiaryController {
                                                 }).collect(Collectors.toList());
 
             // ai 관련 정보 전달
-            Ai ai = diaryExist.get().getReply().getAi();
+            Ai ai = member.getCustom().getAi();
             AiImg aiImg = ai.getImages().getFirst();
             model.addAttribute("aiName", ai.getName());
             model.addAttribute("imgSavePath", aiImg.getSavePath());
