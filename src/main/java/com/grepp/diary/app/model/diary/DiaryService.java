@@ -199,9 +199,6 @@ public class DiaryService {
                                                     })
                                                     .collect(Collectors.toList());
                 diaryImgRepository.saveAll(diaryImgs);
-
-
-
 //                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
 //                diaryImg.setDiary(diary);
 //                diaryImgRepository.save(diaryImg);
@@ -214,18 +211,7 @@ public class DiaryService {
     }
 
     public Optional<Diary> findDiaryByUserIdAndDate(String userId, LocalDate targetDate) {
-        return diaryRepository.findActiveDiaryWithAllRelations(userId, targetDate);
-    }
-
-    public Diary findById(Integer id) {
-
-        Diary diary = diaryRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Diary not found"));
-        diary.getImages();
-        diary.getKeywords();
-//        diary.setImages(diary.getImages());
-//        diary.setKeywords(diary.getKeywords());
-        return diary;
+        return diaryRepository.findActiveDiaryByDateWithAllRelations(userId, targetDate);
     }
 
     @Transactional
@@ -237,11 +223,9 @@ public class DiaryService {
             throw new AccessDeniedException("해당 일기를 삭제할 권한이 없습니다.");
         }
 
-//        diaryImgRepository.deleteByDiaryDiaryId(id); // 이미지 수동 삭제
-//        diaryRepository.delete(diary);
-        diaryImgRepository.deactivateByDiaryId(id);
-        diaryRepository.deactivateByDiaryId(id);
-        replyRepository.deactivateByDiaryId(id);
+        diaryImgRepository.deactivateDiaryImgByDiaryId(id);
+        diaryRepository.deactivateDiaryByDiaryId(id);
+        replyRepository.deactivateReplyByDiaryId(id);
 
 
     }
@@ -282,7 +266,7 @@ public class DiaryService {
         }
 
         for (Integer deletedImageId : request.getDeletedImageIds()) {
-            diaryImgRepository.deactivateByDiaryId(deletedImageId);
+            diaryImgRepository.deactivateDiaryImgByDiaryId(deletedImageId);
         }
 
         Diary updateDiary = diaryRepository.findById(request.getDiaryId())
@@ -306,8 +290,6 @@ public class DiaryService {
                                                 .collect(Collectors.toList());
             diaryImgRepository.saveAll(diaryImgs);
         }
-
-
     }
 
     /** 특정 년도에 작성된 일기들을 기준으로 월별 평균 기분점수를 반환합니다. */
@@ -371,6 +353,10 @@ public class DiaryService {
         } else {
             throw new IllegalArgumentException("Unsupported period: " + period);
         }
+    }
+
+    public Optional<Diary> findDiaryByUserIdAndDiaryId(String userId, Integer diaryId) {
+        return diaryRepository.findActiveDiaryByDiaryIdWithAllRelations(userId, diaryId);
     }
 }
 

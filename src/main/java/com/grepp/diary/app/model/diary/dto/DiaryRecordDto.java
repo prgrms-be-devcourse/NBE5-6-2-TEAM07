@@ -21,8 +21,6 @@ public class DiaryRecordDto {
     private String content;
     private Emotion emotion;
     private List<String> keywordNames;
-//    private List<String> diaryImagePath;
-//    private List<String> imageOriginName;
     private List<DiaryImageInfoDto> images;
 
     public static DiaryRecordDto fromEntity(Diary diary) {
@@ -42,17 +40,6 @@ public class DiaryRecordDto {
                                              .collect(Collectors.toList());
             dto.setImages(images);
         }
-
-//        if (diary.getImages() != null && !diary.getImages().isEmpty()) {
-//            List<String> imagePaths = diary.getImages().stream()
-//                                           .map(img -> "/uploads/" + img.getSavePath() + img.getRenamedName())
-//                                           .collect(Collectors.toList());
-//            dto.setDiaryImagePath(imagePaths);
-//
-//            List<String> imageNames = diary.getImages().stream()
-//                .map(img -> img.getOriginName()).collect(Collectors.toList());
-//            dto.setImageOriginName(imageNames);
-//        }
 
         // 키워드 이름만 추출해서 리스트에 담기
         List<String> keywordNames = diary.getKeywords().stream()

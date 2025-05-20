@@ -20,55 +20,7 @@ public class FileUtil {
     String projectRoot = System.getProperty("user.dir");  //프로젝트 폴더 경로
     String uploadDir = projectRoot + File.separator + "photo" + File.separator;
     private String filePath = uploadDir;
-
-//    // 파일명만 인코딩하는 함수
-//    public static String encodeFilenameInPath(String path) {
-//        if (path == null || path.isEmpty()) return path;
-//        int idx = path.lastIndexOf("/");
-//        String dir = idx >= 0 ? path.substring(0, idx + 1) : "";
-//        String filename = idx >= 0 ? path.substring(idx + 1) : path;
-//        String encodedFilename = URLEncoder
-//            .encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
-//        return dir + encodedFilename;
-//    }
-
-    public DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
-        //String uploadDir = "src/main/resources/photo";
-
-        if (diary.getDiaryId() == null) {
-            throw new IllegalArgumentException("Diary must be saved before saving image (diaryId is null)");
-        }
-
-        String diaryId = String.valueOf(diary.getDiaryId());
-        String projectRoot = System.getProperty("user.dir");  //프로젝트 폴더 경로
-        String uploadDir = projectRoot + File.separator + "photo" + File.separator + diaryId;
-
-        String originalFilename = file.getOriginalFilename();
-        String uuid = UUID
-            .randomUUID().toString();
-        String renamedName = uuid + "_" + originalFilename;
-        Path targetPath = Paths
-            .get(uploadDir).resolve(renamedName).normalize();
-        try {
-            Files.createDirectories(targetPath.getParent()); // 폴더 없으면 생성
-            file.transferTo(targetPath.toFile()); // 실제 파일 저장
-        } catch (IOException e) {
-            throw new RuntimeException("파일 저장 실패: " + originalFilename, e);
-        }
-
-        String webPath = "photo/" + diaryId + "/" + renamedName; //프론트에서 접근 가능하도록 DB에 저장할 웹 경로 생성
-
-        DiaryImg img = new DiaryImg();
-        img.setDiary(diary);
-        img.setOriginName(originalFilename);
-        img.setRenamedName(renamedName);
-        img.setSavePath(webPath);
-        img.setType(ImgType.THUMBNAIL); // 기본 타입
-        img.setIsUse(true);
-        return img;
-    }
-
-
+    
     public List<FileDto> upload(List<MultipartFile> files, String depthKind, Integer kindId) throws IOException {
         List<FileDto> fileDtos = new ArrayList<>();
 
