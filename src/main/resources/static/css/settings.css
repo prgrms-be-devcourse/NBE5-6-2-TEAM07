@@ -150,6 +150,21 @@
   border-radius: 50%;
   background-color: #ADAB9F;
   margin: 0 auto 16px;
+  overflow: hidden;
+  border: 3px solid #ADAB9F;
+}
+
+/* 선택된 AI 카드의 이미지에 초록 테두리 */
+.ai-card.selected .ai-image {
+  border: 3px solid #467750;
+}
+
+.ai-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
 .ai-name {
