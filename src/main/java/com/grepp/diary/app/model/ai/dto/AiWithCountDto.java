@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AiAdminDto {
+public class AiWithCountDto {
     private Integer aiId;
     private String name;
     private String mbti;

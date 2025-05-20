@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.ai.entity;
 
-import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.app.model.common.code.ImgType;
+import com.grepp.diary.infra.util.file.FileDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,7 +28,7 @@ public class AiImg {
     private Integer aiImgId;
     private String savePath;
     @Enumerated(EnumType.STRING)
-    private DiaryImgType type;
+    private ImgType type;
     private String originName;
     private String renamedName;
     private Boolean isUse;
@@ -36,7 +37,14 @@ public class AiImg {
     @JoinColumn(name = "ai_id", nullable = false)
     private Ai ai;
 
+    public AiImg(ImgType type, FileDto fileDto) {
+        this.type = type;
+        this.renamedName = fileDto.renameFileName();
+        this.originName = fileDto.originFileName();
+        this.savePath = fileDto.savePath();
+    }
+
     public String getRenamedPath(){
-        return "/download/" + savePath + renamedName;
+        return "/uploads/" + savePath + renamedName;
     }
 }

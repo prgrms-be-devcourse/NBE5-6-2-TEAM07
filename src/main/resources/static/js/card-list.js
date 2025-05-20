@@ -1,5 +1,5 @@
-async function loadRecentDiaries(userId) {
-  const response = await fetch(`/api/diary/cards?userId=${userId}`);
+async function loadRecentDiaries() {
+  const response = await fetch(`/api/diary/cards`);
   const data = await response.json();
   const diaries = data.diaryCards;
 
@@ -13,7 +13,12 @@ async function loadRecentDiaries(userId) {
     // 배경/글자 설정
     if (diary.imagePath) {
       card.classList.add("with-image");
-      card.style.backgroundImage = `url('${diary.imagePath}')`;
+
+      // 오버레이용 div
+      const overlay = document.createElement("div");
+      overlay.className = "image-overlay";
+      overlay.style.backgroundImage = `url('${diary.imagePath}')`;
+      card.appendChild(overlay);
     } else {
       card.classList.add("no-image");
     }
@@ -32,11 +37,15 @@ async function loadRecentDiaries(userId) {
     const right = clone.querySelector(".diary-right");
     right.textContent = diary.content || "(내용 없음)";
 
+    // 상세 페이지로 이동 이벤트 추가
+    card.addEventListener("click", () => {
+      const dateParam = diary.date;
+      window.location.href = `/diary/record?date=${dateParam}`;
+    });
+
     container.appendChild(clone);
   });
 }
 document.addEventListener("DOMContentLoaded", () => {
-  //TODO : Auth 구현이 완료되면 사용자 아이디 동적으로 받아올 수 있도록 할 것
-  const userId = "user01"; // 실제 사용자 ID로 교체
-  loadRecentDiaries(userId);
+  loadRecentDiaries();
 });

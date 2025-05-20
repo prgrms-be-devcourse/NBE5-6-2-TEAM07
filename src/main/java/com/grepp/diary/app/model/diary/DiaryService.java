@@ -4,7 +4,7 @@ import com.grepp.diary.app.controller.api.diary.payload.DiaryEditRequest;
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.entity.Custom;
-import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.app.model.common.code.ImgType;
 import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.diary.dto.DiaryDto;
 import com.grepp.diary.app.model.diary.dto.DiaryEmotionAvgDto;
@@ -63,10 +63,7 @@ public class DiaryService {
 
     /** 시작일과 끝을 기준으로 해당 날짜 사이에 존재하는 일기들을 반환합니다. */
     public List<Diary> getDiariesDateBetween(String userId, LocalDate start, LocalDate end) {
-        LocalDateTime startDateTime = start.atStartOfDay();
-        LocalDateTime endDateTime = end.plusDays(1).atStartOfDay();
-        return diaryRepository.findByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(userId,
-                                                                                 startDateTime, endDateTime);
+        return diaryRepository.findByMemberUserIdAndDateBetweenAndIsUseTrueOrderByDateAsc(userId, start, end);
 
     }
 
@@ -206,6 +203,10 @@ public class DiaryService {
 //                DiaryImg diaryImg = new DiaryImg(DiaryImgType.THUMBNAIL, imageList.getFirst());
 //                diaryImg.setDiary(diary);
 //                diaryImgRepository.save(diaryImg);
+                List<FileDto> imageList = fileUtil.upload(images, "diary", savedDiary.getDiaryId());
+                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
+                diaryImg.setDiary(diary);
+                diaryImgRepository.save(diaryImg);
 
                 //            diaryImgRepository.saveAll(imageList);
             }

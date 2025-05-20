@@ -1,6 +1,6 @@
 package com.grepp.diary.infra.util.file;
 
-import com.grepp.diary.app.model.diary.code.DiaryImgType;
+import com.grepp.diary.app.model.common.code.ImgType;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import java.io.File;
@@ -63,7 +63,7 @@ public class FileUtil {
         img.setOriginName(originalFilename);
         img.setRenamedName(renamedName);
         img.setSavePath(webPath);
-        img.setType(DiaryImgType.THUMBNAIL); // 기본 타입
+        img.setType(ImgType.THUMBNAIL); // 기본 타입
         img.setIsUse(true);
         return img;
     }

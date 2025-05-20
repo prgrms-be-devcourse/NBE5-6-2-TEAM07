@@ -22,7 +22,7 @@
     </div>
 
     <!-- 아이디 찾기 폼 -->
-    <form id="form-find-id" class="regist_form" th:action="@{/member/auth-id}" method="post" th:style="${type == 'pw'} ? 'display:none;' : ''">
+    <form id="form-find-id" class="regist_form" th:action="@{/auth/auth-id}" method="post" th:style="${type == 'pw'} ? 'display:none;' : ''">
       <div class="input-group" th:if="${step != 'verify'}">
         <input type="email" class="inputBox" name="email" placeholder="이메일" th:value="${email}">
       </div>
@@ -34,7 +34,7 @@
     </form>
 
     <!-- 비밀번호 찾기 폼 -->
-    <form id="form-find-pw"  class="regist_form" th:action="@{/member/auth-pw}" method="post" th:style="${type != 'pw'} ? 'display:none;' : ''">
+    <form id="form-find-pw"  class="regist_form" th:action="@{/auth/auth-pw}" method="post" th:style="${type != 'pw'} ? 'display:none;' : ''">
       <div class="input-group" th:if="${step != 'verify'}">
         <input type="email" class="inputBox" name="email" placeholder="이메일" th:value="${email}">
       </div>

@@ -137,7 +137,7 @@
         <div class="form-box">
           <div class="form-group full-width">
             <label>당신의 하루를 자세히 들려주세요.</label>
-            <textarea th:field="*{content}" placeholder="솔직하고 편하게 써주세요!" rows="6" class="diary-content-input" required></textarea>
+            <textarea th:field="*{content}" placeholder="편하게 이야기해주세요 :)" rows="6" class="diary-content-input" required></textarea>
             <div style="text-align: right; font-size: 0.9rem; color: #555;">
               <span id="char-count">0 / 1000자</span>
             </div>
@@ -152,7 +152,7 @@
 
             <!-- 이미지 미리보기 영역 -->
             <div id="preview-area" class="image-preview-box">
-              <span class="placeholder-icon">📷</span>
+              <span class="placeholder-icon"><i class="fa-solid fa-image custom-icon"></i></span>
             </div>
 
             <!-- 업로드 버튼 -->
@@ -172,6 +172,7 @@
       </form>
     </div>
   </div>
+  <script src="/js/logout.js"></script>
   <script src="/js/diary.js"></script>
   <script src="/js/sidebar.js"></script>
 

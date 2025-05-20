@@ -1,6 +1,8 @@
 package com.grepp.diary.app.model.member.entity;
 
 import com.grepp.diary.app.model.auth.code.Role;
+import com.grepp.diary.app.model.chat.entity.Chat;
+import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import jakarta.persistence.CascadeType;
@@ -49,4 +51,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Diary> diaries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chat> chat = new ArrayList<>();
 }

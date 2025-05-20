@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -34,7 +35,8 @@ public class Diary extends BaseEntity {
     private Integer diaryId;
     @Enumerated(EnumType.STRING)
     private Emotion emotion;
-    @Column(length = 1024)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     private LocalDate date;
     private Boolean isUse = true;
@@ -51,5 +53,4 @@ public class Diary extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private Member member;
-
 }
