@@ -5,8 +5,6 @@ import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,16 +21,16 @@ public class FileUtil {
     String uploadDir = projectRoot + File.separator + "photo" + File.separator;
     private String filePath = uploadDir;
 
-    // 파일명만 인코딩하는 함수
-    public static String encodeFilenameInPath(String path) {
-        if (path == null || path.isEmpty()) return path;
-        int idx = path.lastIndexOf("/");
-        String dir = idx >= 0 ? path.substring(0, idx + 1) : "";
-        String filename = idx >= 0 ? path.substring(idx + 1) : path;
-        String encodedFilename = URLEncoder
-            .encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
-        return dir + encodedFilename;
-    }
+//    // 파일명만 인코딩하는 함수
+//    public static String encodeFilenameInPath(String path) {
+//        if (path == null || path.isEmpty()) return path;
+//        int idx = path.lastIndexOf("/");
+//        String dir = idx >= 0 ? path.substring(0, idx + 1) : "";
+//        String filename = idx >= 0 ? path.substring(idx + 1) : path;
+//        String encodedFilename = URLEncoder
+//            .encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
+//        return dir + encodedFilename;
+//    }
 
     public DiaryImg saveFileAndBuildEntity(MultipartFile file, Diary diary) {
         //String uploadDir = "src/main/resources/photo";

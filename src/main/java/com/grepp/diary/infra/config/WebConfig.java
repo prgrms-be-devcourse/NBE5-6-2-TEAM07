@@ -13,5 +13,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:./photo/"); // 프로젝트 루트 폴더 기준 photo/ 디렉토리
     }
-
 }
