@@ -1,6 +1,8 @@
 package com.grepp.diary.app.controller.web.member;
 
 import com.grepp.diary.app.controller.web.member.form.SettingEmailForm;
+import com.grepp.diary.app.model.ai.AiService;
+import com.grepp.diary.app.model.ai.dto.AiDto;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
@@ -29,6 +31,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final CustomService customService;
+    private final AiService aiService;
 
     @PostMapping("/change-pw")
     public String changePw(@RequestParam String userId,
@@ -71,7 +74,10 @@ public class MemberController {
         Member member = memberService.getMemberByUserId(userId);
         String name = member.getName();
 
-        model.addAttribute("aiId", aiId);
+        // AI 조회
+        AiDto ai = aiService.getSingleAi(aiId);
+
+        model.addAttribute("ai", ai);
         model.addAttribute("name", name);
         return "onboarding/onboarding-result";
     }
