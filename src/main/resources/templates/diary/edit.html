@@ -167,7 +167,7 @@
         <label>기존 이미지</label>
         <div id="preview-area" class="image-preview-box">
           <div th:each="image : ${diary.images}" th:id="'img-wrapper-' + ${image.imgId}">
-            <img th:src="@{'/uploads/' + ${image.savePath} + ${image.renamedName}}" th:alt="${image.originName}" width="150">
+            <img th:src="@{${image.path}}" th:alt="${image.originName}" width="150">
             <button type="button" th:onclick="'removeImage(' + ${image.imgId} + ')'">삭제</button>
           </div>
         </div>
@@ -241,11 +241,6 @@
       dateInput.value = prevDateValue; // 오류 발생 시에도 롤백
       dateInput.style.display = 'none';
     }
-
-    // const date = new Date(dateInput.value);
-    // const options = { month: 'long', day: 'numeric', weekday: 'short' };
-    // dateText.textContent = date.toLocaleDateString('ko-KR', options);
-    // dateInput.style.display = 'none';
   });
 
   // console.log('emotionInputs:', emotionInputs);
@@ -419,8 +414,6 @@
       alert("네트워크 오류 또는 서버 문제");
     }
   }
-
-
 </script>
 
 </html>
