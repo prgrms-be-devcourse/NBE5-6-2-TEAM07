@@ -8,12 +8,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter @Setter
@@ -45,4 +47,8 @@ public class Ai {
 
     @OneToMany(mappedBy = "ai", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "ai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Where(clause = "is_use = true")
+    private List<AiImg> images = new ArrayList<>();
 }

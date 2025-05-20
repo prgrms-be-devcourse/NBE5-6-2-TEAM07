@@ -8,6 +8,7 @@ import com.grepp.diary.app.controller.api.admin.payload.AdminKeywordResponse;
 import com.grepp.diary.app.controller.api.admin.payload.AdminKeywordWriteRequest;
 import com.grepp.diary.app.model.ai.AiService;
 import com.grepp.diary.app.model.ai.dto.AiDto;
+import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import java.util.List;
@@ -115,9 +116,9 @@ public class AdminApiController {
 
     @PatchMapping("ai/modify")
     public Boolean modifyAi(
-        @RequestBody AdminAiWriteRequest adminAiWriteRequest
+        @ModelAttribute AdminAiWriteRequest request
     ) {
-        aiService.modifyAi(adminAiWriteRequest);
+        aiService.modifyAi(request.getImages(), request);
 
         return true;
     }

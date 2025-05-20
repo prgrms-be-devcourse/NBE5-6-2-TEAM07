@@ -54,22 +54,40 @@ public class AiService {
     }
 
     @Transactional
-    public Boolean modifyAi(AdminAiWriteRequest adminAiWriteRequest) {
-        Optional<Ai> optionalAi = aiRepository.findById(adminAiWriteRequest.getId());
+    public Boolean modifyAi(List<MultipartFile> images, AdminAiWriteRequest request) {
+        try {
 
-        if(optionalAi.isEmpty()) {
-            throw new RuntimeException("Ai not found");
+            Optional<Ai> optionalAi = aiRepository.findById(request.getId());
+
+            if (optionalAi.isEmpty()) {
+                throw new RuntimeException("Ai not found");
+            }
+
+            Ai ai = optionalAi.get();
+            ai.setName(request.getName());
+            ai.setMbti(request.getMbti());
+            ai.setInfo(request.getInfo());
+            ai.setPrompt(request.getPrompt());
+
+            aiRepository.save(ai);
+
+            if (images != null && !images.isEmpty()) {
+                Integer aiId = ai.getAiId();
+                aiImgRepository.makeRestImgFalse(aiId);
+
+                List<FileDto> imageList = fileUtil.upload(images, "ai", ai.getAiId());
+                AiImg aiImg = new AiImg(ImgType.THUMBNAIL, imageList.getFirst());
+
+                aiImg.setAi(ai);
+                aiImg.setIsUse(true);
+
+                aiImgRepository.save(aiImg);
+            }
+
+            return true;
+        } catch (IOException e) {
+            throw new CommonException(ResponseCode.INTERNAL_SERVER_ERROR);
         }
-
-        Ai ai = optionalAi.get();
-        ai.setName(adminAiWriteRequest.getName());
-        ai.setMbti(adminAiWriteRequest.getMbti());
-        ai.setInfo(adminAiWriteRequest.getInfo());
-        ai.setPrompt(adminAiWriteRequest.getPrompt());
-
-        aiRepository.save(ai);
-
-        return true;
     }
 
     @Transactional
