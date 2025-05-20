@@ -13,7 +13,12 @@ async function loadRecentDiaries() {
     // 배경/글자 설정
     if (diary.imagePath) {
       card.classList.add("with-image");
-      card.style.backgroundImage = `url('${diary.imagePath}')`;
+
+      // 오버레이용 div
+      const overlay = document.createElement("div");
+      overlay.className = "image-overlay";
+      overlay.style.backgroundImage = `url('${diary.imagePath}')`;
+      card.appendChild(overlay);
     } else {
       card.classList.add("no-image");
     }
