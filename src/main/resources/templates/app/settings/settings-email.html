@@ -18,6 +18,10 @@
 
   <div class="main">
     <div class="main-container">
+      <div th:if="${message}" class="error-banner">
+        <i class="fa-solid fa-circle-xmark"></i>
+        <span th:text="${message}"></span>
+      </div>
       <div class="setting-bento">
         <div class="bento-title">이메일 변경</div>
         <div class="bento-form">
@@ -34,6 +38,17 @@
     </div>
   </div>
 
+  <script>
+    // 오류 배너
+    setTimeout(() => {
+      const banner = document.querySelector('.error-banner');
+      if (banner) {
+        banner.style.opacity = '0';
+        banner.style.top = '0px'; // 위로 올라가는 느낌
+        setTimeout(() => banner.remove(), 500);
+      }
+    }, 3000);
+  </script>
   <!--이메일 형식 검사-->
   <script>
     const emailInput = document.getElementById('emailInput');
