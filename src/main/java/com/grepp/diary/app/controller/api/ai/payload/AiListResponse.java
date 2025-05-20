@@ -2,8 +2,6 @@ package com.grepp.diary.app.controller.api.ai.payload;
 
 import com.grepp.diary.app.model.ai.dto.AiInfoDto;
 import java.util.List;
-import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 
 public record AiListResponse(
     List<AiInfo> aiInfoList
@@ -13,15 +11,19 @@ public record AiListResponse(
         String name,
         String mbti,
         String info,
-        String savePath
+        String renamedPath
     ) {
         public static AiInfo fromDto(AiInfoDto aiInfoDto) {
+            String imagePath = null;
+
+            imagePath = aiInfoDto.getRenamedPath();
+
             return new AiInfo(
                 aiInfoDto.getAiId(),
                 aiInfoDto.getName(),
                 aiInfoDto.getMbti(),
                 aiInfoDto.getInfo(),
-                aiInfoDto.getImgUrl()
+                imagePath
             );
         }
     }
