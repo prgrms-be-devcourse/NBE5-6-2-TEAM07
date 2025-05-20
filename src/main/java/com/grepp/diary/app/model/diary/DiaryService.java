@@ -64,6 +64,10 @@ public class DiaryService {
 
     }
 
+    public List<Diary> getDiaryAtDate(String userId, LocalDate date){
+        return diaryRepository.findByMemberUserIdAndDateAndIsUseTrue(userId, date);
+    }
+
     public Integer getMonthDiariesCount() {
         LocalDateTime startDateTime = LocalDate.now().withDayOfMonth(1).atStartOfDay();
         LocalDateTime endDateTime = startDateTime.plusMonths(1);

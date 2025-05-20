@@ -53,6 +53,10 @@ public class AuthService implements UserDetailsService {
         Member member = memberRepository.findById(username)
             .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
 
+        if(!member.isEnabled()) {
+            throw new UsernameNotFoundException("계정이 비활성화되어 있습니다.");
+        }
+
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(member.getRole().name()));
 
