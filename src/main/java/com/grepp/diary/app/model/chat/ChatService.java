@@ -6,6 +6,8 @@ import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.app.model.reply.ReplyRepository;
 import com.grepp.diary.app.model.reply.entity.Reply;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +46,12 @@ public class ChatService {
             log.info("replyId : {}", replyId);
             log.info("Update chat count : {}", chat.getCount());
         }
+    }
+
+    public Integer getMonthChatCount() {
+        LocalDateTime startDateTime = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDateTime = startDateTime.plusMonths(1);
+
+        return chatRepository.getMonthChatCount(startDateTime, endDateTime);
     }
 }
