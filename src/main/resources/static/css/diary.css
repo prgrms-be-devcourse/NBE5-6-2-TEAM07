@@ -61,9 +61,10 @@ h2 {
 
 .image-preview-box {
   width: 100%;
-  height: 280px;
-  background-color: #dedede;
+  height: 320px;
+  background-color: #D9D8D5;
   border-radius: 12px;
+  margin-top: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -108,14 +109,27 @@ h2 {
 }
 
 .icon-group {
+  justify-content: space-between;
   display: flex;
   gap: 15px;
+  padding: 30px 30px;
   margin-top: 10px;
 }
 
-.icon-group img {
+.icon-group label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 60px;
   height: 60px;
+
+}
+
+.icon-group img {
+  width: 90px;   /* 아이콘 실제 크기 확대 */
+  height: 90px;
+  transform: scale(1.3); /* 추가: 확대 효과 */
+  object-fit: contain;
   cursor: pointer;
   border-radius: 12px;
   border: 2px solid transparent;
@@ -167,10 +181,7 @@ textarea {
 
 .keyword-section {
   margin-top: 10px;
-  background-color: white;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
 .keyword-group {
@@ -266,7 +277,13 @@ input[type="checkbox"]:checked + label {
   padding: 14px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  margin-top: 15px;
   resize: none;
   font-size: 1rem;
   box-sizing: border-box;
+}
+
+.custom-icon {
+  font-size: 60px;
+  color: #FEFBF6;
 }

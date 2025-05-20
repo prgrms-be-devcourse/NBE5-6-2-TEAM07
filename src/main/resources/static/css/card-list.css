@@ -84,13 +84,12 @@
   color: #FEFBF6;
 }
 
-.diary-card.with-image::before {
-  content: "";
+.diary-card .image-overlay {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.5;
+  opacity: 0.5; /* ← 여기서 조정 */
   z-index: 0;
 }
 

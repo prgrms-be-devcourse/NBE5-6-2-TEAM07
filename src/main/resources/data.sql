@@ -31,6 +31,12 @@ INSERT INTO AI (name, mbti, info, prompt, is_use) VALUES
  1);
 
 
+INSERT INTO AI_IMAGE (AI_ID, SAVE_PATH, TYPE, ORIGIN_NAME, RENAMED_NAME, IS_USE) VALUES
+(1, 'ai/1/', 'THUMBNAIL', '1.png', '99efc10a-d459-4b86-a2d2-bac09d8f1ab4.png', 1),
+(2, 'ai/2/', 'THUMBNAIL', '2.png', 'e4444ff3-d6be-44ca-a0e0-40cdba21dc97.png', 1),
+(3, 'ai/3/', 'THUMBNAIL', '3.png', 'c5fcc843-1879-424a-bfd5-2abbb8cd9843.png', 1),
+(4, 'ai/4/', 'THUMBNAIL', '4.png', '08b63610-4241-451a-aff1-ce1d1b18a6df.png', 1);
+
 INSERT INTO CUSTOM (user_id, ai_id, is_formal, is_long) VALUES
 ('user01', 1, 0, 0),
 ('user02', 2, 0, 1),

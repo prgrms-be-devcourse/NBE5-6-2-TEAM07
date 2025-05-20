@@ -6,6 +6,7 @@ import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
 import com.grepp.diary.infra.mail.MailTemplate;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -39,6 +42,7 @@ public class AuthService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final @Lazy RememberMeServices rememberMeServices;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -57,7 +61,7 @@ public class AuthService implements UserDetailsService {
         return Principal.createPrincipal(member, authorities);
     }
 
-    public void verifyPasswordAndLogin(SigninForm signinForm, HttpServletRequest request) {
+    public void verifyPasswordAndLogin(SigninForm signinForm, HttpServletRequest request, HttpServletResponse response) {
 
         // 1. 사용자 데이터 조회
         UserDetails userDetails = loadUserByUsername(signinForm.getUserId());
@@ -76,6 +80,8 @@ public class AuthService implements UserDetailsService {
 
         request.getSession()
             .setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+        rememberMeServices.loginSuccess(request, response, authToken);
     }
 
 
@@ -98,7 +104,6 @@ public class AuthService implements UserDetailsService {
 
         session.setAttribute("authCode", code);
         session.setAttribute("authEmail", email);
-
         if (userId != null) {
             session.setAttribute("authUserId", userId);
         }

@@ -184,6 +184,8 @@ public class MemberService {
 
     public String findUserIdByEmailFromSession(HttpSession session) {
         String sessionEmail = (String) session.getAttribute("authEmail");
+        session.removeAttribute("authCode");
+        session.removeAttribute("authEmail");
         return memberRepository.findByEmail(sessionEmail)
             .map(Member::getUserId)
             .orElseThrow(() -> new CommonException(ResponseCode.BAD_REQUEST, "해당 이메일로 가입된 계정이 없습니다."));

@@ -11,7 +11,6 @@
 </head>
 <body>
   <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
-  <script src="/js/logout.js"></script>
 
   <div class="main">
 
@@ -153,7 +152,7 @@
 
             <!-- 이미지 미리보기 영역 -->
             <div id="preview-area" class="image-preview-box">
-              <span class="placeholder-icon">📷</span>
+              <span class="placeholder-icon"><i class="fa-solid fa-image custom-icon"></i></span>
             </div>
 
             <!-- 업로드 버튼 -->
@@ -173,6 +172,7 @@
       </form>
     </div>
   </div>
+  <script src="/js/logout.js"></script>
   <script src="/js/diary.js"></script>
   <script src="/js/sidebar.js"></script>
 

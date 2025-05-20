@@ -1,6 +1,8 @@
 package com.grepp.diary.app.controller.web.member;
 
 import com.grepp.diary.app.controller.web.member.form.SettingEmailForm;
+import com.grepp.diary.app.model.ai.AiService;
+import com.grepp.diary.app.model.ai.dto.AiDto;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
@@ -29,33 +31,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final CustomService customService;
-
-    @PostMapping("/change-pw")
-    public String changePw(@RequestParam String userId,
-        @RequestParam String email,
-        @RequestParam String newPassword,
-        @RequestParam String confirmPassword,
-        Model model) {
-
-        // 1. 비밀번호 일치 여부 확인
-        if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            model.addAttribute("userId", userId);
-            model.addAttribute("email", email);
-            return "member/reset-password";
-        }
-
-        try {
-            memberService.changePassword(userId, email, newPassword);
-            return "member/find-idpw-verification";
-
-        } catch (CommonException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("userId", userId);
-            model.addAttribute("email", email);
-            return "member/reset-password";
-        }
-    }
+    private final AiService aiService;
 
     @GetMapping("/onboarding-qna")
     public String showOnboardingQnaPqge() {
@@ -71,7 +47,10 @@ public class MemberController {
         Member member = memberService.getMemberByUserId(userId);
         String name = member.getName();
 
-        model.addAttribute("aiId", aiId);
+        // AI 조회
+        AiDto ai = aiService.getSingleAi(aiId);
+
+        model.addAttribute("ai", ai);
         model.addAttribute("name", name);
         return "onboarding/onboarding-result";
     }
