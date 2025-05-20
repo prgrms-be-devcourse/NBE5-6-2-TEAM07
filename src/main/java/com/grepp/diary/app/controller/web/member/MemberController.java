@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.web.member;
 
 import com.grepp.diary.app.controller.web.member.form.SettingEmailForm;
+import com.grepp.diary.app.model.auth.domain.Principal;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.member.MemberService;
 import com.grepp.diary.app.model.member.entity.Member;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -94,5 +96,31 @@ public class MemberController {
         }
         redirectAttributes.addFlashAttribute("message", "성공적으로 이메일을 변경하였습니다");
         return "redirect:/app/settings";
+    }
+
+    // 1. 탈퇴 확인 페이지 렌더링
+    @GetMapping("/leave")
+    public String showLeavePage(@AuthenticationPrincipal Principal principal, Model model) {
+        String aiName = memberService.findAiNameByUserId(principal.getUsername());
+        model.addAttribute("aiName", aiName);
+        return "member/leave";
+    }
+
+    // 2. 실제 회원 탈퇴 처리
+    @PostMapping("/leave")
+    public String deleteAccount(@AuthenticationPrincipal Principal principal,
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
+        String userId = principal.getUsername();
+
+        try {
+            memberService.withdraw(userId);
+            session.invalidate(); // 로그아웃 처리
+            redirectAttributes.addFlashAttribute("message", "탈퇴가 완료되었습니다.");
+            return "redirect:/";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "탈퇴 중 오류가 발생했습니다.");
+            return "redirect:/member/leave";
+        }
     }
 }
