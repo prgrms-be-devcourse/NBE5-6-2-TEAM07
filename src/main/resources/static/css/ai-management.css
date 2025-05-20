@@ -184,6 +184,10 @@
   transition: background 0.3s ease;
 }
 
+.page-submit button {
+  width: 100%; /* 부모인 .page-submit 너비만큼 */
+}
+
 .save-form button:hover {
   background-color: #0056b3;
 }
