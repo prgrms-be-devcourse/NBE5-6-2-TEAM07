@@ -78,7 +78,7 @@ function renderCalendar(date, emotionMap = {}) {
       const dateParam = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
       try {
-        const res = await fetch(`/api/diary/check?userId=user01&date=${dateParam}`);
+        const res = await fetch(`/api/diary/check?date=${dateParam}`);
         const exists = await res.json();
 
         if (exists) {
@@ -98,8 +98,7 @@ function renderCalendar(date, emotionMap = {}) {
 }
 
 async function fetchEmotionData(year, month) {
-  //TODO : Auth 구현이 완료되면 사용자 아이디 동적으로 받아올 수 있도록 할 것
-  const response = await fetch(`/api/diary/calendar?userId=user01&year=${year}&month=${month}`);
+  const response = await fetch(`/api/diary/calendar?year=${year}&month=${month}`);
   const data = await response.json();
 
   const emotionMap = {};

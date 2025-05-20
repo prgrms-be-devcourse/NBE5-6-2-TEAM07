@@ -3,8 +3,7 @@ let isLoading = false;
 const PAGE_SIZE = 30;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const userId = "user01"; // TODO: 실제 로그인된 사용자 ID로 대체
-  loadNextPage(userId);
+  loadNextPage();
 
   // 무한 스크롤 감지
   window.addEventListener("scroll", () => {
@@ -12,17 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
         window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
         !isLoading
     ) {
-      loadNextPage(userId);
+      loadNextPage();
     }
   });
 });
 
-async function loadNextPage(userId) {
+async function loadNextPage() {
   isLoading = true;
 
   try {
     const response = await fetch(
-        `/api/diary/cards?userId=${userId}&page=${currentPage}`
+        `/api/diary/cards?page=${currentPage}`
     );
     const data = await response.json();
     const diaries = data.diaryCards || [];
