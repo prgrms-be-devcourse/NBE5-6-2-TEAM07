@@ -4,6 +4,7 @@ import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.entity.AiImg;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.app.model.diary.dto.DiaryRecordDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.keyword.KeywordService;
@@ -68,8 +69,7 @@ public class DiaryController {
         String userId = user.getUsername();
 
         try {
-            log.info("form : {}", form);
-            diaryService.saveDiary(form.getImages(), form, userId);
+            diaryService.saveDiary(form, userId);
             return "redirect:/app";
         } catch (CommonException e) {
             model.addAttribute("error", e.getMessage());
@@ -89,16 +89,6 @@ public class DiaryController {
         Member member = memberService.getMemberByUserId(userId);
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
-            //사진 파일 encoding
-            List<DiaryImg> encodedImages = diaryExist.get().getImages().stream()
-                                                     .map(img -> {
-                                                    String encodedPath = FileUtil.encodeFilenameInPath(img.getSavePath());
-                                                    DiaryImg copy = new DiaryImg();
-                                                    copy.setSavePath(encodedPath);
-                                                    copy.setOriginName(img.getOriginName());
-                                                    // 필요한 다른 필드도 복사
-                                                    return copy;
-                                                }).collect(Collectors.toList());
             // ai 관련 정보 전달
             Ai ai = member.getCustom().getAi();
             model.addAttribute("aiName", ai.getName());
@@ -113,23 +103,26 @@ public class DiaryController {
                 model.addAttribute("replyContent", xssUtils.escapeHtmlWithLineBreaks(content));
             }
 
-            // 일기 사진 전달
-            model.addAttribute("encodedImages", encodedImages);
-            model.addAttribute("diary", diaryExist.get());
+            model.addAttribute("diary", DiaryRecordDto.fromEntity(diaryExist.get()));
         } else {
             log.info("Diary not found");
-            model.addAttribute("diary", new Diary()); // 빈 객체를 넘겨서 프론트에서 처리
+            model.addAttribute("diary", new DiaryRecordDto()); // 빈 객체를 넘겨서 프론트에서 처리
         }
         return "diary/record";
     }
 
     @GetMapping("/edit/{id}")
-    public String showDiaryEditPage(@PathVariable Integer id, Model model) {
-        Diary diary = diaryService.findById(id);
-        model.addAttribute("diary", diary);
+    public String showDiaryEditPage(@PathVariable Integer id, Model model,
+        @AuthenticationPrincipal UserDetails user
+
+    ) {
+        String userId = user.getUsername();
+        Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDiaryId(userId, id);
+
+        model.addAttribute("diary", DiaryRecordDto.fromEntity(diaryExist.get()));
 
         // 선택했던 키워드들
-        List<String> keywordNames = diary.getKeywords().stream()
+        List<String> keywordNames = diaryExist.get().getKeywords().stream()
                                          .filter(k -> k.getKeywordId() != null)
                                          .map(k -> k.getKeywordId().getName())
                                          .collect(Collectors.toList());
