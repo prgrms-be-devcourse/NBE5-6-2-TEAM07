@@ -14,7 +14,7 @@ public record DiaryDailyEmotionResponse(
     ) {
         public static DiaryDailyEmotion fromEntity(Diary diary) {
             return new DiaryDailyEmotion(
-                diary.getCreatedAt().toLocalDate(),
+                diary.getDate(),
                 diary.getEmotion()
             );
         }
