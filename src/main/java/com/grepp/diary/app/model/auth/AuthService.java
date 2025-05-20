@@ -104,7 +104,6 @@ public class AuthService implements UserDetailsService {
 
         session.setAttribute("authCode", code);
         session.setAttribute("authEmail", email);
-
         if (userId != null) {
             session.setAttribute("authUserId", userId);
         }

@@ -30,33 +30,6 @@ public class MemberController {
     private final MemberService memberService;
     private final CustomService customService;
 
-    @PostMapping("/change-pw")
-    public String changePw(@RequestParam String userId,
-        @RequestParam String email,
-        @RequestParam String newPassword,
-        @RequestParam String confirmPassword,
-        Model model) {
-
-        // 1. 비밀번호 일치 여부 확인
-        if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            model.addAttribute("userId", userId);
-            model.addAttribute("email", email);
-            return "member/reset-password";
-        }
-
-        try {
-            memberService.changePassword(userId, email, newPassword);
-            return "member/find-idpw-verification";
-
-        } catch (CommonException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("userId", userId);
-            model.addAttribute("email", email);
-            return "member/reset-password";
-        }
-    }
-
     @GetMapping("/onboarding-qna")
     public String showOnboardingQnaPqge() {
         return "onboarding/onboarding-qna";
