@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,10 +59,10 @@ public class DiaryController {
 
     @PostMapping
     public String writeAndSaveDiary(@ModelAttribute("diaryRequest") DiaryRequest form,
-        Model model
-        //@AuthenticationPrincipal CustomUserDetails user
+        Model model,
+        @AuthenticationPrincipal UserDetails user
     ) {
-        String userId = "user01";
+        String userId = user.getUsername();
 
         try {
             log.info("form : {}", form);
@@ -77,10 +79,11 @@ public class DiaryController {
         Model model,
         @RequestParam("date")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // 문자열을 날짜 타입으로 변환 "yyyy-MM-dd" 형식(예: 2025-05-15)만 허용
-        LocalDate targetDate
-        //@AuthenticationPrincipal UserDetails user
+        LocalDate targetDate,
+        @AuthenticationPrincipal UserDetails user
     ) {
-        String userId = "user01";
+        String userId = user.getUsername();
+        log.info("user : {}", user.getUsername());
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
             //사진 파일 encoding
