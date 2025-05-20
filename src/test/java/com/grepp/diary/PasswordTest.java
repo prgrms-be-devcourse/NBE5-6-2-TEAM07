@@ -11,7 +11,7 @@ public class PasswordTest {
     @Test
     public void testPassword() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("1111"));
+        System.out.println(encoder.encode("2222"));
         System.out.println(encoder.encode("admin"));
     }
 }
