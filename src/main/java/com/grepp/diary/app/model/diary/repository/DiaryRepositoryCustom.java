@@ -14,5 +14,7 @@ public interface DiaryRepositoryCustom {
     List<Object []> findEmotionCountByUserIdAndYear(String userId, int year);
 
     // 일기, 이미지, 키워드, reply를 모두 조회
-    Optional<Diary> findDiaryWithAllRelations(String userId, LocalDate targetDate);
+    Optional<Diary> findActiveDiaryWithAllRelations(String userId, LocalDate targetDate);
+
+    void deactivateByDiaryId(Integer id);
 }

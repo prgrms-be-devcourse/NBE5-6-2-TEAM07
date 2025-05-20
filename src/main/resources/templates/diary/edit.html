@@ -20,13 +20,6 @@
 
       <div class="form-box">
         <div class="date-display">
-          <span th:text="${#temporals.format(diary.date, 'Y년 M월 d일 E요일')}"></span>
-          <button type="button" class="date-change">날짜 변경</button>
-        </div>
-      </div>
-
-      <div class="form-box">
-        <div class="date-display">
           <input
               type="date"
               id="diary-date"
@@ -38,8 +31,6 @@
           <button type="button" class="date-change" id="date-change-btn">날짜 변경</button>
         </div>
       </div>
-
-
 
       <div class="form-box">
         <!-- 감정 선택 -->
@@ -133,8 +124,6 @@
                        th:text="${keyword.name}"></label>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -178,7 +167,7 @@
         <label>기존 이미지</label>
         <div id="preview-area" class="image-preview-box">
           <div th:each="image : ${diary.images}" th:id="'img-wrapper-' + ${image.imgId}">
-            <img th:src="@{'/uploads/' + ${image.savePath}}" width="150">
+            <img th:src="@{'/uploads/' + ${image.savePath} + ${image.renamedName}}" th:alt="${image.originName}" width="150">
             <button type="button" th:onclick="'removeImage(' + ${image.imgId} + ')'">삭제</button>
           </div>
         </div>
@@ -191,17 +180,11 @@
         <p class="image-guide">사진은 여러 장 추가할 수 있습니다.</p>
       </div>
 
-
-      <!-- 저장 버튼 -->
-<!--      <div class="form-group">-->
-<!--        <button type="submit" class="submit-btn">작성완료</button>-->
-<!--      </div>-->
       <div class="form-group">
         <button type="button" class="submit-btn" onclick="submitDiaryEdit()">저장</button>
       </div>
     </div>
   </main>
-  <!--  </form>-->
 </body>
 
 <script src="/js/sidebar.js"></script>
@@ -217,11 +200,59 @@
   let currentType = 'good';
   let expanded = false;
 
-  console.log('emotionInputs:', emotionInputs);
-  emotionInputs.forEach(input => {
-    console.log(input.name, input.checked);
-    console.log(primaryContainer);
+  const dateInput = document.getElementById('diary-date');
+  const dateText = document.getElementById('date-text');
+  const dateChangeBtn = document.getElementById('date-change-btn');
+
+  let prevDateValue = dateInput.value;
+
+  // 날짜 변경 버튼 클릭 시 date input 표시
+  dateChangeBtn.addEventListener('click', () => {
+    prevDateValue = dateInput.value; //변경 전 날짜
+    dateInput.style.display = 'inline-block';
+    dateInput.focus();
   });
+
+  // 날짜 선택 시 화면에 한글로 표시
+  dateInput.addEventListener('change', async() => {
+
+    const dateParam = dateInput.value;
+    try {
+      const res = await fetch(`/api/diary/check?userId=user01&date=${dateParam}`);
+      const exists = await res.json();
+
+      if (exists) {
+        alert("이미 해당 날짜에 작성된 일기가 있습니다. 다른 날짜를 선택하세요.");
+        dateInput.value = prevDateValue; // 날짜 롤백
+        // 날짜 텍스트도 원래대로 되돌림
+        const prevDate = new Date(prevDateValue);
+        const options = { month: 'long', day: 'numeric', weekday: 'short' };
+        dateText.textContent = prevDate.toLocaleDateString('ko-KR', options);
+      } else {
+        // 날짜 텍스트 업데이트
+        const date = new Date(dateParam);
+        const options = { month: 'long', day: 'numeric', weekday: 'short' };
+        dateText.textContent = date.toLocaleDateString('ko-KR', options);
+        prevDateValue = dateParam; // prevDateValue도 갱신
+      }
+      dateInput.style.display = 'none';
+    } catch (err) {
+      alert("서버와 통신 중 오류가 발생했습니다.");
+      dateInput.value = prevDateValue; // 오류 발생 시에도 롤백
+      dateInput.style.display = 'none';
+    }
+
+    // const date = new Date(dateInput.value);
+    // const options = { month: 'long', day: 'numeric', weekday: 'short' };
+    // dateText.textContent = date.toLocaleDateString('ko-KR', options);
+    // dateInput.style.display = 'none';
+  });
+
+  // console.log('emotionInputs:', emotionInputs);
+  // emotionInputs.forEach(input => {
+  //   console.log(input.name, input.checked);
+  //   console.log(primaryContainer);
+  // });
 
   // form.addEventListener('submit', function (e) {
   //   const emotionChecked = document.querySelector('input[type="radio"][name="emotion"]:checked');
@@ -369,17 +400,19 @@
       formData.append("newImages", file);
     }
 
+    const diaryDate = "[[${diary.date}]]"; // 일기 수정 전 날짜
+
     try {
       const res = await fetch("/api/diary/modify", {
         method: "PATCH",
         body: formData
       });
-
       if (res.ok) {
         alert("일기가 수정되었습니다!");
-        window.location.href = `/diary/record/${diaryId}`;
+        window.location.href = `/diary/record?date=${date}`;
       } else {
         alert("수정 중 오류가 발생했습니다.");
+        window.location.href = `/diary/record?date=${diaryDate}`;
       }
     } catch (err) {
       console.error("수정 실패", err);

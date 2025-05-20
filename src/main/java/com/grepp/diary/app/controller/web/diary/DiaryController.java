@@ -2,12 +2,11 @@ package com.grepp.diary.app.controller.web.diary;
 
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.diary.DiaryService;
+import com.grepp.diary.app.model.diary.dto.DiaryRecordDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
-import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
 import com.grepp.diary.infra.error.exceptions.CommonException;
-import com.grepp.diary.infra.util.file.FileUtil;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,14 +54,14 @@ public class DiaryController {
 
     @PostMapping
     public String writeAndSaveDiary(@ModelAttribute("diaryRequest") DiaryRequest form,
-        Model model
-        //@AuthenticationPrincipal CustomUserDetails user
+        Model model,
+        @AuthenticationPrincipal UserDetails user
     ) {
-        String userId = "user01";
+        //String userId = "user01";
+        String userId = user.getUsername();
 
         try {
-            log.info("form : {}", form);
-            diaryService.saveDiary(form.getImages(), form, userId);
+            diaryService.saveDiary(form, userId);
             return "redirect:/app";
         } catch (CommonException e) {
             model.addAttribute("error", e.getMessage());
@@ -73,29 +74,17 @@ public class DiaryController {
         Model model,
         @RequestParam("date")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // 문자열을 날짜 타입으로 변환 "yyyy-MM-dd" 형식(예: 2025-05-15)만 허용
-        LocalDate targetDate
-        //@AuthenticationPrincipal UserDetails user
+        LocalDate targetDate,
+        @AuthenticationPrincipal UserDetails user
     ) {
-        String userId = "user01";
+//        String userId = "user01";
+        String userId = user.getUsername();
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
-            //사진 파일 encoding
-            List<DiaryImg> encodedImages = diaryExist.get().getImages().stream()
-                                                     .map(img -> {
-                                                    String encodedPath = FileUtil.encodeFilenameInPath(img.getSavePath());
-                                                    DiaryImg copy = new DiaryImg();
-                                                    copy.setSavePath(encodedPath);
-                                                    copy.setOriginName(img.getOriginName());
-                                                    // 필요한 다른 필드도 복사
-                                                    return copy;
-                                                }).collect(Collectors.toList());
-
-
-            model.addAttribute("encodedImages", encodedImages);
-            model.addAttribute("diary", diaryExist.get());
+            model.addAttribute("diary", DiaryRecordDto.fromEntity(diaryExist.get()));
         } else {
             log.info("Diary not found");
-            model.addAttribute("diary", new Diary()); // 빈 객체를 넘겨서 프론트에서 처리
+            model.addAttribute("diary", new DiaryRecordDto()); // 빈 객체를 넘겨서 프론트에서 처리
         }
         return "diary/record";
     }
@@ -103,6 +92,7 @@ public class DiaryController {
     @GetMapping("/edit/{id}")
     public String showDiaryEditPage(@PathVariable Integer id, Model model) {
         Diary diary = diaryService.findById(id);
+
         model.addAttribute("diary", diary);
 
         // 선택했던 키워드들

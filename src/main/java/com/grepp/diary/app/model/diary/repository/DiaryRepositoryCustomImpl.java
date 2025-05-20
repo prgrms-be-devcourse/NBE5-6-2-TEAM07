@@ -1,6 +1,7 @@
 package com.grepp.diary.app.model.diary.repository;
 
 import com.grepp.diary.app.model.diary.entity.Diary;
+import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.diary.entity.QDiary;
 import com.grepp.diary.app.model.diary.entity.QDiaryImg;
 import com.grepp.diary.app.model.keyword.entity.DiaryKeyword;
@@ -11,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -45,10 +47,9 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public Optional<Diary> findDiaryWithAllRelations(String userId, LocalDate targetDate) {
+    public Optional<Diary> findActiveDiaryWithAllRelations(String userId, LocalDate targetDate) {
 
         // 쿼리 분리
-
 //        Diary result = queryFactory
 //            .selectFrom(diary)
 //            .leftJoin(diary.images, diaryImg).fetchJoin()
@@ -81,6 +82,14 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             return Optional.empty();
         }
 
+        // 이미지 중 isUse == true인 것만 남기기
+        if (diaryWithImages.getImages() != null) {
+            List<DiaryImg> filteredImages = diaryWithImages.getImages().stream()
+                                                           .filter(DiaryImg::getIsUse)
+                                                           .collect(Collectors.toList());
+            diaryWithImages.setImages(filteredImages);
+        }
+
         // Diary와 keywords만 fetch join
         List<DiaryKeyword> keywordsList = queryFactory
             .selectFrom(diaryKeyword)
@@ -95,6 +104,17 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
 
         return Optional.ofNullable(diaryWithImages);
     }
+
+    @Override
+    public void deactivateByDiaryId(Integer id) {
+        long updatedCount = queryFactory
+            .update(diary)
+            .set(diary.isUse, false)
+            .where(diary.diaryId.eq(id))
+            .execute();
+    }
+
+
 
     @Override
     public List<Object[]> findDateAndEmotionByUserIdAndYear(String userId, int year) {

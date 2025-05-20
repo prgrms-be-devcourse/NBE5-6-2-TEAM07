@@ -133,7 +133,7 @@ public class DiaryApiController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDiary(@PathVariable Integer id
-        //@AuthenticationPrincipal UserDetails userDetails
+        //@AuthenticationPrincipal UserDetails user
     )
     {
         //String username = userDetails.getUsername();
