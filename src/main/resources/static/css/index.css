@@ -144,9 +144,15 @@ form:not(.regist_form) {
   position: fixed;
   width: 275px;
   height: 275px;
-
   background-color: #282420;
-  border-radius: 137.5px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.eclipse img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
 }
 
 .tab-buttons {
