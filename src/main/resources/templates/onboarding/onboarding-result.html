@@ -11,23 +11,24 @@
 
   <form method="post" th:action="@{/member/custom-ai}">
     <div class="ai-preview">
-      <img src="/images/ai_placeholder.png" alt="AI 이미지" class="ai-image">
+      <div class="circle">
+        <img
+            th:if="${ai.images != null and !#lists.isEmpty(ai.images)}"
+            th:src="@{${ai.images[0].renamedName}}"
+            alt="AI 썸네일"
+        />
+      </div>
       <div class="ai-name">
-        <span th:if="${aiId == 1}">다정한 오소리</span>
-        <span th:if="${aiId == 2}">친절한 두루미</span>
-        <span th:if="${aiId == 3}">용감한 사자</span>
-        <span th:if="${aiId == 4}">용맹한 거북이</span>
+        <span th:text="${ai.name}"></span>
       </div>
       <p class="ai-desc">
-        <span th:if="${aiId == 1}" th:text="${name + '님의 감정 정리를 돕고 위로와 공감을 드릴게요'}"></span>
-        <span th:if="${aiId == 2}" th:text="${name + '님의 이성 정리를 돕고 위로와 공감을 드릴게요'}"></span>
-        <span th:if="${aiId == 3}" th:text="${name + '님의 감정 정리를 돕고 해결책을 드릴게요'}"></span>
-        <span th:if="${aiId == 4}" th:text="${name + '님의 이성 정리를 돕고 해결책을 드릴게요'}"></span>
+        <span th:text="${name + '님, ' + ai.info}"></span>
       </p>
     </div>
 
     <!-- hidden input으로 aiId 등 필요한 값도 함께 전송 -->
-    <input type="hidden" name="aiId" th:value="${aiId}">
+    <input type="hidden" name="ai" th:value="${ai}" />
+    <input type="hidden" name="aiId" th:value="${ai.aiId}" />
     <input type="hidden" name="name" th:value="${name}">
 
     <button type="submit" class="start-btn">시작하기</button>

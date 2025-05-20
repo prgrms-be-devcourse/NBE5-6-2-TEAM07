@@ -7,7 +7,7 @@ function postLeave() {
     body: '' // 필요한 데이터 있으면 여기에 작성
   }).then(response => {
     if (response.ok) {
-      window.location.href = '/'; // 성공 시 이동할 페이지
+      window.location.href = '/member/leave-success'; // 성공 시 이동할 페이지
     }
   });
 }
