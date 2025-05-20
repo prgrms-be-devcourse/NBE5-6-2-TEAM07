@@ -33,8 +33,8 @@
         </div>
       </div>
       <div class="diary-main">
-        <div class="diary-image">
-          <div th:if="${diary.images}">
+        <div th:if="${diary.images != null && !diary.images.isEmpty()}">
+          <div class="diary-image">
             <div class="diary-image-wrapper">
               <div th:each="image : ${diary.images}">
                 <img th:src="@{${image.path}}" th:alt="${image.originName}" class="diary-image-img">
@@ -43,11 +43,15 @@
           </div>
         </div>
         <div class="diary-text">
-          <p th:text="${diary.content}">일기 내용</p>
+          <div class="diary-text-wrapper">
+            <p th:text="${diary.content}">일기 내용</p>
+          </div>
         </div>
-        <div class="diary-keyword" th:if="${diary.keywordNames}">
-          <div class="keyword" th:each="kw : ${diary.keywordNames}"
-               th:text="|#${kw} |"></div>
+        <div th:if="${diary.keywordNames != null && !diary.keywordNames.isEmpty()}">
+          <div class="diary-keyword" th:if="${diary.keywordNames}">
+            <div class="keyword" th:each="kw : ${diary.keywordNames}"
+                 th:text="|#${kw} |"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -72,11 +76,13 @@
             <img alt="ai avatar" th:src="@{'/uploads/'+ ${imgSavePath} + ${imgRenamedName}}">
           </div>
           <div class="ai-reply">
-            <div th:if="${diary.reply != null}">
-              <div th:utext="${replyContent}"></div>
-            </div>
-            <div th:if="${diary.reply == null}">
-              <p>소중하게 읽고 답장을 작성해드릴게요 ✏️</p>
+            <div class="ai-reply-wrapper">
+              <div th:if="${diary.reply != null}">
+                <div th:utext="${replyContent}"></div>
+              </div>
+              <div th:if="${diary.reply == null}">
+                <p>소중하게 읽고 답장을 작성해드릴게요 ✏️</p>
+              </div>
             </div>
           </div>
         </div>
