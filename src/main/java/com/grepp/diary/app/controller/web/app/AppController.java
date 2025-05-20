@@ -41,6 +41,8 @@ public class AppController {
         }
 
         List<AiDto> allAi = aiService.getAllAi();
+        model.addAttribute("name", appService.getUserName(userId));
+        model.addAttribute("allAi", allAi);
 
         return appService.isNewUser(userId)
             ? "onboarding/onboarding"
