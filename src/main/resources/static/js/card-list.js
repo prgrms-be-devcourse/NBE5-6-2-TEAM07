@@ -1,5 +1,5 @@
-async function loadRecentDiaries(userId) {
-  const response = await fetch(`/api/diary/cards?userId=${userId}`);
+async function loadRecentDiaries() {
+  const response = await fetch(`/api/diary/cards`);
   const data = await response.json();
   const diaries = data.diaryCards;
 
@@ -42,7 +42,5 @@ async function loadRecentDiaries(userId) {
   });
 }
 document.addEventListener("DOMContentLoaded", () => {
-  //TODO : Auth 구현이 완료되면 사용자 아이디 동적으로 받아올 수 있도록 할 것
-  const userId = "user01"; // 실제 사용자 ID로 교체
-  loadRecentDiaries(userId);
+  loadRecentDiaries();
 });
