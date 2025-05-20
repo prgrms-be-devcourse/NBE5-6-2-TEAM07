@@ -39,7 +39,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
                 diary.isUse.isTrue(),
                 diaryImg.isUse.isTrue().or(diaryImg.isUse.isNull()) // 이미지 사용 중이거나 없는 경우 허용
             )
-            .orderBy(diary.createdAt.desc())
+            .orderBy(diary.date.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .distinct() // 중복 Diary 제거 (fetchJoin 시 유용)

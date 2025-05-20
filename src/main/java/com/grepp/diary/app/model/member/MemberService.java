@@ -1,8 +1,13 @@
 package com.grepp.diary.app.model.member;
 
 import com.grepp.diary.app.controller.web.auth.form.SignupForm;
+import com.grepp.diary.app.model.ai.AiService;
+import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.auth.AuthService;
 import com.grepp.diary.app.model.auth.code.Role;
+import com.grepp.diary.app.model.custom.CustomService;
+import com.grepp.diary.app.model.custom.entity.Custom;
+import com.grepp.diary.app.model.custom.repository.CustomRepository;
 import com.grepp.diary.app.model.member.dto.MemberDto;
 import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.app.model.member.repository.MemberRepository;
@@ -16,12 +21,12 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 @Slf4j
@@ -33,6 +38,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MailTemplate mailTemplate;
     private final AuthService authService;
+    private final AiService aiService;
+    private final CustomRepository customRepository;
 
     @Value("${app.domain}")
     private String domain;
@@ -217,4 +224,24 @@ public class MemberService {
         updatePassword(userId, email, encodedPassword);
     }
 
+    public String findAiNameByUserId(String username) {
+        // 1. userId로 Custom 조회
+        Custom custom = (Custom) customRepository.findByMemberUserId(username)
+            .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND, "사용자 설정 정보가 없습니다."));
+
+        // 2. Custom 객체에서 aiId 추출
+        int aiId = custom.getAi().getAiId();
+
+        // 3. aiId로 Ai 정보 조회
+        Ai ai = aiService.findById(aiId)
+            .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND, "AI 정보를 찾을 수 없습니다."));
+
+        return ai.getName();
+    }
+
+    @Transactional
+    public void withdraw(String userId) {
+        // soft delete
+        memberRepository.updateEnabledByUserId(userId);
+    }
 }

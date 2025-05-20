@@ -119,10 +119,10 @@ public class DiaryApiController {
         Authentication authentication,
         @RequestParam LocalDate date
     ) {
-        LocalDate nextDate = date.plusDays(1);
+//        LocalDate nextDate = date.plusDays(1);
         String userId = authentication.getName();
 
-        return !diaryService.getDiariesDateBetween(userId, date, nextDate).isEmpty();
+        return !diaryService.getDiaryAtDate(userId, date).isEmpty();
     }
 
     @PatchMapping("/modify")
