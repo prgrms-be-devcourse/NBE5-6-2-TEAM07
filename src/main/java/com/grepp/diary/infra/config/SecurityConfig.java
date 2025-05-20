@@ -7,14 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.http.HttpMethod.GET;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 @Configuration
 @EnableWebSecurity
@@ -30,9 +31,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(AuthService authService) {
+    public UserDetailsService userDetailsService(@Lazy AuthService authService) {
         return authService;
     }
+
+    @Bean
+    public RememberMeServices rememberMeServices(@Lazy UserDetailsService userDetailsService) {
+        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
+        services.setAlwaysRemember(false); // 체크박스 체크시에만 remember-me 작동
+        services.setCookieName("remember-me");
+        services.setTokenValiditySeconds(60 * 60 * 24 * 7); // 7일
+        return services;
+    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
@@ -54,13 +65,15 @@ public class SecurityConfig {
             )
             .rememberMe(rememberMe -> rememberMe
                 .key(rememberMeKey)
-                .userDetailsService(userDetailsService)
+                .rememberMeParameter("remember-me")
+                .rememberMeServices(rememberMeServices(userDetailsService))
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(GET, "/", "/css/**", "/js/**", "/images/**", "/assets/**").permitAll()
+                    .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                    .requestMatchers(GET, "/", "/css/**", "/js/**", "/images/**", "/assets/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/member/login", "/member/logout", "/member/find_id", "/member/find_pw", "/member/regist/**", "/member/regist-mail","/member/auth-id","/member/auth-pw").permitAll()
-                .requestMatchers("/member/auth-id", "/member/auth-pw", "/member/change-pw", "/member/find-idpw").permitAll()
+                .requestMatchers("/auth/login", "/auth/logout", "/auth/find_id", "/auth/find_pw", "/auth/regist/**", "/auth/regist-mail","/auth/auth-id","/auth/auth-pw").permitAll()
+                .requestMatchers("/auth/change-pw", "/auth/find-idpw").permitAll()
                 .requestMatchers("/custom/**").permitAll()
 //                .anyRequest().permitAll() // 개발 중 전체 열기
                 .anyRequest().authenticated()
