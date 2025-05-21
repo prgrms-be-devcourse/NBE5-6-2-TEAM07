@@ -28,6 +28,7 @@
 
         <div class="button-group">
           <div class="button" onclick="editDiary()"><i class="fa-solid fa-pen"></i></div>
+          <input type="hidden" id="reply-content" th:value="${diary.reply?.content}">
           <div class="button" onclick="deleteDiary()"><i class="fa-solid fa-trash-can"></i></div>
           <div class="button" onclick="goBack()"><i class="fa-solid fa-arrow-left-long"></i></div>
         </div>
@@ -113,10 +114,15 @@
   emotionDiv.appendChild(emotionIcon);
 
   function goBack() {
-    window.history.back();
+    window.history.href = `/app`;
   }
 
   function editDiary() {
+    const replyContent = document.getElementById('reply-content').value;
+    if (replyContent && replyContent.trim().length > 0) {
+      alert("이미 답장이 달린 일기는 수정할 수 없습니다.");
+      return;
+    }
     window.location.href = `/diary/edit/${diaryId}`;
   }
   const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
