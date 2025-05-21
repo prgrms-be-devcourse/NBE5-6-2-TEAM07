@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const keywordContent = document.getElementById('keywordContent');
   const defaultType = 'EMOTION';
+
+  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
   fetchKeywords(defaultType);
 
   // 감정, 사람, 상황 선택
@@ -101,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/admin/keyword/active', {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
       },
       body: JSON.stringify({ keywordIds })
     })
@@ -125,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/admin/keyword/nonactive', {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
       },
       body: JSON.stringify({ keywordIds })
     })
