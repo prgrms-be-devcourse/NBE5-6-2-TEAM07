@@ -3,6 +3,8 @@ package com.grepp.diary.app.controller.web.diary;
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.entity.AiImg;
+import com.grepp.diary.app.model.custom.CustomService;
+import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryRecordDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
@@ -41,7 +43,7 @@ public class DiaryController {
 
     private final DiaryService diaryService;
     private final KeywordService keywordService;
-    private final MemberService memberService;
+    private final CustomService customService;
     private final XssProtectionUtils xssUtils;
 
     @GetMapping("/writing")
@@ -86,11 +88,15 @@ public class DiaryController {
         @AuthenticationPrincipal UserDetails user
     ) {
         String userId = user.getUsername();
-        Member member = memberService.getMemberByUserId(userId);
+        Optional<Custom> customExist = customService.findByUserId(userId);
+        if (customExist.isEmpty()) {
+            return "redirect:/app";
+        }
+        Custom custom = customExist.get();
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
             // ai 관련 정보 전달
-            Ai ai = member.getCustom().getAi();
+            Ai ai = custom.getAi();
             model.addAttribute("aiName", ai.getName());
             AiImg aiImg = ai.getImages().getFirst();
             model.addAttribute("imgSavePath", aiImg.getSavePath());
