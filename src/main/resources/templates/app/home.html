@@ -9,10 +9,16 @@
   <link rel="stylesheet" href="/css/card-list.css">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <th:block th:replace="fragments/csrf-meta :: csrfMeta"></th:block>
 </head>
 <body>
 
 <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
+<script src="/js/logout.js"></script>
+  <script th:if="${error}">
+    alert('[[${error}]]');
+  </script>
+
 
 <div class="main">
   <!--캘린더 표시 구역-->

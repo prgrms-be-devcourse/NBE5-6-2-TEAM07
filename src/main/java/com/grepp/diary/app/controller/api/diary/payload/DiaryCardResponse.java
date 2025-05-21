@@ -10,6 +10,7 @@ public record DiaryCardResponse (
 ){
     public record DiaryCard(
         Integer diaryId,
+        LocalDate date,
         LocalDate createdAt,
         Emotion emotion,
         String content,
@@ -24,6 +25,7 @@ public record DiaryCardResponse (
 
             return new DiaryCard(
                 diary.getDiaryId(),
+                diary.getDate(),
                 diary.getCreatedAt().toLocalDate(),
                 diary.getEmotion(),
                 diary.getContent(),

@@ -38,7 +38,7 @@
   border-radius: 12px;
   overflow: hidden;
   position: relative;
-  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* 왼쪽 이모지 + 날짜 */
@@ -84,13 +84,12 @@
   color: #FEFBF6;
 }
 
-.diary-card.with-image::before {
-  content: "";
+.diary-card .image-overlay {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.5;
+  opacity: 0.5; /* ← 여기서 조정 */
   z-index: 0;
 }
 
@@ -104,7 +103,6 @@
 .diary-card.no-image {
   background-color: #FEFBF6;
   color: #282420;
-  border-color: #282420;
 }
 
 /* 숨김 이미지용 요소 */

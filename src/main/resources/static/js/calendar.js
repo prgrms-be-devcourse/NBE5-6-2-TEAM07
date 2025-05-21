@@ -24,6 +24,8 @@ function renderCalendar(date, emotionMap = {}) {
 
   // 날짜 셀 생성
   const today = new Date();
+  today.setHours(0, 0, 0, 0);  // 오늘 기준 정규화
+
   for (let d = 1; d <= lastDate; d++) {
     const cell = document.createElement("div");
     cell.className = "date-cell";
@@ -61,6 +63,34 @@ function renderCalendar(date, emotionMap = {}) {
       number.classList.add("today-number");
     }
 
+    // 날짜 클릭 이벤트 등록
+    cell.addEventListener("click", async () => {
+      const clickedDate = new Date(year, month, d);
+      clickedDate.setHours(0, 0, 0, 0);
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      if (clickedDate >= tomorrow) {
+        return; // 내일 이후는 무시
+      }
+
+      const dateParam = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+      try {
+        const res = await fetch(`/api/diary/check?date=${dateParam}`);
+        const exists = await res.json();
+
+        if (exists) {
+          window.location.href = `/diary/record?date=${dateParam}`; // 일기가 있는 경우
+        } else {
+          window.location.href = `/diary/writing?date=${dateParam}`; // 일기가 없는 경우
+        }
+      } catch (err) {
+        console.error("날짜 클릭 처리 중 오류:", err);
+      }
+    });
+
     cell.appendChild(circle);
     cell.appendChild(number);
     grid.appendChild(cell);
@@ -68,13 +98,12 @@ function renderCalendar(date, emotionMap = {}) {
 }
 
 async function fetchEmotionData(year, month) {
-  //TODO : Auth 구현이 완료되면 사용자 아이디 동적으로 받아올 수 있도록 할 것
-  const response = await fetch(`/api/diary/calendar?userId=user01&year=${year}&month=${month}`);
+  const response = await fetch(`/api/diary/calendar?year=${year}&month=${month}`);
   const data = await response.json();
 
   const emotionMap = {};
-  data.diaryEmotions.forEach(({ createdAt, emotion }) => {
-    emotionMap[createdAt] = emotion;
+  data.diaryEmotions.forEach(({ diaryDate, emotion }) => {
+    emotionMap[diaryDate] = emotion;
   });
 
   renderCalendar(new Date(year, month - 1), emotionMap);
@@ -95,6 +124,5 @@ document.getElementById("go-today").addEventListener("click", () => {
   fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);
 });
 
-
-
+// 초기 렌더링
 fetchEmotionData(currentDate.getFullYear(), currentDate.getMonth() + 1);

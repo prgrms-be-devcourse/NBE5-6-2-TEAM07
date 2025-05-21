@@ -8,9 +8,11 @@
   <link rel="stylesheet" href="/css/card-timeline.css">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <th:block th:replace="fragments/csrf-meta :: csrfMeta"></th:block>
 </head>
 <body>
   <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
+  <script src="/js/logout.js"></script>
 
   <div class="main">
     <div class="timeline-wrapper">
@@ -18,7 +20,6 @@
     </div>
     <div th:insert="fragments/diary-card-timeline :: diaryCardTemplate"></div>
     <div id="diary-card-container" class="card-list"></div>
-
   </div>
 
   <script src="/js/emotion-map.js"></script>

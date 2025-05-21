@@ -1,6 +1,8 @@
 package com.grepp.diary.app.controller.web.diary.payload;
 
 import com.grepp.diary.app.model.diary.code.Emotion;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -16,7 +18,8 @@ public class DiaryRequest {
     private String content;
     private Emotion emotion;
     private List<String> keywords = new ArrayList<>();
-
+    private LocalDate date;
     // Multipart 파일 업로드용
-    private List<MultipartFile> images = new ArrayList<>();
+    @Size(max = 1)
+    private List<MultipartFile> images;
 }

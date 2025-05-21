@@ -144,7 +144,40 @@ form:not(.regist_form) {
   position: fixed;
   width: 275px;
   height: 275px;
-
   background-color: #282420;
-  border-radius: 137.5px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.eclipse img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 10px;
+  width: 416px;
+  margin-bottom: 15px;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #467750;
+  background-color: transparent;
+  color: #467750;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  color: #467750;
+}
+
+.tab-button.disabled {
+  opacity: 0.3;
+  /*pointer-events: none;*/
 }

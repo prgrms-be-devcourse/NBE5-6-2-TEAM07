@@ -11,13 +11,13 @@ public record DiaryCalendarResponse(
     public record DiaryEmotion(
         Integer diaryId,
         Emotion emotion,
-        LocalDate createdAt
+        LocalDate diaryDate
     ){
         public static DiaryEmotion fromEntity(Diary diary) {
             return new DiaryEmotion(
                 diary.getDiaryId(),
                 diary.getEmotion(),
-                diary.getCreatedAt().toLocalDate()
+                diary.getDate()
             );
         }
     }

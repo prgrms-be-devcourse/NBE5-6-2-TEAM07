@@ -3,26 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>일기 작성</title>
-  <link rel="stylesheet" th:href="@{/css/diary.css}">
+  <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" th:href="@{/css/diary.css}">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <div th:replace="~{fragments/member-sidebar :: memberSidebar}"></div>
+  <div th:replace="fragments/member-sidebar :: memberSidebar"></div>
 
-  <div class="container">
+  <div class="main">
 
-    <div class="content">
-      <h1>오늘의 일기를 작성해 볼까요?</h1>
+    <div class="container">
+      <h2>오늘의 일기를 작성해 볼까요?</h2>
 
       <form th:action="@{/diary}" method="post" enctype="multipart/form-data" th:object="${diaryRequest}">
-
-        <!-- 날짜 표기 (예: 5월 12일 월요일) -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="form-box">
           <div class="date-display">
-            <span th:text="${#temporals.format(T(java.time.LocalDate).now(), 'M월 d일 E요일')}"></span>
-            <button type="button" class="date-change">날짜 변경</button>
+            <input
+                type="date"
+                id="diary-date"
+                name="date"
+                class="date-input"
+                style="display: none;"
+                th:value="${diaryDate}"> <!-- 서버에서 LocalDate를 yyyy-MM-dd로 변환해서 전달해야 함 -->
+            <div class="date-text" id="date-text" th:text="${#temporals.format(diaryDate, 'Y년 M월 d일 E요일')}"></div>
+            <button type="button" class="date-change" id="date-change-btn">날짜 변경</button>
           </div>
         </div>
 
@@ -89,7 +96,7 @@
         <!-- 누구와 함께 -->
         <div class="form-box">
           <div class="form-group">
-            <label>누구와 함께였나요?</label>
+            <label>누구와 함께였나요? (선택)</label>
             <div class="keyword-section">
               <!-- 동행 키워드들 -->
               <div class="keyword-group">
@@ -101,8 +108,6 @@
                   <label th:for="'kw-person-' + ${keyword.keywordId}" th:text="${keyword.name}"></label>
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -110,7 +115,7 @@
         <!-- 어떤 상황 -->
         <div class="form-box">
           <div class="form-group">
-            <label>어떤 상황이었나요?</label>
+            <label>어떤 상황이었나요? (선택)</label>
             <div class="keyword-section">
               <!-- 상황 키워드들 -->
               <div class="keyword-group">
@@ -130,7 +135,7 @@
         <div class="form-box">
           <div class="form-group full-width">
             <label>당신의 하루를 자세히 들려주세요.</label>
-            <textarea th:field="*{content}" placeholder="솔직하고 편하게 써주세요!" rows="6" class="diary-content-input" required></textarea>
+            <textarea th:field="*{content}" placeholder="편하게 이야기해주세요 :)" rows="6" class="diary-content-input" required></textarea>
             <div style="text-align: right; font-size: 0.9rem; color: #555;">
               <span id="char-count">0 / 1000자</span>
             </div>
@@ -145,17 +150,17 @@
 
             <!-- 이미지 미리보기 영역 -->
             <div id="preview-area" class="image-preview-box">
-              <span class="placeholder-icon">📷</span>
+              <span class="placeholder-icon"><i class="fa-solid fa-image custom-icon"></i></span>
             </div>
 
             <!-- 업로드 버튼 -->
             <div class="upload-btn-wrapper">
               <!-- 반드시 form 안에 있어야 하며, name="images"로 서버 전송 가능하게 -->
-              <input type="file" th:field="*{images}" name="images" id="images" multiple accept="image/*" style="display: none;" onchange="previewImages(event)">
+              <input type="file" th:field="*{images}" name="images" id="images" accept="image/*" style="display: none;" onchange="previewImages(event)">
               <label for="images" class="upload-btn">사진 추가하기</label>
             </div>
-
-            <p class="image-guide">사진은 여러 장 추가할 수 있습니다.</p>
+<!--  사진은 여러 장 추가할 수 있습니다.  나중에 멘트 바꾸기-->
+            <p class="image-guide">일기와 같이 등록하고 싶은 사진을 한장 추가해 주세요</p>
           </div>
         </div>
         <!-- 저장 버튼 -->
@@ -165,11 +170,10 @@
       </form>
     </div>
   </div>
-
-
-
+  <script src="/js/logout.js"></script>
   <script src="/js/diary.js"></script>
   <script src="/js/sidebar.js"></script>
+
 
 </body>
 </html>
