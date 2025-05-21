@@ -152,7 +152,7 @@ public class DiaryService {
                 .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다: " + userId));
 
             LocalDate targetDate = form.getDate();
-            boolean exists = diaryRepository.existsByMember_UserIdAndDate(userId, targetDate);
+            boolean exists = diaryRepository.existsByMember_UserIdAndDateAndIsUse(userId, targetDate, true);
             if (exists) {
                 throw new CommonException(ResponseCode.DIARY_ALREADY_EXISTS);
             }

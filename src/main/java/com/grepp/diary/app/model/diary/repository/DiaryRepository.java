@@ -13,5 +13,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Integer>, DiaryRep
     Integer countByCreatedAtBetweenAndIsUseTrue(LocalDateTime startDateTime, LocalDateTime endDateTime);
     Integer countByMemberUserIdAndCreatedAtBetweenAndIsUseTrue(String userId, LocalDateTime start, LocalDateTime end);
 
-    boolean existsByMember_UserIdAndDate(String userId, LocalDate targetDate);
+    boolean existsByMember_UserIdAndDateAndIsUse(String userId, LocalDate targetDate, boolean isUse);
 }

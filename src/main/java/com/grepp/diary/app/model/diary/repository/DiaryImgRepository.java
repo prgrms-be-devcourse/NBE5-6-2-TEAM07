@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface DiaryImgRepository extends JpaRepository<DiaryImg, Long> {
 
     @Modifying
-    @Query("UPDATE DiaryImg d SET d.isUse = false WHERE d.imgId = :imgId")
-    int deactivateDiaryImgByDiaryId(@Param("diaryId") Integer imgId); //
+    @Query("UPDATE DiaryImg d SET d.isUse = false WHERE d.diary.diaryId = :diaryId")
+    int deactivateDiaryImgByDiaryId(@Param("diaryId") Integer diaryId);
 }
