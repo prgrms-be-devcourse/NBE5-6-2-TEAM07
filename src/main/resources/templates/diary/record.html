@@ -101,18 +101,11 @@
   </div>
 
 </main>
+<script src="/js/emotion-map.js"></script>
 <script th:inline="javascript">
-
-  window.emotionImageMap = {
-    GOOD: "Good_Cloud_Sun.png",
-    VERY_GOOD: "Very_Good_Sun.png",
-    NORMAL: "Normal_Cloud.png",
-    BAD: "Bad_Cloud_Rain.png",
-    VERY_BAD: "Very_Bad_Cloud_Lightning.png"
-  };
   const diaryId = '[[${diary.diaryId}]]'
   const diaryDate = [[${diary.date}]]
-  const emotionText = document.getElementById('emotion-text').value;
+  const emotionText = document.getElementById('emotion-text').value.toUpperCase();
   const emotionDiv = document.getElementById('diary-emotion');
   const emotionIcon = document.createElement('img');
   emotionIcon.src = `/images/emotion/weather/${emotionImageMap[emotionText]}`

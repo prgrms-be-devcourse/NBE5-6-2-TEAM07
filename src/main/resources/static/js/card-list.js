@@ -30,7 +30,7 @@ async function loadRecentDiaries() {
 
     // 날짜 (ex. 2025-05-08 → 05.08)
     const dateElem = clone.querySelector(".diary-date");
-    const [year, month, day] = diary.createdAt.split("-");
+    const [year, month, day] = diary.date.split("-");
     dateElem.textContent = `${month}.${day}`;
 
     // 일기 내용
