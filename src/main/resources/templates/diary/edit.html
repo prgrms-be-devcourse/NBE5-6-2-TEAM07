@@ -88,7 +88,7 @@
               <div th:each="keyword : ${keywordGroups.EMOTION_GOOD}" class="keyword-chip">
                 <input type="checkbox" th:id="'kw-' + ${keyword.keywordId}" th:name="keywords"
                        th:value="${keyword.name}"
-                       th:checked="${#lists.contains(keywordNames, keyword.name)}">
+                       th:checked="${#lists.contains(diary.keywordNames, keyword.name)}">
                 <label th:for="'kw-' + ${keyword.keywordId}" th:text="${keyword.name}"></label>
               </div>
             </div>
@@ -97,7 +97,7 @@
               <div th:each="keyword : ${keywordGroups.EMOTION_BAD}" class="keyword-chip">
                 <input type="checkbox" th:id="'kw-' + ${keyword.keywordId}" th:name="keywords"
                        th:value="${keyword.name}"
-                       th:checked="${#lists.contains(keywordNames, keyword.name)}">
+                       th:checked="${#lists.contains(diary.keywordNames, keyword.name)}">
                 <label th:for="'kw-' + ${keyword.keywordId}" th:text="${keyword.name}"></label>
               </div>
             </div>
@@ -113,13 +113,13 @@
           <label>누구와 함께였나요?</label>
           <div class="keyword-section">
             <!-- 동행 키워드들 -->
-            <div class="keyword-group">
+            <div id="keyword-person" class="keyword-group">
               <div th:each="keyword : ${keywordGroups.PERSON}" class="keyword-chip">
                 <input type="checkbox"
                        th:id="'kw-person-' + ${keyword.keywordId}"
                        th:name="keywords"
                        th:value="${keyword.name}"
-                       th:checked="${#lists.contains(keywordNames, keyword.name)}">
+                       th:checked="${#lists.contains(diary.keywordNames, keyword.name)}">
                 <label th:for="'kw-person-' + ${keyword.keywordId}"
                        th:text="${keyword.name}"></label>
               </div>
@@ -134,13 +134,13 @@
           <label>어떤 상황이었나요?</label>
           <div class="keyword-section">
             <!-- 상황 키워드들 -->
-            <div class="keyword-group">
+            <div id="keyword-situation" class="keyword-group">
               <div th:each="keyword : ${keywordGroups.SITUATION}" class="keyword-chip">
                 <input type="checkbox"
                        th:id="'kw-situation-' + ${keyword.keywordId}"
                        th:name="keywords"
                        th:value="${keyword.name}"
-                       th:checked="${#lists.contains(keywordNames, keyword.name)}">
+                       th:checked="${#lists.contains(diary.keywordNames, keyword.name)}">
                 <label th:for="'kw-situation-' + ${keyword.keywordId}"
                        th:text="${keyword.name}"></label>
               </div>
@@ -174,7 +174,7 @@
       </div>
       <div class="form-box">
         <div class="upload-btn-wrapper">
-          <input type="file" name="images" id="images" multiple accept="image/*" style="display: none;" onchange="previewImages(event)">
+          <input type="file" name="images" id="images" accept="image/*" style="display: none;" onchange="previewImages(event)">
           <label for="images" class="upload-btn">사진 추가하기</label>
         </div>
         <p class="image-guide">사진은 여러 장 추가할 수 있습니다.</p>
@@ -242,12 +242,6 @@
       dateInput.style.display = 'none';
     }
   });
-
-  // console.log('emotionInputs:', emotionInputs);
-  // emotionInputs.forEach(input => {
-  //   console.log(input.name, input.checked);
-  //   console.log(primaryContainer);
-  // });
 
   // form.addEventListener('submit', function (e) {
   //   const emotionChecked = document.querySelector('input[type="radio"][name="emotion"]:checked');
@@ -372,7 +366,10 @@
     const content = document.querySelector('textarea[name="content"]').value;
     const date = document.getElementById('diary-date').value;
 
-    const selectedKeywords = Array.from(document.querySelectorAll('input[name="keywords"]:checked'))
+    const selectedKeywords = Array.from(document.querySelectorAll('#keyword-primary input[name="keywords"]:checked, ' +
+        '#keyword-secondary input[name="keywords"]:checked, ' +
+        '#keyword-person input[name="keywords"]:checked, ' +
+        '#keyword-situation input[name="keywords"]:checked'))
     .map(input => input.value);
 
     const deletedImageIds = window.deletedImageIds || []; // 미리보기에서 삭제된 이미지 id

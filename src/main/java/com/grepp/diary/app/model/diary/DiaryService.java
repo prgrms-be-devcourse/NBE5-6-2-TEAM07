@@ -169,9 +169,7 @@ public class DiaryService {
             diaryRepository.flush();
 
             // 키워드를 선택했을 경우 키워드 저장
-            if (form.getKeywords() != null && !form
-                .getKeywords()
-                .isEmpty()) {
+            if (form.getKeywords() != null && !form.getKeywords().isEmpty()) {
                 List<DiaryKeyword> keywordList = form
                     .getKeywords()
                     .stream()
@@ -203,9 +201,6 @@ public class DiaryService {
                                                     })
                                                     .collect(Collectors.toList());
                 diaryImgRepository.saveAll(diaryImgs);
-//                DiaryImg diaryImg = new DiaryImg(ImgType.THUMBNAIL, imageList.getFirst());
-//                diaryImg.setDiary(diary);
-//                diaryImgRepository.save(diaryImg);
             }
             return diary;
         } catch (IOException e) {
@@ -230,8 +225,6 @@ public class DiaryService {
         diaryImgRepository.deactivateDiaryImgByDiaryId(id);
         diaryRepository.deactivateDiaryByDiaryId(id);
         replyRepository.deactivateReplyByDiaryId(id);
-
-
     }
 
     @Transactional
@@ -246,9 +239,6 @@ public class DiaryService {
         diary.setEmotion(Emotion.valueOf(request.getEmotion()));
         diary.setContent(request.getContent());
         diary.setDate(request.getDate());
-
-
-        log.info("request : {}", request.getDeletedImageIds());
 
         diaryKeywordRepository.deleteByDiaryId(diary);
         // 키워드를 선택했을 경우 키워드 저장
@@ -267,6 +257,8 @@ public class DiaryService {
                     return dk;
                 })
                 .collect(Collectors.toList());
+
+            diaryKeywordRepository.saveAll(keywordList);
         }
 
         for (Integer deletedImageId : request.getDeletedImageIds()) {
