@@ -96,6 +96,12 @@ public class MemberController {
             return "redirect:/app/settings/email";
         }
 
+        if(memberService.isExist(settingEmailForm.getNewEmail())){
+            bindingResult.rejectValue("newEmail", "email already exists", "이미 사용중인 이메일입니다");
+            redirectAttributes.addFlashAttribute("message", "이미 사용중인 이메일입니다");
+            return "redirect:/app/settings/email";
+        }
+
         boolean isSuccess = memberService.updateEmail(userId, settingEmailForm.getNewEmail());
         if(!isSuccess) {
             redirectAttributes.addFlashAttribute("message", "이메일 변경도중 문제가 발생하였습니다");

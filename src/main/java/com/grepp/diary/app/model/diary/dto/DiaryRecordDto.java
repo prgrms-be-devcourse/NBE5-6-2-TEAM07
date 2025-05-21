@@ -4,6 +4,7 @@ import com.grepp.diary.app.model.diary.code.Emotion;
 import com.grepp.diary.app.model.diary.entity.Diary;
 import com.grepp.diary.app.model.reply.entity.Reply;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class DiaryRecordDto {
 
     private Integer diaryId;
     private LocalDate date;
+    private LocalDateTime createdAt;
     private Reply reply;
     private String content;
     private Emotion emotion;
@@ -30,6 +32,7 @@ public class DiaryRecordDto {
         dto.setContent(diary.getContent());
         dto.setEmotion(diary.getEmotion());
         dto.setDate(diary.getDate());
+        dto.setCreatedAt(diary.getCreatedAt());
 
         if (diary.getImages() != null && !diary.getImages().isEmpty()) {
             List<DiaryImageInfoDto> images = diary.getImages().stream()
