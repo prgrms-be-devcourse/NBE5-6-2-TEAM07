@@ -6,6 +6,6 @@ import lombok.Data;
 public class SettingAiForm {
 
     private Integer selectedAiId;
-    private boolean isFormal;
-    private boolean isLong;
+    private Boolean isFormal;
+    private Boolean isLong;
 }

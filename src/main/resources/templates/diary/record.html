@@ -9,7 +9,7 @@
 
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  <th:block th:replace="fragments/csrf-meta :: csrfMeta"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/member-sidebar :: memberSidebar}"></div>
@@ -102,18 +102,11 @@
   </div>
 
 </main>
+<script src="/js/emotion-map.js"></script>
 <script th:inline="javascript">
-
-  window.emotionImageMap = {
-    GOOD: "Good_Cloud_Sun.png",
-    VERY_GOOD: "Very_Good_Sun.png",
-    COMMON: "Normal_Cloud.png",
-    BAD: "Bad_Cloud_Rain.png",
-    VERY_BAD: "Very_Bad_Cloud_Lightning.png"
-  };
   const diaryId = '[[${diary.diaryId}]]'
   const diaryDate = [[${diary.date}]]
-  const emotionText = document.getElementById('emotion-text').value;
+  const emotionText = document.getElementById('emotion-text').value.toUpperCase();
   const emotionDiv = document.getElementById('diary-emotion');
   const emotionIcon = document.createElement('img');
   emotionIcon.src = `/images/emotion/weather/${emotionImageMap[emotionText]}`
@@ -132,11 +125,16 @@
     }
     window.location.href = `/diary/edit/${diaryId}`;
   }
+  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
 
   function deleteDiary() {
     if (confirm("정말로 삭제하시겠습니까?")) {
       fetch(`/api/diary/${diaryId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken
+        },
       })
       .then(response => {
         if (response.ok) {

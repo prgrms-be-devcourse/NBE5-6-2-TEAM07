@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="_csrf" th:content="${_csrf.token}" />
-  <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
-  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <th:block th:replace="fragments/csrf-meta :: csrfMeta"></th:block>
   <title>AI 캐릭터 변경 페이지</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
@@ -29,7 +27,7 @@
             <div class="bento-title">말투 설정</div>
             <div class="tone-options bento-radio">
               <label class="radio-label">
-                <input type="radio" name="isFormal" value="false" class="radio-hidden" checked>
+                <input type="radio" name="isFormal" value="false" class="radio-hidden">
                 <div class="radio-btn-box">
                   <div class="radio-button"> <i class="fa-solid fa-check"></i></div>
                   <span class="radio-text">친근하게</span>
@@ -52,7 +50,7 @@
             <div class="bento-title">답변 길이 설정</div>
             <div class="length-options bento-radio">
               <label class="radio-label">
-                <input type="radio" name="isLong" value="false" class="radio-hidden" checked>
+                <input type="radio" name="isLong" value="false" class="radio-hidden">
                 <div class="radio-btn-box">
                   <div class="radio-button"> <i class="fa-solid fa-check"></i></div>
                   <span class="radio-text">짧은 답변</span>
