@@ -96,7 +96,7 @@
         <!-- 누구와 함께 -->
         <div class="form-box">
           <div class="form-group">
-            <label>누구와 함께였나요?</label>
+            <label>누구와 함께였나요? (선택)</label>
             <div class="keyword-section">
               <!-- 동행 키워드들 -->
               <div class="keyword-group">
@@ -108,8 +108,6 @@
                   <label th:for="'kw-person-' + ${keyword.keywordId}" th:text="${keyword.name}"></label>
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -117,7 +115,7 @@
         <!-- 어떤 상황 -->
         <div class="form-box">
           <div class="form-group">
-            <label>어떤 상황이었나요?</label>
+            <label>어떤 상황이었나요? (선택)</label>
             <div class="keyword-section">
               <!-- 상황 키워드들 -->
               <div class="keyword-group">
@@ -161,8 +159,8 @@
               <input type="file" th:field="*{images}" name="images" id="images" accept="image/*" style="display: none;" onchange="previewImages(event)">
               <label for="images" class="upload-btn">사진 추가하기</label>
             </div>
-
-            <p class="image-guide">사진은 여러 장 추가할 수 있습니다.</p>
+<!--  사진은 여러 장 추가할 수 있습니다.  나중에 멘트 바꾸기-->
+            <p class="image-guide">일기와 같이 등록하고 싶은 사진을 한장 추가해 주세요</p>
           </div>
         </div>
         <!-- 저장 버튼 -->
