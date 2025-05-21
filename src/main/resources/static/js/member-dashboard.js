@@ -245,7 +245,7 @@ async function renderEmotionDistribution(period, value) {
   const emotionColorMap = {
     VERY_GOOD: '#F3AA6C',
     GOOD: '#FFE086',
-    NORMAL: '#BBCF9A',
+    COMMON: '#BBCF9A',
     BAD: '#B8CCD5',
     VERY_BAD: '#6A97AE'
   };
