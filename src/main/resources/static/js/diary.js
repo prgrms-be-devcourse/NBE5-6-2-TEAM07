@@ -27,7 +27,7 @@ dateInput.addEventListener('change', async() => {
 
   const dateParam = dateInput.value;
   try {
-    const res = await fetch(`/api/diary/check?userId=user01&date=${dateParam}`);
+    const res = await fetch(`/api/diary/check?date=${dateParam}`);
     const exists = await res.json();
 
     if (exists) {
