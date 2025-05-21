@@ -25,8 +25,8 @@ public record DiaryCardResponse (
 
             return new DiaryCard(
                 diary.getDiaryId(),
-                diary.getCreatedAt().toLocalDate(),
                 diary.getDate(),
+                diary.getCreatedAt().toLocalDate(),
                 diary.getEmotion(),
                 diary.getContent(),
                 imagePath

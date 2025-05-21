@@ -3,7 +3,6 @@ package com.grepp.diary.app.controller.web.custom;
 import com.grepp.diary.app.controller.web.custom.form.SettingAiForm;
 import com.grepp.diary.app.model.custom.CustomService;
 import com.grepp.diary.app.model.custom.dto.CustomAIDto;
-import java.util.jar.Attributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -34,10 +33,12 @@ public class CustomController {
             return "redirect:/app/settings/ai";
         }
 
+        log.info(settingAiForm.toString());
+
         String userId = authentication.getName();
 
         boolean isSuccess = customService.updateCustom(userId, new CustomAIDto(
-            settingAiForm.getSelectedAiId(), settingAiForm.isFormal(), settingAiForm.isLong()
+            settingAiForm.getSelectedAiId(), settingAiForm.getIsFormal(), settingAiForm.getIsLong()
         ));
         if (!isSuccess) {
             redirectAttributes.addFlashAttribute("message", "AI 설정 도중 문제가 발생하였습니다");
