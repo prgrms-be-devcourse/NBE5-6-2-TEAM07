@@ -244,4 +244,8 @@ public class MemberService {
         // soft delete
         memberRepository.updateEnabledByUserId(userId);
     }
+
+    public boolean isExist(String email) {
+        return memberRepository.findMemberByEmail(email).isPresent();
+    }
 }

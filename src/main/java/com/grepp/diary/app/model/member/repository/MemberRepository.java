@@ -22,4 +22,6 @@ public interface MemberRepository extends JpaRepository<Member, String>, MemberR
     @Modifying
     @Query("UPDATE Member m SET m.enabled = false WHERE m.userId = :userId")
     void updateEnabledByUserId(@Param("userId") String userId);
+
+    Optional<Member> findMemberByEmail(String email);
 }
