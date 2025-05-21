@@ -89,7 +89,7 @@
         </div>
         <!-- diary 생성일자가 7일 이내일 경우에만 채팅버튼 생성 -->
         <div class="chat-btn-wrapper"
-             th:if="${diary.reply != null} and ${T(java.time.LocalDate).now().minusDays(7).isBefore(diary.getCreatedAt().toLocalDate())}">
+             th:if="${diary.reply != null} and ${T(java.time.LocalDate).now().minusDays(7).isBefore(diary.getCreatedAt().toLocalDate())} and ${diary.reply.getCreatedAt() == diary.reply.getModifiedAt()}">
           <!--        <div class="chat-btn-wrapper" th:if="${diary.reply != null}">-->
           <div class="chat-btn" onclick="chat()">
             <i class="fa-regular fa-message" style="margin-right: 7px"></i>
