@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="_csrf" th:content="${_csrf.token}" />
-  <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
-  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <th:block th:replace="fragments/csrf-meta :: csrfMeta"></th:block>
   <title>AI 캐릭터 변경 페이지</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/sidebar.css">
