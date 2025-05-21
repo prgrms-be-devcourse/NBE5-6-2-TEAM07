@@ -79,7 +79,6 @@ public class DiaryController {
         @AuthenticationPrincipal UserDetails user
     ) {
         String userId = user.getUsername();
-        log.info("user : {}", user.getUsername());
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
 //             ai 관련 정보 전달

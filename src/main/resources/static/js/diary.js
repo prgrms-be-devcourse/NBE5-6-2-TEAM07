@@ -51,10 +51,6 @@ dateInput.addEventListener('change', async() => {
     dateInput.style.display = 'none';
   }
 
-  // const date = new Date(dateInput.value);
-  // const options = { month: 'long', day: 'numeric', weekday: 'short' };
-  // dateText.textContent = date.toLocaleDateString('ko-KR', options);
-  // dateInput.style.display = 'none';
 });
 
 
