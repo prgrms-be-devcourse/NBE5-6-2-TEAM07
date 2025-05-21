@@ -220,7 +220,7 @@
 
     const dateParam = dateInput.value;
     try {
-      const res = await fetch(`/api/diary/check?userId=user01&date=${dateParam}`);
+      const res = await fetch(`/api/diary/check?date=${dateParam}`);
       const exists = await res.json();
 
       if (exists) {
@@ -244,24 +244,6 @@
       dateInput.style.display = 'none';
     }
   });
-
-  // form.addEventListener('submit', function (e) {
-  //   const emotionChecked = document.querySelector('input[type="radio"][name="emotion"]:checked');
-  //   console.log('remon', emotionChecked);
-  //
-  //   if (!emotionChecked) {
-  //     e.preventDefault();
-  //     alert("오늘의 감정을 선택해주세요.");
-  //     document.getElementById('emotion1').scrollIntoView({ behavior: 'smooth' });
-  //     return;
-  //   }
-  //
-  //
-  //   if (contentTextarea.value.length > 1000) {
-  //     e.preventDefault();
-  //     alert("일기는 1000자 이내로 작성해주세요.");
-  //   }
-  // });
 
   // DOM 로드 후 기본 감정 키워드 표시
   window.addEventListener('DOMContentLoaded', () => {

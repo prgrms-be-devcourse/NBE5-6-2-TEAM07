@@ -130,14 +130,18 @@
 
 .diary-keyword {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   color: #89C07E;
   font-weight: bold;
   margin-top: 10px;
+  gap: 8px;
 }
 
 .keyword {
   margin-right: 10px;
+  white-space: nowrap;
+  max-width: 120px;
 }
 
 .reply-header {
