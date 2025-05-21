@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const aiContent = document.getElementById('aiContent');
 
+  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
   if (aiContent) {
     fetchAis();
   }
@@ -10,13 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'ai/write';
   });
 
-  // 전체 체크박스
   document.getElementById('selectAll')?.addEventListener('change', function () {
     const checkboxes = document.querySelectorAll('.ai-checkbox');
     checkboxes.forEach(cb => cb.checked = this.checked);
   });
 
-  // 키워드 타입에 따른 값 반환 함수
   function fetchAis() {
     fetch(`/api/admin/ai`)
     .then(response => response.json())
@@ -29,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 반환 데이터 뿌려주는 용도
   function renderAis(ais) {
     aiContent.innerHTML = '';
     if (!ais || ais.length === 0) {
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 공통 함수: 체크된 aiId 목록 추출
   function getCheckedAiIds() {
     const checked = document.querySelectorAll('.ai-checkbox:checked');
     return Array.from(checked).map(cb => {
@@ -66,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 활성화 버튼
   document.getElementById('active-ai')?.addEventListener('click', () => {
     const aiIds = getCheckedAiIds();
     if (aiIds.length === 0) return alert('선택된 캐릭터가 없습니다.');
@@ -74,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/admin/ai/active', {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
       },
       body: JSON.stringify({ aiIds })
     })
@@ -89,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => alert(err.message));
   });
 
-  // 비활성화 버튼
   document.getElementById('non-active-ai')?.addEventListener('click', () => {
     const aiIds = getCheckedAiIds();
     if (aiIds.length === 0) return alert('선택된 캐릭터가 없습니다.');
@@ -97,7 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/admin/ai/nonactive', {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
       },
       body: JSON.stringify({ aiIds })
     })

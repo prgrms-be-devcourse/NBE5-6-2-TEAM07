@@ -9,12 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let typeSelect = document.getElementById('keyword-input-type');
   let specificTypeDiv = document.querySelector('.keyword-input-specific-type');
   let specificRadios = specificTypeDiv.querySelectorAll('input[name="specific-type"]');
+
   const typeInitial = {
     'EMOTION_GOOD': 'EMOTION',
     'EMOTION_BAD': 'EMOTION',
     'PERSON': 'PERSON',
     'SITUATION': 'SITUATION',
   };
+
+  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
 
   openModalBtn.addEventListener('click', () => {
     modal.style.display = 'flex';
@@ -97,7 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        [csrfHeader]: csrfToken
+      },
       body: JSON.stringify(requestBody)
     })
     .then(res => {
@@ -133,13 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openModalWithKeyword(keyword) {
     modal.style.display = 'flex';
-
     modalTitle.textContent = '키워드 편집';
     submitBtn.textContent = '저장';
 
     modal.setAttribute('data-keyword-id', keyword.keywordId);
-    nameInput.value = keyword.name;
 
+    nameInput.value = keyword.name;
     let generalType = typeInitial[keyword.keywordType];
     typeSelect.value = generalType;
 

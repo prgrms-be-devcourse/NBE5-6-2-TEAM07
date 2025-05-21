@@ -48,9 +48,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
         http
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**", "/admin/**", "/member/**", "/diary/**", "/app/**", "/ai/**", "/auth/**")
-            )
+//            .csrf(csrf -> csrf
+//                .ignoringRequestMatchers("/api/**", "/admin/**", "/member/**", "/diary/**", "/app/**", "/ai/**", "/auth/**")
+//            )
             .formLogin(login -> login
                 .loginPage("/")
                 .loginProcessingUrl("/none")
