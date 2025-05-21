@@ -100,7 +100,7 @@ let chart;
 async function drawEmotionChart(period = 'monthly', date = null) {
   const emotionImageMap = window.emotionImageMap;
   const ctx = document.getElementById('emotionChart').getContext('2d');
-  const emotionOrder = ['VERY_GOOD', 'GOOD', 'NORMAL', 'BAD', 'VERY_BAD'];
+  const emotionOrder = ['VERY_GOOD', 'GOOD', 'COMMON', 'BAD', 'VERY_BAD'];
   const orderedEmotions = emotionOrder.filter(e => emotionImageMap[e]);
 
   const moodValueMap = {};
@@ -239,7 +239,7 @@ function handlePeriodChange(period) {
 
 // 기분 분포 막대 그래프
 async function renderEmotionDistribution(period, value) {
-  const emotionOrder = ['VERY_GOOD', 'GOOD', 'NORMAL', 'BAD', 'VERY_BAD'];
+  const emotionOrder = ['VERY_GOOD', 'GOOD', 'COMMON', 'BAD', 'VERY_BAD'];
   const emotionImageMap = window.emotionImageMap;
 
   const emotionColorMap = {
