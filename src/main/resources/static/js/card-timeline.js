@@ -50,7 +50,7 @@ function renderDiaryCard(diary) {
   const card = clone.querySelector(".diary-card");
 
   // 날짜 포맷
-  const [year, month, day] = diary.createdAt.split("-");
+  const [year, month, day] = diary.date.split("-");
   const dateElem = clone.querySelector(".diary-date");
   dateElem.textContent = `${month}.${day}`;
 
