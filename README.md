@@ -35,3 +35,8 @@
 ## 시스템 아키텍처
 - 시스템은 다음과 같은 구조로 이루어져있습니다.
 ![systemArchitecture.png](snapshots/systemArchitecture.png)
+
+- ERD 구조
+![erd.png](snapshots/erd.png)
+
+- [API 명세](https://www.notion.so/HARU-APIs-1fc3d0a9892d80a0a4f8f87b884c68fb?pvs=4)
