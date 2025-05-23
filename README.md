@@ -40,3 +40,5 @@
 ![erd.png](snapshots/erd.png)
 
 - [API 명세](https://www.notion.so/HARU-APIs-1fc3d0a9892d80a0a4f8f87b884c68fb?pvs=4)
+
+- [목업 Figma](https://www.figma.com/design/QGDpF4Wlg9it36HoKhp4Un/UI-Design?node-id=0-1&t=JSIrKBkVo2UJT1Nu-1)
