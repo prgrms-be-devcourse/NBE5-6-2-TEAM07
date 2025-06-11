@@ -1,7 +1,9 @@
 package com.grepp.diary.app.model.custom.repository;
 
 import com.grepp.diary.app.model.ai.entity.QAi;
+import com.grepp.diary.app.model.ai.entity.QAiImg;
 import com.grepp.diary.app.model.custom.dto.CustomAIDto;
+import com.grepp.diary.app.model.custom.dto.CustomAiInfoDto;
 import com.grepp.diary.app.model.custom.entity.QCustom;
 import com.grepp.diary.app.model.member.entity.QMember;
 import com.querydsl.core.Tuple;
@@ -22,6 +24,7 @@ public class CustomRepositoryImpl implements CustomRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final QAi ai = QAi.ai;
     private final QCustom custom = QCustom.custom;
+    private final QAiImg aiImg = QAiImg.aiImg;
 
     @Override
     public List<Tuple> getAiByLimit(Integer limit) {
@@ -65,5 +68,23 @@ public class CustomRepositoryImpl implements CustomRepositoryCustom {
             .set(custom.isLong, customAIDto.isLong())
             .where(custom.member.userId.eq(userId)).execute();
         return (int) updated;
+    }
+
+    @Override
+    public Optional<CustomAiInfoDto> getCustomAiInfoByUserId(String userId) {
+        return Optional.ofNullable(
+            queryFactory
+            .select(Projections.constructor(
+                CustomAiInfoDto.class,
+                ai.name,
+                aiImg.savePath,
+                aiImg.renamedName
+            ))
+            .from(custom)
+            .leftJoin(custom.ai, ai)
+            .leftJoin(ai.images, aiImg)
+            .where(custom.member.userId.eq(userId))
+            .fetchOne()
+        );
     }
 }
