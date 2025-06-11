@@ -90,9 +90,7 @@ public class DiaryController {
         // 다이어리 조회
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
-//            model.addAttribute("aiName", ai.getName());
-//            model.addAttribute("imgSavePath", aiImg.getSavePath());
-//            model.addAttribute("imgRenamedName", aiImg.getRenamedName());
+            model.addAttribute("customAiInfo", customAiInfoDto);
 
             // 답장 존재 여부 확인
             if (diaryExist.get().getReply() != null) {

@@ -61,12 +61,12 @@
       <div class="reply-header">
         <i class="fa-regular fa-envelope" style="font-size: 2rem; padding-right: 7px"></i>
         <div th:if="${diary.reply != null}">
-          <div th:text="|${aiName}의 답장이 도착했어요|" style="font-size: 1.3rem; font-weight: bold">
+          <div th:text="|${customAiInfo.name}의 답장이 도착했어요|" style="font-size: 1.3rem; font-weight: bold">
             [ai 캐릭터]의 답장이 도착했어요
           </div>
         </div>
         <div th:if="${diary.reply == null}">
-          <div th:text="|${aiName}가 답장을 작성중이에요|" style="font-size: 1.3rem; font-weight: bold">
+          <div th:text="|${customAiInfo.name}가 답장을 작성중이에요|" style="font-size: 1.3rem; font-weight: bold">
             [ai 캐릭터]가 답장을 작성중이에요
           </div>
         </div>
@@ -74,7 +74,7 @@
       <div class="reply-main">
         <div class="reply-text">
           <div class="ai-avatar">
-            <img alt="ai avatar" th:src="@{'/uploads/'+ ${imgSavePath} + ${imgRenamedName}}">
+            <img alt="ai avatar" th:src="@{${customAiInfo.renamedPath}}">
           </div>
           <div class="ai-reply">
             <div class="ai-reply-wrapper">
@@ -93,7 +93,7 @@
           <!--        <div class="chat-btn-wrapper" th:if="${diary.reply != null}">-->
           <div class="chat-btn" onclick="chat()">
             <i class="fa-regular fa-message" style="margin-right: 7px"></i>
-            <div th:text="|${aiName}와 더 많은 대화하러 가기|">[ai 캐릭터]와 더 많은 대화하러 가기</div>
+            <div th:text="|${customAiInfo.name}와 더 많은 대화하러 가기|">[ai 캐릭터]와 더 많은 대화하러 가기</div>
           </div>
         </div>
       </div>
