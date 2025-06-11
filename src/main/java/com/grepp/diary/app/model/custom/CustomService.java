@@ -1,7 +1,9 @@
 package com.grepp.diary.app.model.custom;
 
+import com.grepp.diary.app.model.custom.dto.CustomAiInfoDto;
 import com.grepp.diary.app.model.ai.dto.AiWithCountDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
+import com.grepp.diary.app.model.ai.entity.AiImg;
 import com.grepp.diary.app.model.ai.repository.AiRepository;
 import com.grepp.diary.app.model.custom.dto.CustomAIDto;
 import com.grepp.diary.app.model.custom.entity.Custom;
@@ -76,4 +78,8 @@ public class CustomService {
         return customRepository.updateCustomByUserId(userId, customAIDto) > 0;
     }
 
+    public CustomAiInfoDto findAiAvatarByUserId(String userId) {
+        return customRepository.getCustomAiInfoByUserId(userId)
+            .orElseThrow(() -> new CommonException(ResponseCode.NOT_FOUND, "회원의 AI가 존재하지 않습니다."));
+    }
 }

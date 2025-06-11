@@ -1,6 +1,7 @@
 package com.grepp.diary.app.controller.web.diary;
 
 import com.grepp.diary.app.controller.web.diary.payload.DiaryRequest;
+import com.grepp.diary.app.model.custom.dto.CustomAiInfoDto;
 import com.grepp.diary.app.model.ai.entity.Ai;
 import com.grepp.diary.app.model.ai.entity.AiImg;
 import com.grepp.diary.app.model.custom.CustomService;
@@ -8,13 +9,9 @@ import com.grepp.diary.app.model.custom.entity.Custom;
 import com.grepp.diary.app.model.diary.DiaryService;
 import com.grepp.diary.app.model.diary.dto.DiaryRecordDto;
 import com.grepp.diary.app.model.diary.entity.Diary;
-import com.grepp.diary.app.model.diary.entity.DiaryImg;
 import com.grepp.diary.app.model.keyword.KeywordService;
 import com.grepp.diary.app.model.keyword.entity.Keyword;
-import com.grepp.diary.app.model.member.MemberService;
-import com.grepp.diary.app.model.member.entity.Member;
 import com.grepp.diary.infra.error.exceptions.CommonException;
-import com.grepp.diary.infra.util.file.FileUtil;
 import com.grepp.diary.infra.util.xss.XssProtectionUtils;
 import java.time.LocalDate;
 import java.util.List;
@@ -88,19 +85,12 @@ public class DiaryController {
         @AuthenticationPrincipal UserDetails user
     ) {
         String userId = user.getUsername();
-        Optional<Custom> customExist = customService.findByUserId(userId);
-        if (customExist.isEmpty()) {
-            return "redirect:/app";
-        }
-        Custom custom = customExist.get();
+        CustomAiInfoDto customAiInfoDto = customService.findAiAvatarByUserId(userId);
+
+        // 다이어리 조회
         Optional<Diary> diaryExist = diaryService.findDiaryByUserIdAndDate(userId, targetDate);
         if (diaryExist.isPresent()) {
-            // ai 관련 정보 전달
-            Ai ai = custom.getAi();
-            model.addAttribute("aiName", ai.getName());
-            AiImg aiImg = ai.getImages().getFirst();
-            model.addAttribute("imgSavePath", aiImg.getSavePath());
-            model.addAttribute("imgRenamedName", aiImg.getRenamedName());
+            model.addAttribute("customAiInfo", customAiInfoDto);
 
             // 답장 존재 여부 확인
             if (diaryExist.get().getReply() != null) {
@@ -111,7 +101,7 @@ public class DiaryController {
 
             model.addAttribute("diary", DiaryRecordDto.fromEntity(diaryExist.get()));
         } else {
-            log.info("Diary not found");
+            log.info("Diary not found"); //
             model.addAttribute("diary", new DiaryRecordDto()); // 빈 객체를 넘겨서 프론트에서 처리
         }
         return "diary/record";
